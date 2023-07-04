@@ -21,23 +21,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CancellationException;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +37,21 @@ import androidx.work.Operation;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.CancellationException;
+
 import co.tinode.tindroid.db.BaseDb;
 import co.tinode.tindroid.media.VxCard;
 import co.tinode.tinodesdk.LargeFileHelper;
@@ -94,7 +92,7 @@ public class AttachmentHandler extends Worker {
     final static String ARG_PROGRESS = "progress";
     final static String ARG_ERROR = "error";
     final static String ARG_FATAL = "fatal";
-    final static String ARG_AVATAR = "square_img";
+    final public static String ARG_AVATAR = "square_img";
 
     final static String TAG_UPLOAD_WORK = "AttachmentUploader";
 

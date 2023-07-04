@@ -49,6 +49,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.exifinterface.media.ExifInterface;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
+
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -72,21 +86,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.exifinterface.media.ExifInterface;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
-import androidx.preference.PreferenceManager;
 import co.tinode.tindroid.account.ContactsManager;
 import co.tinode.tindroid.account.Utils;
 import co.tinode.tindroid.db.BaseDb;
@@ -94,7 +93,6 @@ import co.tinode.tindroid.media.VxCard;
 import co.tinode.tindroid.widgets.LetterTileDrawable;
 import co.tinode.tindroid.widgets.OnlineDrawable;
 import co.tinode.tindroid.widgets.RoundImageDrawable;
-
 import co.tinode.tindroid.widgets.UrlLayerDrawable;
 import co.tinode.tinodesdk.ComTopic;
 import co.tinode.tinodesdk.MeTopic;
@@ -137,7 +135,7 @@ public class UiUtils {
         NONE, REPLY, FORWARD, EDIT
     }
 
-    static void setupToolbar(final Activity activity, final VxCard pub,
+    public static void setupToolbar(final Activity activity, final VxCard pub,
                              final String topicName, final boolean online, final Date lastSeen, boolean deleted) {
         if (activity == null || activity.isDestroyed() || activity.isFinishing()) {
             return;
@@ -331,7 +329,7 @@ public class UiUtils {
     /**
      * Login successful. Show contacts activity
      */
-    static void onLoginSuccess(Activity activity, final Button button, final String uid) {
+    public static void onLoginSuccess(Activity activity, final Button button, final String uid) {
         if (button != null) {
             activity.runOnUiThread(() -> button.setEnabled(true));
         }
@@ -396,7 +394,7 @@ public class UiUtils {
     }
 
     // Creates or updates the Android account associated with the given UID.
-    static void updateAndroidAccount(final Context context, final String uid, final String secret,
+    public static void updateAndroidAccount(final Context context, final String uid, final String secret,
                                      final String token, final Date tokenExpires) {
         final AccountManager am = AccountManager.get(context);
         final Account acc = Utils.createAccount(uid);
@@ -1514,11 +1512,11 @@ public class UiUtils {
         });
     }
 
-    static void clickToBrowseURL(@NonNull View view, @StringRes int url) {
+    public static void clickToBrowseURL(@NonNull View view, @StringRes int url) {
         clickToBrowseURL(view, view.getResources().getString(R.string.tinode_url));
     }
 
-    static boolean isAppFirstRun(Context context) {
+    public static boolean isAppFirstRun(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getBoolean(PREF_FIRST_RUN, true);
     }

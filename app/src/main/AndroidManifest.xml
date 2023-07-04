@@ -91,7 +91,7 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".sdk.feature.SplashActivity"
             android:theme="@style/SplashTheme"
             android:launchMode="singleTask"
             android:exported="true">
@@ -101,7 +101,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".sdk.feature.login.LoginActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme"
             android:exported="true">
