@@ -6,8 +6,10 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import co.tinode.tindroid.ChatsActivity;
+import co.tinode.tindroid.Const;
 import co.tinode.tindroid.db.BaseDb;
 import co.tinode.tindroid.sdk.feature.login.LoginActivity;
+import co.tinode.tindroid.sdk.feature.message.MessageActivity;
 
 /**
  * Splash screen on startup
@@ -23,8 +25,9 @@ public class SplashActivity extends AppCompatActivity {
         // 1. If we have an account and no credential validation is needed, send to ChatsActivity.
         // 2. If we don't have an account or credential validation is required send to LoginActivity.
         Intent launch = new Intent(this, BaseDb.getInstance().isReady() ?
-                ChatsActivity.class : LoginActivity.class);
+                MessageActivity.class : LoginActivity.class);
         launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        launch.putExtra(Const.INTENT_EXTRA_TOPIC, "usr7yG--GVH87o");
         startActivity(launch);
         finish();
     }

@@ -24,10 +24,11 @@ import co.tinode.tindroid.AboutDialogFragment;
 import co.tinode.tindroid.AttachmentHandler;
 import co.tinode.tindroid.AvatarViewModel;
 import co.tinode.tindroid.BrandingFragment;
-import co.tinode.tindroid.ChatsActivity;
+import co.tinode.tindroid.Const;
 import co.tinode.tindroid.CredentialsFragment;
 import co.tinode.tindroid.ImageViewFragment;
 import co.tinode.tindroid.LoginSettingsFragment;
+import co.tinode.tindroid.sdk.feature.message.MessageActivity;
 import co.tinode.tindroid.PasswordResetFragment;
 import co.tinode.tindroid.R;
 import co.tinode.tindroid.SignUpFragment;
@@ -95,8 +96,9 @@ public class LoginActivity extends AppCompatActivity implements ImageViewFragmen
         BaseDb db = BaseDb.getInstance();
         if (db.isReady()) {
             // We already have a configured account. All good. Launch ContactsActivity and stop.
-            Intent intent = new Intent(this, ChatsActivity.class);
+            Intent intent = new Intent(this, MessageActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra(Const.INTENT_EXTRA_TOPIC, "usr7yG--GVH87o");
             startActivity(intent);
             finish();
             return;

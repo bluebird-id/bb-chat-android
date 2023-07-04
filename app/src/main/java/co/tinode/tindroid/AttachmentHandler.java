@@ -64,37 +64,37 @@ import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.TheCard;
 
 public class AttachmentHandler extends Worker {
-    final static String ARG_OPERATION = "operation";
-    final static String ARG_OPERATION_IMAGE = "image";
-    final static String ARG_OPERATION_FILE = "file";
-    final static String ARG_OPERATION_AUDIO = "audio";
-    final static String ARG_OPERATION_VIDEO = "video";
+    final public static String ARG_OPERATION = "operation";
+    final public static String ARG_OPERATION_IMAGE = "image";
+    final public static String ARG_OPERATION_FILE = "file";
+    final public static String ARG_OPERATION_AUDIO = "audio";
+    final public static String ARG_OPERATION_VIDEO = "video";
 
     // Bundle argument names.
-    final static String ARG_TOPIC_NAME = Const.INTENT_EXTRA_TOPIC;
-    final static String ARG_LOCAL_URI = "local_uri";
-    final static String ARG_REMOTE_URI = "remote_uri";
-    final static String ARG_SRC_BYTES = "bytes";
+    final public static String ARG_TOPIC_NAME = Const.INTENT_EXTRA_TOPIC;
+    final public static String ARG_LOCAL_URI = "local_uri";
+    final public static String ARG_REMOTE_URI = "remote_uri";
+    final public static String ARG_SRC_BYTES = "bytes";
     final static String ARG_SRC_BITMAP = "bitmap";
-    final static String ARG_PREVIEW = "preview";
-    final static String ARG_MIME_TYPE = "mime";
-    final static String ARG_PRE_MIME_TYPE = "pre_mime";
-    final static String ARG_PRE_URI = "pre_rem_uri";
-    final static String ARG_IMAGE_WIDTH = "width";
-    final static String ARG_IMAGE_HEIGHT = "height";
-    final static String ARG_DURATION = "duration";
-    final static String ARG_FILE_SIZE = "fileSize";
+    final public static String ARG_PREVIEW = "preview";
+    final public static String ARG_MIME_TYPE = "mime";
+    final public static String ARG_PRE_MIME_TYPE = "pre_mime";
+    final public static String ARG_PRE_URI = "pre_rem_uri";
+    final public static String ARG_IMAGE_WIDTH = "width";
+    final public static String ARG_IMAGE_HEIGHT = "height";
+    final public static String ARG_DURATION = "duration";
+    final public static String ARG_FILE_SIZE = "fileSize";
 
-    final static String ARG_FILE_PATH = "filePath";
-    final static String ARG_FILE_NAME = "fileName";
-    final static String ARG_MSG_ID = "msgId";
-    final static String ARG_IMAGE_CAPTION = "caption";
-    final static String ARG_PROGRESS = "progress";
-    final static String ARG_ERROR = "error";
-    final static String ARG_FATAL = "fatal";
+    final public static String ARG_FILE_PATH = "filePath";
+    final public static String ARG_FILE_NAME = "fileName";
+    final public static String ARG_MSG_ID = "msgId";
+    final public static String ARG_IMAGE_CAPTION = "caption";
+    final public static String ARG_PROGRESS = "progress";
+    final public static String ARG_ERROR = "error";
+    final public static String ARG_FATAL = "fatal";
     final public static String ARG_AVATAR = "square_img";
 
-    final static String TAG_UPLOAD_WORK = "AttachmentUploader";
+    final public static String TAG_UPLOAD_WORK = "AttachmentUploader";
 
     private static final String TAG = "AttachmentHandler";
 
@@ -195,7 +195,7 @@ public class AttachmentHandler extends Worker {
         return result;
     }
 
-    static Operation enqueueMsgAttachmentUploadRequest(AppCompatActivity activity, String operation, Bundle args) {
+    public static Operation enqueueMsgAttachmentUploadRequest(AppCompatActivity activity, String operation, Bundle args) {
         String topicName = args.getString(AttachmentHandler.ARG_TOPIC_NAME);
         // Create a new message which will be updated with upload progress.
         Drafty content = new Drafty();
@@ -254,7 +254,7 @@ public class AttachmentHandler extends Worker {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    static long enqueueDownloadAttachment(AppCompatActivity activity, String ref, byte[] bits,
+    public static long enqueueDownloadAttachment(AppCompatActivity activity, String ref, byte[] bits,
                                           String fname, String mimeType) {
         long downloadId = -1;
         if (ref != null) {

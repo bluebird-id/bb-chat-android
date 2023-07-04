@@ -36,7 +36,7 @@ public class MediaControl {
         mContext = context;
     }
 
-    boolean ensurePlayerReady(final int seq, Map<String, Object> data,
+    public boolean ensurePlayerReady(final int seq, Map<String, Object> data,
                               FullFormatter.AudioControlCallback control) throws IOException {
         if (mAudioPlayer != null && mPlayingAudioSeq == seq) {
             mAudioControlCallback = control;
@@ -155,7 +155,7 @@ public class MediaControl {
         return true;
     }
 
-    void releasePlayer(int seq) {
+    public void releasePlayer(int seq) {
         if ((seq != 0 && mPlayingAudioSeq != seq) || mPlayingAudioSeq == -1) {
             return;
         }
@@ -177,7 +177,7 @@ public class MediaControl {
     }
 
     // Start playing at the current position.
-    void playWhenReady() {
+    public void playWhenReady() {
         if (mPlayingAudioSeq > 0) {
             mAudioPlayer.start();
         } else {
@@ -185,7 +185,7 @@ public class MediaControl {
         }
     }
 
-    void pause() {
+    public void pause() {
         if (mAudioPlayer != null && mAudioPlayer.isPlaying()) {
             mAudioPlayer.pause();
         }
@@ -193,7 +193,7 @@ public class MediaControl {
         mSeekTo = -1f;
     }
 
-    void seekToWhenReady(float fraction) {
+    public void seekToWhenReady(float fraction) {
         if (mPlayingAudioSeq > 0) {
             // Already prepared.
             int pos = fractionToPos(fraction);

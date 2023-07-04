@@ -90,6 +90,7 @@ import co.tinode.tindroid.account.ContactsManager;
 import co.tinode.tindroid.account.Utils;
 import co.tinode.tindroid.db.BaseDb;
 import co.tinode.tindroid.media.VxCard;
+import co.tinode.tindroid.sdk.feature.message.MessageActivity;
 import co.tinode.tindroid.widgets.LetterTileDrawable;
 import co.tinode.tindroid.widgets.OnlineDrawable;
 import co.tinode.tindroid.widgets.RoundImageDrawable;
@@ -244,7 +245,7 @@ public class UiUtils {
     }
 
     // Run (duration>0) or stop (duration<=0) typing... animation.
-    static Timer toolbarTypingIndicator(final Activity activity, Timer timer, int duration) {
+    public static Timer toolbarTypingIndicator(final Activity activity, Timer timer, int duration) {
         if (timer != null) {
             timer.cancel();
         }
@@ -298,7 +299,7 @@ public class UiUtils {
         return timer;
     }
 
-    static void toolbarSetOnline(final Activity activity, boolean online, Date lastSeen) {
+    public static void toolbarSetOnline(final Activity activity, boolean online, Date lastSeen) {
         final Toolbar toolbar = activity.findViewById(R.id.toolbar);
         if (toolbar == null) {
             return;
@@ -322,7 +323,7 @@ public class UiUtils {
         return sVisibleTopic;
     }
 
-    static void setVisibleTopic(String topic) {
+    public static void setVisibleTopic(String topic) {
         sVisibleTopic = topic;
     }
 
@@ -341,8 +342,9 @@ public class UiUtils {
             TindroidApp.startWatchingContacts(activity, acc);
         }
 
-        Intent intent = new Intent(activity, ChatsActivity.class);
+        Intent intent = new Intent(activity, MessageActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(Const.INTENT_EXTRA_TOPIC, "usr7yG--GVH87o");
         activity.startActivity(intent);
         activity.finish();
     }
@@ -365,11 +367,11 @@ public class UiUtils {
         ContentResolver.setSyncAutomatically(acc, Utils.SYNC_AUTHORITY, true);
     }
 
-    static boolean isPermissionGranted(Context context, String permission) {
+    public static boolean isPermissionGranted(Context context, String permission) {
         return ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
-    static LinkedList<String> getMissingPermissions(Context context, String[] permissions) {
+    public static LinkedList<String> getMissingPermissions(Context context, String[] permissions) {
         LinkedList<String> missing = new LinkedList<>();
         for (String permission: permissions) {
             if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
@@ -434,7 +436,7 @@ public class UiUtils {
 
     // Date formatter for messages
     @NonNull
-    static String shortDate(Date date) {
+    public static String shortDate(Date date) {
         if (date != null) {
             Calendar now = Calendar.getInstance();
             Calendar then = Calendar.getInstance();
@@ -455,7 +457,7 @@ public class UiUtils {
 
     // Time formatter for messages.
     @NonNull
-    static String timeOnly(Context context, Date date) {
+    public static String timeOnly(Context context, Date date) {
         if (date != null) {
             return DateFormat.getTimeInstance(DateFormat.SHORT).format(date.getTime());
         }
@@ -484,7 +486,7 @@ public class UiUtils {
 
     // Convert milliseconds to '00:00' format.
     @NonNull
-    static String millisToTime(int millis) {
+    public static String millisToTime(int millis) {
         StringBuilder sb = new StringBuilder();
         float duration = millis / 1000f;
         int min = (int) Math.floor(duration / 60f);
@@ -501,7 +503,7 @@ public class UiUtils {
 
     // Returns true if two timestamps are on the same day (ignoring the time part) or both are null.
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    static boolean isSameDate(@Nullable Date one, @Nullable Date two) {
+    public static boolean isSameDate(@Nullable Date one, @Nullable Date two) {
         if (one == two) {
             return true;
         }
@@ -714,7 +716,7 @@ public class UiUtils {
     }
 
     // Construct avatar from VxCard and set it to the provided ImageView.
-    static void setAvatar(ImageView avatarView, VxCard pub, String address, boolean disabled) {
+    public static void setAvatar(ImageView avatarView, VxCard pub, String address, boolean disabled) {
         Bitmap avatar = null;
         String ref = null;
         String fullName = null;
@@ -1066,7 +1068,7 @@ public class UiUtils {
      * @return result of the request to the server.
      */
     @SuppressWarnings("UnusedReturnValue")
-    static <T extends Topic<VxCard, ?, ?, ?>>
+    public static <T extends Topic<VxCard, ?, ?, ?>>
     PromisedReply<ServerMessage> updateAvatar(final T topic, Bitmap bmp) {
         final VxCard pub;
         if (topic.getPub() != null) {
@@ -1134,7 +1136,7 @@ public class UiUtils {
         return new PromisedReply<>((ServerMessage) null);
     }
 
-    static boolean attachMeTopic(final Activity activity, final MeEventListener l) {
+    public static boolean attachMeTopic(final Activity activity, final MeEventListener l) {
         Tinode tinode = Cache.getTinode();
         if (!tinode.isAuthenticated()) {
             // If connection is not ready, wait for completion. This method will be called again
@@ -1342,7 +1344,7 @@ public class UiUtils {
     }
 
     @Nullable
-    static Fragment getVisibleFragment(@NonNull FragmentManager fm) {
+    public static Fragment getVisibleFragment(@NonNull FragmentManager fm) {
         List<Fragment> fragments = fm.getFragments();
         for (Fragment f : fragments) {
             if (f.isVisible()) {
@@ -1536,11 +1538,11 @@ public class UiUtils {
         }
     }
 
-    static class EventListener implements Tinode.EventListener {
+    public static class EventListener implements Tinode.EventListener {
         private final Activity mActivity;
         private Boolean mConnected;
 
-        EventListener(Activity owner, Boolean connected) {
+        public EventListener(Activity owner, Boolean connected) {
             super();
             mActivity = owner;
             mConnected = connected;
@@ -1584,10 +1586,10 @@ public class UiUtils {
         }
     }
 
-    static class ToastFailureListener extends PromisedReply.FailureListener<ServerMessage> {
+    public static class ToastFailureListener extends PromisedReply.FailureListener<ServerMessage> {
         private final Activity mActivity;
 
-        ToastFailureListener(Activity activity) {
+        public ToastFailureListener(Activity activity) {
             mActivity = activity;
         }
 
