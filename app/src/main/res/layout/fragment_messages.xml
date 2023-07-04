@@ -127,7 +127,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/audioRecorder" />
 
-    <co.tinode.tindroid.widgets.MovableActionButton
+    <id.bluebird.chat.widgets.MovableActionButton
         android:id="@+id/audioRecorder"
         android:layout_width="@dimen/fab_large"
         android:layout_height="@dimen/fab_large"

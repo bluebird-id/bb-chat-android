@@ -27,7 +27,7 @@
             android:paddingRight="6dp"
             android:orientation="vertical">
 
-            <co.tinode.tindroid.widgets.DynamicTextView
+            <id.bluebird.chat.widgets.DynamicTextView
                 android:id="@+id/messageText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

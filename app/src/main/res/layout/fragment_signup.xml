@@ -132,7 +132,7 @@
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <co.tinode.tindroid.widgets.PhoneEdit
+            <id.bluebird.chat.widgets.PhoneEdit
                 android:id="@+id/phone"
                 android:visibility="gone"
                 android:layout_width="match_parent"

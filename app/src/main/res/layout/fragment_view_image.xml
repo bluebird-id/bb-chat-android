@@ -9,7 +9,7 @@
     android:background="@drawable/message_view_bkg"
     android:orientation="vertical">
 
-    <co.tinode.tindroid.widgets.OverlaidImageView
+    <id.bluebird.chat.widgets.OverlaidImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

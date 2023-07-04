@@ -10,7 +10,7 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
     compileSdkVersion 33
-    namespace 'co.tinode.tindroid'
+    namespace 'id.bluebird.chat'
 
     signingConfigs {
         release {
@@ -22,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "co.tinode.tindroidx"
+        applicationId "id.bluebird.chat"
         minSdkVersion 24
         targetSdkVersion 33
         vectorDrawables.useSupportLibrary = true

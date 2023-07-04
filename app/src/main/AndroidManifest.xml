@@ -248,7 +248,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="co.tinode.tindroid.provider"
+            android:authorities="id.bluebird.chat.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <co.tinode.tindroid.widgets.CircleProgressView
+    <id.bluebird.chat.widgets.CircleProgressView
         android:id="@+id/progressCircle"
         android:layout_width="40dp"
         android:layout_height="40dp"

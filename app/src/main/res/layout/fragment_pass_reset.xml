@@ -38,7 +38,7 @@
         android:textAppearance="@style/textSecondarySmall"
         android:text="@string/email_msg_explained"/>
 
-    <co.tinode.tindroid.widgets.PhoneEdit
+    <id.bluebird.chat.widgets.PhoneEdit
         android:id="@+id/phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

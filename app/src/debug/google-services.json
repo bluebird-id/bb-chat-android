@@ -9,7 +9,8 @@
       "client_info": {
         "mobilesdk_app_id": "1:770676399703:android:13722b0c69fd493acecd12",
         "android_client_info": {
-          "package_name": "co.tinode.tindroidx"
+//          "package_name": "co.tinode.tindroidx"
+          "package_name": "id.bluebird.chat"
         }
       },
       "oauth_client": [
