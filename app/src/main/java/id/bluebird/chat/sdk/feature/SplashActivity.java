@@ -5,8 +5,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import id.bluebird.chat.Const;
 import id.bluebird.chat.db.BaseDb;
+import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.feature.login.LoginActivity;
 import id.bluebird.chat.sdk.feature.message.MessageActivity;
 

@@ -66,10 +66,6 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
-import id.bluebird.chat.Cache;
-import id.bluebird.chat.Const;
-import id.bluebird.chat.ForwardToFragment;
-import id.bluebird.chat.MediaControl;
 import id.bluebird.chat.R;
 import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.db.MessageDb;
@@ -90,6 +86,9 @@ import co.tinode.tinodesdk.model.Drafty;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
 import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.MediaControl;
 import id.bluebird.chat.sdk.UiUtils;
 
 /**
@@ -210,11 +209,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 } else if (id == R.id.action_reply) {
                     if (selected != null) {
                         showMessageQuote(UiUtils.MsgAction.REPLY, selected[0], Const.QUOTED_REPLY_LENGTH);
-                    }
-                    return true;
-                } else if (id == R.id.action_forward) {
-                    if (selected != null) {
-                        showMessageForwardSelector(selected[0]);
                     }
                     return true;
                 }
@@ -457,25 +451,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 return null;
             }
         });
-    }
-
-    private void showMessageForwardSelector(int pos) {
-        StoredMessage msg = getMessage(pos);
-        if (msg != null) { // No need to check message status, OK to forward failed message.
-            toggleSelectionAt(pos);
-            notifyItemChanged(pos);
-            updateSelectionMode();
-
-            Bundle args = new Bundle();
-            String uname = "➦ " + messageFrom(msg);
-            String from = msg.from != null ? msg.from : mTopicName;
-            args.putSerializable(ForwardToFragment.CONTENT_TO_FORWARD, msg.content.forwardedContent());
-            args.putSerializable(ForwardToFragment.FORWARDING_FROM_USER, Drafty.mention(uname, from));
-            args.putString(ForwardToFragment.FORWARDING_FROM_TOPIC, mTopicName);
-            ForwardToFragment fragment = new ForwardToFragment();
-            fragment.setArguments(args);
-            fragment.show(mActivity.getSupportFragmentManager(), MessageActivity.FRAGMENT_FORWARD_TO);
-        }
     }
 
     private static int packViewType(int side, boolean tip, boolean avatar, boolean date) {

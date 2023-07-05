@@ -9,8 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import id.bluebird.chat.CallManager;
-import id.bluebird.chat.Const;
+import id.bluebird.chat.sdk.CallManager;
+import id.bluebird.chat.sdk.Const;
 
 public class CallConnection extends Connection {
     private static final String TAG = "CallConnection";

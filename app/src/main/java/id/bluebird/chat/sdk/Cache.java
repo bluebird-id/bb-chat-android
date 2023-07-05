@@ -3,6 +3,9 @@ package id.bluebird.chat.sdk;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Locale;
@@ -16,10 +19,9 @@ import co.tinode.tinodesdk.model.MsgServerData;
 import co.tinode.tinodesdk.model.MsgServerInfo;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
-import id.bluebird.chat.CallInProgress;
-import id.bluebird.chat.CallManager;
 import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.services.CallConnection;
 
 /**
  * Shared resources.
@@ -41,7 +43,7 @@ public class Cache {
 
     public static synchronized Tinode getTinode() {
         if (sInstance.mTinode == null) {
-            sInstance.mTinode = new Tinode("Tindroid/" + TindroidApp.getAppVersion(), API_KEY,
+            sInstance.mTinode = new Tinode("Bluebird Chat/" + TindroidApp.getAppVersion(), API_KEY,
                     BaseDb.getInstance().getStore(), null);
             sInstance.mTinode.setOsString(Build.VERSION.RELEASE);
 
@@ -155,11 +157,40 @@ public class Cache {
         return sInstance.mCallInProgress;
     }
 
+    public static void prepareNewCall(@NonNull String topic, int seq, @Nullable CallConnection conn) {
+        if (sInstance.mCallInProgress == null) {
+            sInstance.mCallInProgress = new CallInProgress(topic, seq, conn);
+        } else if (!sInstance.mCallInProgress.equals(topic, seq)) {
+            Log.e(TAG, "Inconsistent prepareNewCall\n\tExisting: " +
+                    sInstance.mCallInProgress + "\n\tNew: " + topic + ":" + seq);
+        }
+    }
+
+    public static void setCallActive(String topic, int seqId) {
+        if (sInstance.mCallInProgress!= null) {
+            sInstance.mCallInProgress.setCallActive(topic, seqId);
+        } else {
+            Log.e(TAG, "Attempt to mark call active with no configured call");
+        }
+    }
+
+    public static void setCallConnected() {
+        if (sInstance.mCallInProgress != null) {
+            sInstance.mCallInProgress.setCallConnected();
+        } else {
+            Log.e(TAG, "Attempt to mark call connected with no configured call");
+        }
+    }
+
     public static void endCallInProgress() {
         if (sInstance.mCallInProgress != null) {
             sInstance.mCallInProgress.endCall();
             sInstance.mCallInProgress = null;
         }
+    }
+
+    public static String getSelectedTopicName() {
+        return sInstance.mTopicSelected;
     }
 
     // Save the new topic name. If the old topic is not null, unsubscribe.

@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -46,7 +45,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
@@ -65,36 +63,17 @@ import androidx.work.Operation;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import id.bluebird.chat.Cache;
-import id.bluebird.chat.ChatsActivity;
-import id.bluebird.chat.Const;
-import id.bluebird.chat.ForwardToFragment;
-import id.bluebird.chat.MediaPickerContract;
-import id.bluebird.chat.R;
-import id.bluebird.chat.db.BaseDb;
-import id.bluebird.chat.db.SqlStore;
-import id.bluebird.chat.db.StoredTopic;
-import id.bluebird.chat.format.SendForwardedFormatter;
-import id.bluebird.chat.format.SendReplyFormatter;
-import id.bluebird.chat.media.VxCard;
-import id.bluebird.chat.sdk.AttachmentHandler;
-import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.widgets.MovableActionButton;
-import id.bluebird.chat.widgets.WaveDrawable;
 import co.tinode.tinodesdk.ComTopic;
 import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.Storage;
-import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.model.AccessChange;
 import co.tinode.tinodesdk.model.Acs;
 import co.tinode.tinodesdk.model.AcsHelper;
@@ -104,6 +83,20 @@ import co.tinode.tinodesdk.model.MsgSetMeta;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
+import id.bluebird.chat.R;
+import id.bluebird.chat.db.BaseDb;
+import id.bluebird.chat.db.SqlStore;
+import id.bluebird.chat.db.StoredTopic;
+import id.bluebird.chat.format.SendForwardedFormatter;
+import id.bluebird.chat.format.SendReplyFormatter;
+import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.MediaPickerContract;
+import id.bluebird.chat.sdk.UiUtils;
+import id.bluebird.chat.widgets.MovableActionButton;
+import id.bluebird.chat.widgets.WaveDrawable;
 
 /**
  * Fragment handling message display and message sending.
@@ -811,10 +804,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                 setSendPanelVisible(activity, R.id.sendMessagePanel);
             }
         }
-
-        if (acs.isJoiner(Acs.Side.GIVEN) && acs.getExcessive().toString().contains("RW")) {
-            showChatInvitationDialog();
-        }
     }
 
     private void scrollToBottom(boolean smooth) {
@@ -846,8 +835,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
             args.putString(MESSAGE_TEXT_ACTION, mTextAction.name());
             args.putInt(MESSAGE_QUOTED_SEQ_ID, mQuotedSeqID);
             args.putSerializable(MESSAGE_QUOTED, mQuote);
-            args.putSerializable(ForwardToFragment.CONTENT_TO_FORWARD, mContentToForward);
-            args.putSerializable(ForwardToFragment.FORWARDING_FROM_USER, mForwardSender);
         }
     }
 
@@ -865,26 +852,10 @@ public class MessagesFragment extends Fragment implements MenuProvider {
     @Override
     public void onPrepareMenu(@NonNull Menu menu) {
         MenuProvider.super.onPrepareMenu(menu);
-        if (mTopic != null) {
-            if (mTopic.isDeleted()) {
-                final Activity activity = requireActivity();
-                menu.clear();
-                activity.getMenuInflater().inflate(R.menu.menu_topic_deleted, menu);
-            } else {
-                menu.findItem(R.id.action_unmute).setVisible(mTopic.isMuted());
-                menu.findItem(R.id.action_mute).setVisible(!mTopic.isMuted());
-
-                menu.findItem(R.id.action_delete).setVisible(mTopic.isOwner());
-                menu.findItem(R.id.action_leave).setVisible(!mTopic.isOwner());
-
-                menu.findItem(R.id.action_archive).setVisible(!mTopic.isArchived());
-                menu.findItem(R.id.action_unarchive).setVisible(mTopic.isArchived());
-
+        if (mTopic != null && !mTopic.isDeleted()) {
                 boolean callsEnabled = mTopic.isP2PType() &&
                         Cache.getTinode().getServerParam("iceServers") != null;
-                menu.findItem(R.id.action_video_call).setVisible(callsEnabled);
                 menu.findItem(R.id.action_audio_call).setVisible(callsEnabled);
-            }
         }
     }
 
@@ -895,34 +866,9 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem item) {
-        final Activity activity = requireActivity();
-
         int id = item.getItemId();
-        if (id == R.id.action_clear) {
-            mTopic.delMessages(false).thenApply(new PromisedReply.SuccessListener<ServerMessage>() {
-                @Override
-                public PromisedReply<ServerMessage> onSuccess(ServerMessage result) {
-                    runMessagesLoader(mTopicName);
-                    return null;
-                }
-            }, mFailureListener);
-            return true;
-        } else if (id == R.id.action_unmute || id == R.id.action_mute) {
-            mTopic.updateMuted(!mTopic.isMuted());
-            activity.invalidateOptionsMenu();
-            return true;
-        } else if (id == R.id.action_leave || id == R.id.action_delete) {
-            if (mTopic.isDeleted()) {
-                mTopic.delete(true);
-                Intent intent = new Intent(activity, ChatsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-                activity.finish();
-            } else {
-                showDeleteTopicConfirmationDialog(activity, id == R.id.action_delete);
-            }
-            return true;
-        } else if (id == R.id.action_offline) {
+
+        if (id == R.id.action_offline) {
             Cache.getTinode().reconnectNow(true, false, false);
             return true;
         }
@@ -1056,107 +1002,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
             mGainControl.release();
             mGainControl = null;
         }
-    }
-
-
-    // Confirmation dialog "Do you really want to do X?"
-    private void showDeleteTopicConfirmationDialog(final Activity activity, boolean del) {
-        final AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(activity);
-        confirmBuilder.setNegativeButton(android.R.string.cancel, null);
-        confirmBuilder.setMessage(del ? R.string.confirm_delete_topic :
-                R.string.confirm_leave_topic);
-
-        confirmBuilder.setPositiveButton(android.R.string.ok, (dialog, which) ->
-                mTopic.delete(true).thenApply(new PromisedReply.SuccessListener<ServerMessage>() {
-                    @Override
-                    public PromisedReply<ServerMessage> onSuccess(ServerMessage result) {
-                        Intent intent = new Intent(activity, ChatsActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        startActivity(intent);
-                        activity.finish();
-                        return null;
-                    }
-                }, mFailureListener));
-        confirmBuilder.show();
-    }
-
-    private void showChatInvitationDialog() {
-        if (mChatInvitationShown) {
-            return;
-        }
-        mChatInvitationShown = true;
-
-        final Activity activity = requireActivity();
-
-        final BottomSheetDialog invitation = new BottomSheetDialog(activity);
-        final LayoutInflater inflater = LayoutInflater.from(invitation.getContext());
-        @SuppressLint("InflateParams") final View view = inflater.inflate(R.layout.dialog_accept_chat, null);
-        invitation.setContentView(view);
-        invitation.setCancelable(false);
-        invitation.setCanceledOnTouchOutside(false);
-
-        View.OnClickListener l = view1 -> {
-            PromisedReply<ServerMessage> response = null;
-            int id = view1.getId();
-            if (id == R.id.buttonAccept) {
-                final String mode = mTopic.getAccessMode().getGiven();
-                response = mTopic.setMeta(new MsgSetMeta.Builder<VxCard,PrivateType>()
-                        .with(new MetaSetSub(mode)).build());
-                if (mTopic.isP2PType()) {
-                    // For P2P topics change 'given' permission of the peer too.
-                    // In p2p topics the other user has the same name as the topic.
-                    response = response.thenApply(new PromisedReply.SuccessListener<ServerMessage>() {
-                        @Override
-                        public PromisedReply<ServerMessage> onSuccess(ServerMessage result) {
-                            return mTopic.setMeta(new MsgSetMeta.Builder<VxCard,PrivateType>()
-                                    .with(new MetaSetSub(mTopic.getName(), mode)).build());
-                        }
-                    });
-                }
-            } else if (id == R.id.buttonIgnore) {
-                response = mTopic.delete(true);
-            } else if (id == R.id.buttonBlock) {
-                mTopic.updateMode(null, "-JP");
-            } else if (id == R.id.buttonReport) {
-                mTopic.updateMode(null, "-JP");
-                HashMap<String, Object> json = new HashMap<>();
-                json.put("action", "report");
-                json.put("target", mTopic.getName());
-                Drafty msg = new Drafty().attachJSON(json);
-                HashMap<String,Object> head = new HashMap<>();
-                head.put("mime", Drafty.MIME_TYPE);
-                Cache.getTinode().publish(Tinode.TOPIC_SYS, msg, head, null);
-            } else {
-                throw new IllegalArgumentException("Unexpected action in showChatInvitationDialog");
-            }
-
-            invitation.dismiss();
-
-            if (response == null) {
-                return;
-            }
-
-            response.thenApply(new PromisedReply.SuccessListener<ServerMessage>() {
-                @Override
-                public PromisedReply<ServerMessage> onSuccess(ServerMessage result) {
-                    final int id = view1.getId();
-                    if (id == R.id.buttonIgnore || id == R.id.buttonBlock) {
-                        Intent intent = new Intent(activity, ChatsActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                        startActivity(intent);
-                    } else {
-                        activity.runOnUiThread(() -> updateFormValues());
-                    }
-                    return null;
-                }
-            }).thenCatch(new UiUtils.ToastFailureListener(activity));
-        };
-
-        view.findViewById(R.id.buttonAccept).setOnClickListener(l);
-        view.findViewById(R.id.buttonIgnore).setOnClickListener(l);
-        view.findViewById(R.id.buttonBlock).setOnClickListener(l);
-
-        invitation.show();
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -1379,15 +1224,11 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                             UiUtils.MsgAction.valueOf(textAction);
                     mQuotedSeqID = args.getInt(MESSAGE_QUOTED_SEQ_ID);
                     mQuote = (Drafty) args.getSerializable(MESSAGE_QUOTED);
-                    mContentToForward = (Drafty) args.getSerializable(ForwardToFragment.CONTENT_TO_FORWARD);
-                    mForwardSender = (Drafty) args.getSerializable(ForwardToFragment.FORWARDING_FROM_USER);
 
                     // Clear used arguments.
                     args.remove(MESSAGE_TEXT_ACTION);
                     args.remove(MESSAGE_QUOTED_SEQ_ID);
                     args.remove(MESSAGE_QUOTED);
-                    args.remove(ForwardToFragment.CONTENT_TO_FORWARD);
-                    args.remove(ForwardToFragment.FORWARDING_FROM_USER);
                 }
             }
         }

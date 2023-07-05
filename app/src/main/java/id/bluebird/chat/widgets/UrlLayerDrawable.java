@@ -16,7 +16,7 @@ import java.util.HashMap;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
-import id.bluebird.chat.Const;
+import id.bluebird.chat.sdk.Const;
 
 /**
  * LayerDrawable with some of the layers set by Picasso.

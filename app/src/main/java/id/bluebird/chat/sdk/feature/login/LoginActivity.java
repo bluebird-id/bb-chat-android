@@ -20,20 +20,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
-import id.bluebird.chat.AboutDialogFragment;
-import id.bluebird.chat.AvatarViewModel;
-import id.bluebird.chat.BrandingFragment;
-import id.bluebird.chat.Const;
-import id.bluebird.chat.CredentialsFragment;
-import id.bluebird.chat.ImageViewFragment;
-import id.bluebird.chat.LoginSettingsFragment;
+import id.bluebird.chat.R;
+import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.feature.message.MessageActivity;
-import id.bluebird.chat.PasswordResetFragment;
-import id.bluebird.chat.R;
-import id.bluebird.chat.SignUpFragment;
-import id.bluebird.chat.db.BaseDb;
 
 /**
  * LoginActivity is a FrameLayout which switches between fragments:
@@ -57,7 +49,7 @@ import id.bluebird.chat.db.BaseDb;
  * 4. If account not found, show login form
  */
 
-public class LoginActivity extends AppCompatActivity implements ImageViewFragment.AvatarCompletionHandler {
+public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
     public static final String EXTRA_CONFIRM_CREDENTIALS = "confirmCredentials";
@@ -72,8 +64,6 @@ public class LoginActivity extends AppCompatActivity implements ImageViewFragmen
     static final String FRAGMENT_BRANDING = "branding";
     static final String PREFS_LAST_LOGIN = "pref_lastLogin";
 
-    private AvatarViewModel mAvatarVM;
-
     static {
         // Otherwise crash on API 21.
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -86,12 +76,6 @@ public class LoginActivity extends AppCompatActivity implements ImageViewFragmen
         setContentView(R.layout.activity_login);
 
         PreferenceManager.setDefaultValues(this, R.xml.login_preferences, false);
-
-        final Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Handle clicks on the '<-' arrow in the toolbar.
-        toolbar.setNavigationOnClickListener(v -> getSupportFragmentManager().popBackStack());
 
         BaseDb db = BaseDb.getInstance();
         if (db.isReady()) {
@@ -107,9 +91,6 @@ public class LoginActivity extends AppCompatActivity implements ImageViewFragmen
         // Check if we need full authentication or just credentials.
         showFragment(db.isCredValidationRequired() ? FRAGMENT_CREDENTIALS : FRAGMENT_LOGIN,
                 null, false);
-
-        // Used to store uploaded avatar before sending it to the server.
-        mAvatarVM = new ViewModelProvider(this).get(AvatarViewModel.class);
     }
 
     @Override
@@ -154,28 +135,6 @@ public class LoginActivity extends AppCompatActivity implements ImageViewFragmen
         });
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            showFragment(FRAGMENT_SETTINGS, null);
-            return true;
-        } else if (id == R.id.action_signup) {
-            showFragment(FRAGMENT_SIGNUP, null);
-            return true;
-        } else if (id == R.id.action_about) {
-            DialogFragment about = new AboutDialogFragment();
-            about.show(getSupportFragmentManager(), "about");
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     void showFragment(String tag, Bundle args) {
         showFragment(tag, args, true);
     }
@@ -188,34 +147,10 @@ public class LoginActivity extends AppCompatActivity implements ImageViewFragmen
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(tag);
         if (fragment == null) {
-            switch (tag) {
-                case FRAGMENT_LOGIN:
-                    fragment = new LoginFragment();
-                    break;
-                case FRAGMENT_SETTINGS:
-                    fragment = new LoginSettingsFragment();
-                    break;
-                case FRAGMENT_SIGNUP:
-                    fragment = new SignUpFragment();
-                    break;
-                case FRAGMENT_RESET:
-                    fragment = new PasswordResetFragment();
-                    break;
-                case FRAGMENT_CREDENTIALS:
-                    fragment = new CredentialsFragment();
-                    break;
-                case FRAGMENT_AVATAR_PREVIEW:
-                    fragment = new ImageViewFragment();
-                    if (args == null) {
-                        args = new Bundle();
-                    }
-                    args.putBoolean(AttachmentHandler.ARG_AVATAR, true);
-                    break;
-                case FRAGMENT_BRANDING:
-                    fragment = new BrandingFragment();
-                    break;
-                default:
-                    throw new IllegalArgumentException();
+            if (FRAGMENT_LOGIN.equals(tag)) {
+                fragment = new LoginFragment();
+            } else {
+                throw new IllegalArgumentException();
             }
         }
 
@@ -232,13 +167,5 @@ public class LoginActivity extends AppCompatActivity implements ImageViewFragmen
             tx = tx.addToBackStack(null);
         }
         tx.commitAllowingStateLoss();
-    }
-
-    @Override
-    public void onAcceptAvatar(String topicName, Bitmap avatar) {
-        if (isFinishing() || isDestroyed()) {
-            return;
-        }
-        mAvatarVM.setAvatar(avatar);
     }
 }

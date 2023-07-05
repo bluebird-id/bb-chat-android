@@ -23,10 +23,11 @@ import java.util.Map;
 
 import androidx.annotation.DrawableRes;
 import androidx.appcompat.content.res.AppCompatResources;
-import id.bluebird.chat.Cache;
-import id.bluebird.chat.Const;
+
 import id.bluebird.chat.R;
-import id.bluebird.chat.UiUtils;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.UiUtils;
 
 // Display quoted content.
 public class QuoteFormatter extends PreviewFormatter {

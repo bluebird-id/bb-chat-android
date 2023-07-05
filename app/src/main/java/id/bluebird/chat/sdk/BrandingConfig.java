@@ -3,6 +3,8 @@ package id.bluebird.chat.sdk;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.text.TextUtils;
@@ -89,6 +91,14 @@ public class BrandingConfig {
         }
 
         return sConfig;
+    }
+
+    public static Bitmap getLargeIcon(Context context) {
+        BrandingConfig conf = getConfig(context);
+        if (conf == null || TextUtils.isEmpty(conf.icon_large)) {
+            return null;
+        }
+        return BitmapFactory.decodeFile(conf.icon_large);
     }
 
     static void fetchConfigFromServer(final Context context, String short_code, ReadyListener listener) {
@@ -283,6 +293,6 @@ public class BrandingConfig {
     }
 
     public interface ReadyListener {
-        public void onReady(BrandingConfig config);
+        void onReady(BrandingConfig config);
     }
 }

@@ -4,16 +4,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
-
-    <include
-        layout="@layout/toolbar"
-        android:visibility="gone" />
+    tools:context=".sdk.feature.login.LoginActivity">
 
     <FrameLayout
         android:id="@+id/contentFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_login" />
-
 </LinearLayout>

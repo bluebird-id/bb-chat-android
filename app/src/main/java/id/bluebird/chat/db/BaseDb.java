@@ -11,10 +11,10 @@ import android.util.SparseArray;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import id.bluebird.chat.TindroidApp;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.model.Acs;
 import co.tinode.tinodesdk.model.Defacs;
+import id.bluebird.chat.sdk.TindroidApp;
 
 /**
  * SQLite backend. Persistent store for messages and chats.

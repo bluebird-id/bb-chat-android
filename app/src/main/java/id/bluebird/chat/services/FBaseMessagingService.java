@@ -24,14 +24,8 @@ import androidx.annotation.StyleableRes;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import id.bluebird.chat.Cache;
-import id.bluebird.chat.CallInProgress;
-import id.bluebird.chat.ChatsActivity;
-import id.bluebird.chat.Const;
-import id.bluebird.chat.HangUpBroadcastReceiver;
-import id.bluebird.chat.MessageActivity;
+
 import id.bluebird.chat.R;
-import id.bluebird.chat.UiUtils;
 import id.bluebird.chat.account.Utils;
 import id.bluebird.chat.format.FontFormatter;
 import id.bluebird.chat.media.VxCard;
@@ -40,6 +34,12 @@ import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
 import co.tinode.tinodesdk.User;
 import co.tinode.tinodesdk.model.Drafty;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.CallInProgress;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.HangUpBroadcastReceiver;
+import id.bluebird.chat.sdk.UiUtils;
+import id.bluebird.chat.sdk.feature.message.MessageActivity;
 
 /**
  * Receive and handle (e.g. show) a push notification message.
@@ -298,23 +298,20 @@ public class FBaseMessagingService extends FirebaseMessagingService {
         int requestCode = 0;
 
         Intent intent;
-        if (TextUtils.isEmpty(topicName)) {
-            // Communication on an unknown topic
-            intent = new Intent(this, ChatsActivity.class);
-        } else {
+        if (!TextUtils.isEmpty(topicName)) {
             requestCode = topicName.hashCode();
             // Communication on a known topic
             intent = new Intent(this, MessageActivity.class);
             intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent,
+                    PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+
+            // MessageActivity will cancel all notifications by tag, which is just topic name.
+            // All notifications receive the same id 0 because id is not used.
+            nm.notify(topicName, 0, builder.setContentIntent(pendingIntent).build());
         }
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
-
-        // MessageActivity will cancel all notifications by tag, which is just topic name.
-        // All notifications receive the same id 0 because id is not used.
-        nm.notify(topicName, 0, builder.setContentIntent(pendingIntent).build());
     }
 
     private void handleCallNotification(@NonNull String webrtc, boolean isMe, @NonNull Map<String, String> data) {

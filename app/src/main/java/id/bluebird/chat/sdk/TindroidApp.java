@@ -57,8 +57,6 @@ import java.util.concurrent.Executors;
 import co.tinode.tinodesdk.ServerResponseException;
 import co.tinode.tinodesdk.Tinode;
 import id.bluebird.chat.BuildConfig;
-import id.bluebird.chat.Const;
-import id.bluebird.chat.HangUpBroadcastReceiver;
 import id.bluebird.chat.R;
 import id.bluebird.chat.account.ContactsObserver;
 import id.bluebird.chat.account.Utils;
@@ -184,7 +182,7 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
         };
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.registerReceiver(br, new IntentFilter("FCM_REFRESH_TOKEN"));
-        lbm.registerReceiver(new HangUpBroadcastReceiver(), new IntentFilter(id.bluebird.chat.Const.INTENT_ACTION_CALL_CLOSE));
+        lbm.registerReceiver(new HangUpBroadcastReceiver(), new IntentFilter(Const.INTENT_ACTION_CALL_CLOSE));
 
         createNotificationChannels();
 
@@ -293,7 +291,7 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
     private void createNotificationChannels() {
         // Create the NotificationChannel on API 26+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel newMessage = new NotificationChannel(id.bluebird.chat.Const.NEWMSG_NOTIFICATION_CHAN_ID,
+            NotificationChannel newMessage = new NotificationChannel(Const.NEWMSG_NOTIFICATION_CHAN_ID,
                     getString(R.string.new_message_channel_name), NotificationManager.IMPORTANCE_DEFAULT);
             newMessage.setDescription(getString(R.string.new_message_channel_description));
             newMessage.enableLights(true);

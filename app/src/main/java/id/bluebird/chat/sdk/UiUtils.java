@@ -1,9 +1,7 @@
 package id.bluebird.chat.sdk;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
@@ -12,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,31 +27,22 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
-import android.util.Patterns;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -76,15 +64,12 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
 
 import co.tinode.tinodesdk.ComTopic;
 import co.tinode.tinodesdk.MeTopic;
@@ -93,19 +78,13 @@ import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.ServerResponseException;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
-import co.tinode.tinodesdk.model.Acs;
-import co.tinode.tinodesdk.model.Credential;
-import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
-import id.bluebird.chat.BrandingConfig;
 import id.bluebird.chat.BuildConfig;
-import id.bluebird.chat.CallManager;
-import id.bluebird.chat.LoginActivity;
 import id.bluebird.chat.R;
-import id.bluebird.chat.account.ContactsManager;
 import id.bluebird.chat.account.Utils;
 import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.feature.login.LoginActivity;
 import id.bluebird.chat.sdk.feature.message.MessageActivity;
 import id.bluebird.chat.widgets.LetterTileDrawable;
 import id.bluebird.chat.widgets.OnlineDrawable;
@@ -312,6 +291,10 @@ public class UiUtils {
         } else if (lastSeen != null) {
             toolbar.setSubtitle(relativeDateFormat(activity, lastSeen));
         }
+    }
+
+    public static String getVisibleTopic() {
+        return sVisibleTopic;
     }
 
     public static void setVisibleTopic(String topic) {
@@ -706,6 +689,78 @@ public class UiUtils {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    // Create avatar bitmap: try to use ref first, then in-band bits, the letter tile, then placeholder.
+    // Do NOT run on UI thread: it will throw.
+    public static Bitmap avatarBitmap(Context context, VxCard pub, Topic.TopicType tp, String id, int size) {
+        Bitmap bitmap = null;
+        String fullName = null;
+        if (pub != null) {
+            fullName = pub.fn;
+            String ref = pub.getPhotoRef();
+            if (ref != null) {
+                try {
+                    bitmap = Picasso.get()
+                            .load(ref)
+                            .resize(size, size).get();
+                } catch (IOException ex) {
+                    Log.w(TAG, "Failed to load avatar", ex);
+                }
+            } else {
+                bitmap = pub.getBitmap();
+            }
+        }
+
+        if (bitmap != null) {
+            bitmap = Bitmap.createScaledBitmap(bitmap, size, size, false);
+        } else {
+            bitmap = new LetterTileDrawable(context)
+                    .setContactTypeAndColor(tp == Topic.TopicType.GRP ?
+                            LetterTileDrawable.ContactType.GROUP :
+                            LetterTileDrawable.ContactType.PERSON, false)
+                    .setLetterAndColor(fullName, id, false)
+                    .getSquareBitmap(size);
+        }
+
+        return bitmap;
+    }
+
+    // Creates LayerDrawable of the right size with gray background and 'fg' in the middle.
+    // Used in chat bubbled to generate placeholder and error images for Picasso.
+    public static Drawable getPlaceholder(@NonNull Context ctx, @Nullable Drawable fg, @Nullable Drawable bkg,
+                                          int width, int height) {
+        Drawable filter;
+        if (bkg == null) {
+            // Uniformly gray background.
+            bkg = ResourcesCompat.getDrawable(ctx.getResources(), R.drawable.placeholder_image_bkg, null);
+
+            // Transparent filter.
+            filter = new ColorDrawable(0x00000000);
+        } else {
+            // Translucent filter.
+            filter = new ColorDrawable(0xCCCCCCCC);
+        }
+
+
+        // Move foreground to the center of the drawable.
+        if (fg == null) {
+            // Transparent drawable.
+            fg = new ColorDrawable(0x00000000);
+        } else {
+            int fgWidth = fg.getIntrinsicWidth();
+            int fgHeight = fg.getIntrinsicHeight();
+            int dx = Math.max((width - fgWidth) / 2, 0);
+            int dy = Math.max((height - fgHeight) / 2, 0);
+            fg = new InsetDrawable(fg, dx, dy, dx, dy);
+        }
+
+        final LayerDrawable result = new LayerDrawable(new Drawable[]{bkg, filter, fg});
+        //noinspection ConstantConditions
+        bkg.setBounds(0, 0, width, height);
+        result.setBounds(0, 0, width, height);
+
+        return result;
     }
 
     public static void setMessageStatusIcon(ImageView holder, int status, int read, int recv) {

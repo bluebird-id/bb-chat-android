@@ -49,20 +49,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import id.bluebird.chat.Cache;
-import id.bluebird.chat.CallManager;
-import id.bluebird.chat.ChatsActivity;
-import id.bluebird.chat.Const;
-import id.bluebird.chat.EditMembersFragment;
-import id.bluebird.chat.FilePreviewFragment;
-import id.bluebird.chat.ForwardToFragment;
-import id.bluebird.chat.ImageViewFragment;
-import id.bluebird.chat.InvalidTopicFragment;
 import id.bluebird.chat.R;
-import id.bluebird.chat.TopicGeneralFragment;
-import id.bluebird.chat.TopicInfoFragment;
-import id.bluebird.chat.TopicSecurityFragment;
-import id.bluebird.chat.VideoViewFragment;
 import id.bluebird.chat.account.ContactsManager;
 import id.bluebird.chat.account.Utils;
 import id.bluebird.chat.db.BaseDb;
@@ -83,13 +70,15 @@ import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
 import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
+import id.bluebird.chat.sdk.feature.InvalidTopicFragment;
 
 /**
  * View to display a single conversation
  */
-public class MessageActivity extends AppCompatActivity
-        implements ImageViewFragment.AvatarCompletionHandler {
+public class MessageActivity extends AppCompatActivity {
     private static final String TAG = "MessageActivity";
 
     static final String FRAGMENT_MESSAGES = "msg";
@@ -194,22 +183,6 @@ public class MessageActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        if (ab != null) {
-//            ab.setDisplayHomeAsUpEnabled(true);
-//            ab.setDisplayShowHomeEnabled(true);
-        }
-        toolbar.setNavigationOnClickListener(v -> {
-            if (isFragmentVisible(FRAGMENT_MESSAGES) || isFragmentVisible(FRAGMENT_INVALID)) {
-                Intent intent = new Intent(MessageActivity.this, ChatsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            } else if (isFragmentVisible(FRAGMENT_FORWARD_TO)) {
-                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                showFragment(FRAGMENT_MESSAGES, null, false);
-            } else {
-                getSupportFragmentManager().popBackStack();
-            }
-        });
 
         registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         registerReceiver(onNotificationClick, new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED));
@@ -535,38 +508,9 @@ public class MessageActivity extends AppCompatActivity
         unregisterReceiver(onNotificationClick);
     }
 
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         UiUtils.setVisibleTopic(hasFocus ? mTopicName : null);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (mTopic == null || !mTopic.isValid()) {
-            return false;
-        }
-
-        int id = item.getItemId();
-        if (id == R.id.action_view_contact) {
-            showFragment(FRAGMENT_INFO, null, true);
-            return true;
-        } else if (mTopic != null) {
-            if (id == R.id.action_archive) {
-                mTopic.updateArchived(true);
-                return true;
-            } else if (id == R.id.action_unarchive) {
-                mTopic.updateArchived(false);
-                return true;
-            } else if (id == R.id.action_audio_call || id == R.id.action_video_call) {
-                CallManager.placeOutgoingCall(this, mTopicName, id == R.id.action_audio_call);
-                return true;
-            }
-        } else {
-            Toast.makeText(this, R.string.action_failed, Toast.LENGTH_SHORT).show();
-        }
-
-        return false;
     }
 
     @Override
@@ -625,39 +569,8 @@ public class MessageActivity extends AppCompatActivity
                 case FRAGMENT_MESSAGES:
                     fragment = new MessagesFragment();
                     break;
-                case FRAGMENT_INFO:
-                    fragment = new TopicInfoFragment();
-                    break;
-                case FRAGMENT_GENERAL:
-                    fragment = new TopicGeneralFragment();
-                    break;
-                case FRAGMENT_PERMISSIONS:
-                    fragment = new TopicSecurityFragment();
-                    break;
-                case FRAGMENT_EDIT_MEMBERS:
-                    fragment = new EditMembersFragment();
-                    break;
-                case FRAGMENT_VIEW_IMAGE:
-                    fragment = new ImageViewFragment();
-                    break;
-                case FRAGMENT_VIEW_VIDEO:
-                    fragment = new VideoViewFragment();
-                    break;
-                case FRAGMENT_FILE_PREVIEW:
-                    fragment = new FilePreviewFragment();
-                    break;
                 case FRAGMENT_INVALID:
                     fragment = new InvalidTopicFragment();
-                    break;
-                case FRAGMENT_AVATAR_PREVIEW:
-                    fragment = new ImageViewFragment();
-                    if (args == null) {
-                        args = new Bundle();
-                    }
-                    args.putBoolean(AttachmentHandler.ARG_AVATAR, true);
-                    break;
-                case FRAGMENT_FORWARD_TO:
-                    fragment = new ForwardToFragment();
                     break;
                 default:
                     throw new IllegalArgumentException("Failed to create fragment: unknown tag " + tag);
@@ -797,16 +710,6 @@ public class MessageActivity extends AppCompatActivity
             Message msg = mNoteReadHandler.obtainMessage(0, seq, 0, mTopicName);
             mNoteReadHandler.sendMessageDelayed(msg, READ_DELAY);
         }
-    }
-
-    @Override
-    public void onAcceptAvatar(String topicName, Bitmap avatar) {
-        if (isDestroyed() || isFinishing()) {
-            return;
-        }
-
-        // noinspection unchecked
-        UiUtils.updateAvatar(Cache.getTinode().getTopic(topicName), avatar);
     }
 
     interface DataSetChangeListener {

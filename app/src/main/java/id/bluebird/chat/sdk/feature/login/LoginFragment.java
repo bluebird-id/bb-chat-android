@@ -26,9 +26,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.preference.PreferenceManager;
 
-import id.bluebird.chat.BrandingConfig;
-import id.bluebird.chat.Cache;
 import id.bluebird.chat.R;
+import id.bluebird.chat.sdk.BrandingConfig;
+import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.TindroidApp;
 import id.bluebird.chat.account.Utils;
 import co.tinode.tinodesdk.PromisedReply;

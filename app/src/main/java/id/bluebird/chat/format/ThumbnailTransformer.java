@@ -11,10 +11,10 @@ import com.squareup.picasso.Target;
 import java.util.LinkedList;
 import java.util.List;
 
-import id.bluebird.chat.Const;
-import id.bluebird.chat.UiUtils;
 import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.model.Drafty;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.UiUtils;
 
 // Convert images to thumbnails.
 public class ThumbnailTransformer implements Drafty.Transformer {

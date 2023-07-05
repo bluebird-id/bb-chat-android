@@ -19,10 +19,10 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
-import id.bluebird.chat.Const;
 import id.bluebird.chat.R;
-import id.bluebird.chat.UiUtils;
 import co.tinode.tinodesdk.Tinode;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.UiUtils;
 
 /**
  * Helper class for storing data in the platform content providers.

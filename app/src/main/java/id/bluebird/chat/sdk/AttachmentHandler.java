@@ -59,7 +59,6 @@ import co.tinode.tinodesdk.Topic;
 import co.tinode.tinodesdk.model.Drafty;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.TheCard;
-import id.bluebird.chat.Cache;
 import id.bluebird.chat.R;
 import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.media.VxCard;

@@ -8,10 +8,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.ByteArrayOutputStream;
 
 import androidx.annotation.NonNull;
-import id.bluebird.chat.Const;
-import id.bluebird.chat.UiUtils;
+
 import co.tinode.tinodesdk.model.Mergeable;
 import co.tinode.tinodesdk.model.TheCard;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.UiUtils;
 
 /**
  * VxCard - contact descriptor.

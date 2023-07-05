@@ -13,9 +13,10 @@ import android.util.Log;
 import android.view.Surface;
 
 import androidx.annotation.Nullable;
-import id.bluebird.chat.Cache;
-import id.bluebird.chat.CallManager;
-import id.bluebird.chat.Const;
+
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.CallManager;
+import id.bluebird.chat.sdk.Const;
 
 public class CallConnectionService extends ConnectionService {
     private static final String TAG = "CallConnectionService";

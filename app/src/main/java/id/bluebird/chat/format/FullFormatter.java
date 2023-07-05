@@ -48,9 +48,10 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
-import id.bluebird.chat.Cache;
+
 import id.bluebird.chat.R;
-import id.bluebird.chat.UiUtils;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.widgets.TextDrawable;
 import id.bluebird.chat.widgets.WaveDrawable;
 

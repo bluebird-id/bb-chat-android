@@ -31,8 +31,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
-import id.bluebird.chat.Cache;
-import id.bluebird.chat.TindroidApp;
+
 import id.bluebird.chat.account.ContactsManager;
 import id.bluebird.chat.account.Utils;
 import id.bluebird.chat.media.VxCard;
@@ -46,6 +45,8 @@ import co.tinode.tinodesdk.model.MsgSetMeta;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.TindroidApp;
 
 /**
  * Define a sync adapter for the app.
