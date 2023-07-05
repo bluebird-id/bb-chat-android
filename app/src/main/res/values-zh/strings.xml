@@ -118,7 +118,6 @@
     <string name="select_image_or_video">选择图片或视频</string>
     <string name="video_call_channel_name">视频通话</string>
     <string name="video_call_channel_description">视频和音频通话</string>
-    <string name="tinode_video_call">Tinode 视频通话</string>
     <string name="tinode_audio_call">Tinode 通话</string>
     <string name="answer_call">接听</string>
     <string name="decline_call">拒绝</string>

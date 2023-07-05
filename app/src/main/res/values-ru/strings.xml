@@ -103,7 +103,6 @@
     <string name="select_image_or_video">Выбрать фото или видео</string>
     <string name="video_call_channel_name">Видеозвонки</string>
     <string name="video_call_channel_description">Видео- и аудиовызовы</string>
-    <string name="tinode_video_call">Видеозвонок Tinode</string>
     <string name="tinode_audio_call">Звонок Tinode</string>
     <string name="answer_call">Ответить</string>
     <string name="decline_call">Отклонить</string>

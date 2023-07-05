@@ -28,12 +28,9 @@ public class CallConnectionService extends ConnectionService {
 
         CallConnection conn = new CallConnection(getApplicationContext());
         conn.setInitializing();
-        boolean audioOnly = false;
         if (request != null) {
             conn.setAddress(request.getAddress(), TelecomManager.PRESENTATION_ALLOWED);
             conn.setVideoState(request.getVideoState());
-            Bundle extras = request.getExtras();
-            audioOnly = extras.getBoolean(Const.INTENT_EXTRA_CALL_AUDIO_ONLY);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             conn.setConnectionProperties(Connection.PROPERTY_SELF_MANAGED);
@@ -41,14 +38,11 @@ public class CallConnectionService extends ConnectionService {
         conn.setConnectionCapabilities(Connection.CAPABILITY_MUTE |
                 Connection.CAPABILITY_CAN_SEND_RESPONSE_VIA_CONNECTION);
         conn.setAudioModeIsVoip(true);
-        if (!audioOnly) {
-            conn.setVideoProvider(new TinodeVideoProvider());
-        }
         conn.setRinging();
 
         String topicName = conn.getAddress().getSchemeSpecificPart();
 
-        CallManager.showOutgoingCallUi(this, topicName, audioOnly, conn);
+        CallManager.showOutgoingCallUi(this, topicName, conn);
 
         return conn;
     }
@@ -73,7 +67,6 @@ public class CallConnectionService extends ConnectionService {
             return null;
         }
 
-        boolean audioOnly = extras.getBoolean(Const.INTENT_EXTRA_CALL_AUDIO_ONLY);
         int seq = extras.getInt(Const.INTENT_EXTRA_SEQ);
         conn.setExtras(extras);
 
@@ -85,9 +78,6 @@ public class CallConnectionService extends ConnectionService {
 
         conn.setConnectionCapabilities(Connection.CAPABILITY_MUTE);
         conn.setAudioModeIsVoip(true);
-        if (!audioOnly) {
-            conn.setVideoProvider(new TinodeVideoProvider());
-        }
         conn.setActive();
 
         return conn;
@@ -105,57 +95,5 @@ public class CallConnectionService extends ConnectionService {
                                                  @Nullable ConnectionRequest request) {
         super.onCreateOutgoingConnectionFailed(connectionManagerPhoneAccount, request);
         Log.i(TAG, "Create outgoing call failed");
-    }
-
-    public static class TinodeVideoProvider extends Connection.VideoProvider {
-        @Override
-        public void onSetCamera(String cameraId) {
-            Log.i(TAG, "onSetCamera");
-        }
-
-        @Override
-        public void onSetPreviewSurface(Surface surface) {
-            Log.i(TAG, "onSetPreviewSurface");
-        }
-
-        @Override
-        public void onSetDisplaySurface(Surface surface) {
-            Log.i(TAG, "onSetDisplaySurface");
-        }
-
-        @Override
-        public void onSetDeviceOrientation(int rotation) {
-            Log.i(TAG, "onSetDeviceOrientation");
-        }
-
-        @Override
-        public void onSetZoom(float value) {
-            Log.i(TAG, "onSetZoom");
-        }
-
-        @Override
-        public void onSendSessionModifyRequest(VideoProfile fromProfile, VideoProfile toProfile) {
-            Log.i(TAG, "onSendSessionModifyRequest");
-        }
-
-        @Override
-        public void onSendSessionModifyResponse(VideoProfile responseProfile) {
-            Log.i(TAG, "onSendSessionModifyResponse");
-        }
-
-        @Override
-        public void onRequestCameraCapabilities() {
-            Log.i(TAG, "onRequestCameraCapabilities");
-        }
-
-        @Override
-        public void onRequestConnectionDataUsage() {
-            Log.i(TAG, "onRequestConnectionDataUsage");
-        }
-
-        @Override
-        public void onSetPauseImage(Uri uri) {
-            Log.i(TAG, "onSetPauseImage");
-        }
     }
 }

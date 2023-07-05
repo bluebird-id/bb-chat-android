@@ -117,7 +117,6 @@
     <string name="select_image_or_video">Elegir imagen o video</string>
     <string name="video_call_channel_name">Videollamadas</string>
     <string name="video_call_channel_description">Llamadas de video y audio</string>
-    <string name="tinode_video_call">Videollamada de Tinode</string>
     <string name="tinode_audio_call">Llamada de Tinode</string>
     <string name="answer_call">Responder</string>
     <string name="decline_call">Rechazar</string>

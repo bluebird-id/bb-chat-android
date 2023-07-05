@@ -106,25 +106,20 @@ public class CallManager {
         telecomManager.unregisterPhoneAccount(shared.mPhoneAccountHandle);
     }
 
-    public static void placeOutgoingCall(Activity activity, String callee, boolean audioOnly) {
+    public static void placeOutgoingCall(Activity activity, String callee) {
         TelecomManager telecomManager = (TelecomManager) TindroidApp.getAppContext().getSystemService(TELECOM_SERVICE);
         if (shouldBypassTelecom(activity, telecomManager, true)) {
             // Self-managed phone accounts are not supported, bypassing Telecom.
-            showOutgoingCallUi(activity, callee, audioOnly, null);
+            showOutgoingCallUi(activity, callee, null);
             return;
         }
 
         CallManager shared = CallManager.getShared();
         Bundle callParams = new Bundle();
         callParams.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, shared.mPhoneAccountHandle);
-        if (!audioOnly) {
-            callParams.putInt(TelecomManager.EXTRA_START_CALL_WITH_VIDEO_STATE, VideoProfile.STATE_BIDIRECTIONAL);
-            callParams.putBoolean(TelecomManager.EXTRA_START_CALL_WITH_SPEAKERPHONE, true);
-        }
 
         Bundle extras = new Bundle();
         extras.putString(Const.INTENT_EXTRA_TOPIC, callee);
-        extras.putBoolean(Const.INTENT_EXTRA_CALL_AUDIO_ONLY, audioOnly);
         callParams.putParcelable(TelecomManager.EXTRA_OUTGOING_CALL_EXTRAS, extras);
         try {
             telecomManager.placeCall(Uri.fromParts("tinode", callee, null), callParams);
@@ -168,7 +163,6 @@ public class CallManager {
         Bundle extras = new Bundle();
         extras.putString(Const.INTENT_EXTRA_TOPIC, caller);
         extras.putInt(Const.INTENT_EXTRA_SEQ, seq);
-        extras.putBoolean(Const.INTENT_EXTRA_CALL_AUDIO_ONLY, audioOnly);
 
         final ComTopic topic = (ComTopic) Cache.getTinode().getTopic(caller);
         if (topic == null) {
@@ -211,14 +205,12 @@ public class CallManager {
         }
     }
 
-    public static void showOutgoingCallUi(Context context, String topicName,
-                                          boolean audioOnly, CallConnection conn) {
+    public static void showOutgoingCallUi(Context context, String topicName, CallConnection conn) {
         Cache.prepareNewCall(topicName, 0, conn);
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.setAction(CallActivity.INTENT_ACTION_CALL_START);
         intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName);
-        intent.putExtra(Const.INTENT_EXTRA_CALL_AUDIO_ONLY, audioOnly);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -260,11 +252,10 @@ public class CallManager {
 
 
                 int seq = args.getInt(Const.INTENT_EXTRA_SEQ);
-                boolean audioOnly = args.getBoolean(Const.INTENT_EXTRA_CALL_AUDIO_ONLY);
 
                 Cache.setCallActive(topicName, seq);
 
-                PendingIntent askUserIntent = askUserIntent(context, topicName, seq, audioOnly);
+                PendingIntent askUserIntent = askUserIntent(context, topicName, seq);
                 // Set notification content intent to take user to fullscreen UI if user taps on the
                 // notification body.
                 builder.setContentIntent(askUserIntent);
@@ -274,8 +265,7 @@ public class CallManager {
                         .setLargeIcon(Icon.createWithBitmap(avatar))
                         .setContentTitle(userName)
                         .setSmallIcon(R.drawable.ic_icon_push)
-                        .setContentText(context.getString(audioOnly ? R.string.tinode_audio_call :
-                                R.string.tinode_video_call))
+                        .setContentText(context.getString(R.string.tinode_audio_call))
                         .setUsesChronometer(true)
                         .setCategory(Notification.CATEGORY_CALL);
 
@@ -289,14 +279,14 @@ public class CallManager {
                             .setName(userName)
                             .build();
                     builder.setStyle(Notification.CallStyle.forIncomingCall(caller,
-                            declineIntent(context, topicName, seq), answerIntent(context, topicName, seq, audioOnly)));
+                            declineIntent(context, topicName, seq), answerIntent(context, topicName, seq)));
                 } else {
                     builder.addAction(new Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_call_end),
                             getActionText(context, R.string.decline_call, R.color.colorNegativeAction), declineIntent(context, topicName, seq))
                             .build());
 
                     builder.addAction(new Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_call_white),
-                            getActionText(context, R.string.answer_call, R.color.colorPositiveAction), answerIntent(context, topicName, seq, audioOnly))
+                            getActionText(context, R.string.answer_call, R.color.colorPositiveAction), answerIntent(context, topicName, seq))
                             .build());
                 }
 
@@ -318,35 +308,33 @@ public class CallManager {
         return spannable;
     }
 
-    private static PendingIntent askUserIntent(Context context, String topicName, int seq, boolean audioOnly) {
+    private static PendingIntent askUserIntent(Context context, String topicName, int seq) {
         Intent intent = new Intent(CallActivity.INTENT_ACTION_CALL_INCOMING, null);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION
                 | Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName)
-                .putExtra(Const.INTENT_EXTRA_SEQ, seq)
-                .putExtra(Const.INTENT_EXTRA_CALL_AUDIO_ONLY, audioOnly);
+                .putExtra(Const.INTENT_EXTRA_SEQ, seq);
         intent.setClass(context, CallActivity.class);
         return PendingIntent.getActivity(context, 101, intent,
                 PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
-    public static Intent answerCallIntent(Context context, String topicName, int seq, boolean audioOnly) {
+    public static Intent answerCallIntent(Context context, String topicName, int seq) {
         Intent intent = new Intent(CallActivity.INTENT_ACTION_CALL_INCOMING, null);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION
                 | Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName)
                 .putExtra(Const.INTENT_EXTRA_SEQ, seq)
-                .putExtra(Const.INTENT_EXTRA_CALL_ACCEPTED, true)
-                .putExtra(Const.INTENT_EXTRA_CALL_AUDIO_ONLY, audioOnly);
+                .putExtra(Const.INTENT_EXTRA_CALL_ACCEPTED, true);
         intent.setClass(context, CallActivity.class);
         return intent;
     }
 
-    private static PendingIntent answerIntent(Context context, String topicName, int seq, boolean audioOnly) {
+    private static PendingIntent answerIntent(Context context, String topicName, int seq) {
         return PendingIntent.getActivity(context, 102,
-                answerCallIntent(context, topicName, seq, audioOnly),
+                answerCallIntent(context, topicName, seq),
                 PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 

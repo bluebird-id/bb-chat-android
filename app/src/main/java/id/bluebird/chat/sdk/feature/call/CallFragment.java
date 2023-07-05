@@ -28,7 +28,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
-import org.webrtc.Camera1Enumerator;
 import org.webrtc.CameraEnumerator;
 import org.webrtc.DataChannel;
 import org.webrtc.DefaultVideoDecoderFactory;
@@ -46,8 +45,6 @@ import org.webrtc.RtpReceiver;
 import org.webrtc.RtpSender;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
-import org.webrtc.SurfaceTextureHelper;
-import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
@@ -99,15 +96,11 @@ public class CallFragment extends Fragment {
 
     private PeerConnectionFactory mPeerConnectionFactory;
     private MediaConstraints mSdpConstraints;
-    private VideoCapturer mVideoCapturerAndroid;
-    private VideoSource mVideoSource;
-    private VideoTrack mLocalVideoTrack;
     private AudioSource mAudioSource;
     private AudioTrack mLocalAudioTrack;
     private PeerConnection mLocalPeer;
     private DataChannel mDataChannel;
     private List<PeerConnection.IceServer> mIceServers;
-    private EglBase mRootEglBase;
 
     private CallDirection mCallDirection;
     // If true, the client has received a remote SDP from the peer and has sent a local SDP to the peer.
@@ -117,18 +110,12 @@ public class CallFragment extends Fragment {
 
     // Media state
     private boolean mAudioOff = false;
-    private boolean mVideoOff = false;
 
     // For playing ringing sounds.
     MediaPlayer mMediaPlayer = null;
 
-    // Video (camera views).
-    private SurfaceViewRenderer mLocalVideoView;
-    private SurfaceViewRenderer mRemoteVideoView;
-
     // Control buttons: speakerphone, mic, camera.
     private FloatingActionButton mToggleSpeakerphoneBtn;
-    private FloatingActionButton mToggleCameraBtn;
     private FloatingActionButton mToggleMicBtn;
 
     private ConstraintLayout mLayout;
@@ -139,7 +126,6 @@ public class CallFragment extends Fragment {
     private int mCallSeqID = 0;
     private InfoListener mTinodeListener;
     private boolean mCallStarted = false;
-    private boolean mAudioOnly = false;
 
     // Check if we have camera and mic permissions.
     private final ActivityResultLauncher<String[]> mMediaPermissionLauncher =
@@ -162,11 +148,8 @@ public class CallFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_call, container, false);
-        mLocalVideoView = v.findViewById(R.id.localView);
-        mRemoteVideoView = v.findViewById(R.id.remoteView);
 
         mToggleSpeakerphoneBtn = v.findViewById(R.id.toggleSpeakerphoneBtn);
-        mToggleCameraBtn = v.findViewById(R.id.toggleCameraBtn);
         mToggleMicBtn = v.findViewById(R.id.toggleMicBtn);
 
         mLayout = v.findViewById(R.id.callMainLayout);
@@ -175,11 +158,8 @@ public class CallFragment extends Fragment {
         mToggleSpeakerphoneBtn.setOnClickListener(v0 ->
                 toggleSpeakerphone((FloatingActionButton) v0));
         v.findViewById(R.id.hangupBtn).setOnClickListener(v1 -> handleCallClose());
-        mToggleCameraBtn.setOnClickListener(v2 ->
-                toggleMedia((FloatingActionButton) v2, true,
-                        R.drawable.ic_videocam, R.drawable.ic_videocam_off));
         mToggleMicBtn.setOnClickListener(v3 ->
-                toggleMedia((FloatingActionButton) v3, false,
+                toggleMedia((FloatingActionButton) v3,
                         R.drawable.ic_mic, R.drawable.ic_mic_off));
         return v;
     }
@@ -206,11 +186,10 @@ public class CallFragment extends Fragment {
             mCallSeqID = args.getInt(Const.INTENT_EXTRA_SEQ);
         }
 
-        mAudioOnly = args.getBoolean(Const.INTENT_EXTRA_CALL_AUDIO_ONLY);
         AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-        audioManager.setSpeakerphoneOn(!mAudioOnly);
-        mToggleSpeakerphoneBtn.setImageResource(mAudioOnly ? R.drawable.ic_volume_off : R.drawable.ic_volume_up);
+        audioManager.setSpeakerphoneOn(false);
+        mToggleSpeakerphoneBtn.setImageResource(R.drawable.ic_volume_off);
 
         if (!mTopic.isAttached()) {
             mTopic.setListener(new Topic.Listener<VxCard, PrivateType, VxCard, PrivateType>() {
@@ -283,7 +262,6 @@ public class CallFragment extends Fragment {
     private void enableControls() {
         requireActivity().runOnUiThread(() -> {
             mToggleSpeakerphoneBtn.setEnabled(true);
-            mToggleCameraBtn.setEnabled(true);
             mToggleMicBtn.setEnabled(true);
         });
     }
@@ -317,43 +295,15 @@ public class CallFragment extends Fragment {
         return null;
     }
 
-    private void muteVideo() {
-        try {
-            mVideoCapturerAndroid.stopCapture();
-            mLocalVideoView.setVisibility(View.INVISIBLE);
-            sendToPeer(VIDEO_MUTED_EVENT);
-        } catch (InterruptedException e) {
-            Log.d(TAG, e.toString());
-        }
-    }
-
-    private void unmuteVideo() {
-        mVideoCapturerAndroid.startCapture(CAMERA_RESOLUTION_WIDTH, CAMERA_RESOLUTION_HEIGHT, CAMERA_FPS);
-        mLocalVideoView.setVisibility(View.VISIBLE);
-        sendToPeer(VIDEO_UNMUTED_EVENT);
-    }
-
     // Mute/unmute media.
-    private void toggleMedia(FloatingActionButton b, boolean video, @DrawableRes int enabledIcon, int disabledIcon) {
+    private void toggleMedia(FloatingActionButton b, @DrawableRes int enabledIcon, int disabledIcon) {
         boolean disabled;
-        if (video) {
-            disabled = !mVideoOff;
-            mVideoOff = disabled;
-        } else {
-            disabled = !mAudioOff;
-            mAudioOff = disabled;
-        }
+
+        disabled = !mAudioOff;
+        mAudioOff = disabled;
 
         b.setImageResource(disabled ? disabledIcon : enabledIcon);
 
-        if (video) {
-            if (disabled) {
-                muteVideo();
-            } else {
-                unmuteVideo();
-            }
-            return;
-        }
         mLocalAudioTrack.setEnabled(!disabled);
 
         // Need to disable microphone too, otherwise webrtc LocalPeer produces echo.
@@ -397,8 +347,6 @@ public class CallFragment extends Fragment {
             handleCallClose();
         }
 
-        initVideos();
-
         // Initialize PeerConnectionFactory globals.
         PeerConnectionFactory.InitializationOptions initializationOptions =
                 PeerConnectionFactory.InitializationOptions.builder(activity)
@@ -409,12 +357,6 @@ public class CallFragment extends Fragment {
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         PeerConnectionFactory.Builder pcfBuilder = PeerConnectionFactory.builder()
                 .setOptions(options);
-        DefaultVideoEncoderFactory defaultVideoEncoderFactory = new DefaultVideoEncoderFactory(
-                mRootEglBase.getEglBaseContext(), true, true);
-        DefaultVideoDecoderFactory defaultVideoDecoderFactory = new DefaultVideoDecoderFactory(
-                mRootEglBase.getEglBaseContext());
-        pcfBuilder.setVideoEncoderFactory(defaultVideoEncoderFactory)
-                .setVideoDecoderFactory(defaultVideoDecoderFactory);
 
         mPeerConnectionFactory = pcfBuilder.createPeerConnectionFactory();
 
@@ -428,30 +370,6 @@ public class CallFragment extends Fragment {
             mLocalAudioTrack.setEnabled(false);
         }
 
-        // Create a VideoCapturer instance.
-        mVideoCapturerAndroid = createCameraCapturer(new Camera1Enumerator(false));
-
-        // Create a VideoSource instance
-        if (mVideoCapturerAndroid != null) {
-            SurfaceTextureHelper surfaceTextureHelper =
-                    SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
-            mVideoSource = mPeerConnectionFactory.createVideoSource(mVideoCapturerAndroid.isScreencast());
-            mVideoCapturerAndroid.initialize(surfaceTextureHelper, activity, mVideoSource.getCapturerObserver());
-        }
-
-        mLocalVideoTrack = mPeerConnectionFactory.createVideoTrack("100", mVideoSource);
-
-        mVideoOff = mAudioOnly;
-        if (mVideoCapturerAndroid != null && !mVideoOff) {
-            // Only start video in video calls (in audio-only calls video may be turned on later).
-            mVideoCapturerAndroid.startCapture(CAMERA_RESOLUTION_WIDTH, CAMERA_RESOLUTION_HEIGHT, CAMERA_FPS);
-        }
-
-        // VideoRenderer is ready => add the renderer to the VideoTrack.
-        mLocalVideoTrack.addSink(mLocalVideoView);
-        mLocalVideoView.setMirror(true);
-        mRemoteVideoView.setMirror(false);
-
         handleCallStart();
     }
 
@@ -462,61 +380,13 @@ public class CallFragment extends Fragment {
             mLocalPeer.close();
             mLocalPeer = null;
         }
-        if (mRemoteVideoView != null) {
-            mRemoteVideoView.release();
-            mRemoteVideoView = null;
-        }
-        if (mLocalVideoTrack != null) {
-            mLocalVideoTrack.removeSink(mLocalVideoView);
-            mLocalVideoTrack = null;
-        }
-        if (mVideoCapturerAndroid != null) {
-            try {
-                mVideoCapturerAndroid.stopCapture();
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Failed to stop camera", e);
-            }
-            mVideoCapturerAndroid = null;
-        }
-        if (mLocalVideoView != null) {
-            mLocalVideoView.release();
-            mLocalVideoView = null;
-        }
 
         if (mAudioSource != null) {
             mAudioSource.dispose();
             mAudioSource = null;
         }
-        if (mVideoSource != null) {
-            mVideoSource.dispose();
-            mVideoSource = null;
-        }
-        if (mRootEglBase != null) {
-            mRootEglBase.release();
-            mRootEglBase = null;
-        }
 
         handleCallClose();
-    }
-
-    private void initVideos() {
-        mRootEglBase = EglBase.create();
-
-        mRemoteVideoView.init(mRootEglBase.getEglBaseContext(), null);
-        mRemoteVideoView.setEnableHardwareScaler(true);
-        mRemoteVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_BALANCED);
-        mRemoteVideoView.setZOrderMediaOverlay(false);
-        mRemoteVideoView.setVisibility(mAudioOnly ? View.INVISIBLE : View.VISIBLE);
-
-        mLocalVideoView.init(mRootEglBase.getEglBaseContext(), null);
-        mLocalVideoView.setEnableHardwareScaler(true);
-        mLocalVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
-        mLocalVideoView.setZOrderMediaOverlay(true);
-        mLocalVideoView.setVisibility(mAudioOnly ? View.INVISIBLE : View.VISIBLE);
-
-        if (mAudioOnly) {
-            mToggleCameraBtn.setImageResource(R.drawable.ic_videocam_off);
-        }
     }
 
     private boolean initIceServers() {
@@ -560,7 +430,7 @@ public class CallFragment extends Fragment {
 
     private void drainRemoteIceCandidatesCache() {
         Log.d(TAG, "Draining remote ICE candidate cache: " + mRemoteIceCandidatesCache.size() + " elements.");
-        for (IceCandidate candidate: mRemoteIceCandidatesCache) {
+        for (IceCandidate candidate : mRemoteIceCandidatesCache) {
             mLocalPeer.addIceCandidate(candidate);
         }
         mRemoteIceCandidatesCache.clear();
@@ -605,7 +475,7 @@ public class CallFragment extends Fragment {
                 Map<String, Object> head = new HashMap<>();
                 head.put("webrtc", "started");
                 // Is audio-only?
-                head.put("aonly", mAudioOnly);
+                head.put("aonly", true);
                 mTopic.publish(Drafty.videoCall(), head).thenApply(
                         new PromisedReply.SuccessListener<ServerMessage>() {
                             @Override
@@ -655,50 +525,6 @@ public class CallFragment extends Fragment {
         }
     }
 
-    // Data channel observer for receiving video mute/unmute events.
-    private class DCObserver implements DataChannel.Observer {
-        private final DataChannel mChannel;
-        public DCObserver(DataChannel chan) {
-            super();
-            mChannel = chan;
-        }
-        @Override
-        public void onBufferedAmountChange(long l) {
-        }
-
-        @Override
-        public void onStateChange() {
-            Log.d(TAG, "onStateChange: remote data channel state: " + mChannel.state().toString());
-            switch (mChannel.state()) {
-                case OPEN:
-                    sendToPeer(!mVideoOff && mVideoSource.state() == MediaSource.State.LIVE ?
-                            VIDEO_UNMUTED_EVENT : VIDEO_MUTED_EVENT);
-                    break;
-                case CLOSED:
-                    break;
-            }
-        }
-
-        @Override
-        public void onMessage(DataChannel.Buffer buffer) {
-            ByteBuffer data = buffer.data;
-            byte[] bytes = new byte[data.remaining()];
-            data.get(bytes);
-            final String event = new String(bytes);
-            Log.d(TAG, "onMessage: got message" + event);
-            switch (event) {
-                case VIDEO_MUTED_EVENT:
-                    rearrangePeerViews(requireActivity(), false);
-                    break;
-                case VIDEO_UNMUTED_EVENT:
-                    rearrangePeerViews(requireActivity(), true);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
     // Creates and initializes a peer connection.
     private void createPeerConnection(boolean withDataChannel) {
         PeerConnection.RTCConfiguration rtcConfig =
@@ -726,19 +552,6 @@ public class CallFragment extends Fragment {
                 Activity activity = requireActivity();
                 if (activity.isFinishing() || activity.isDestroyed()) {
                     return;
-                }
-
-                // Add remote media stream to the renderer.
-                if (!mediaStream.videoTracks.isEmpty()) {
-                    final VideoTrack videoTrack = mediaStream.videoTracks.get(0);
-                    activity.runOnUiThread(() -> {
-                        try {
-                            mRemoteVideoView.setVisibility(View.VISIBLE);
-                            videoTrack.addSink(mRemoteVideoView);
-                        } catch (Exception e) {
-                            handleCallClose();
-                        }
-                    });
                 }
             }
 
@@ -785,7 +598,6 @@ public class CallFragment extends Fragment {
             @Override
             public void onDataChannel(DataChannel channel) {
                 Log.d(TAG, "onDataChannel(): state: " + channel.state());
-                channel.registerObserver(new DCObserver(channel));
                 mDataChannel = channel;
             }
 
@@ -807,9 +619,6 @@ public class CallFragment extends Fragment {
                 }
                 mSdpConstraints = new MediaConstraints();
                 mSdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
-                if (!mAudioOnly) {
-                    mSdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
-                }
                 mLocalPeer.createOffer(new CustomSdpObserver("localCreateOffer") {
                     @Override
                     public void onCreateSuccess(SessionDescription sessionDescription) {
@@ -833,12 +642,10 @@ public class CallFragment extends Fragment {
             DataChannel.Init i = new DataChannel.Init();
             i.ordered = true;
             mDataChannel = mLocalPeer.createDataChannel("events", i);
-            mDataChannel.registerObserver(new DCObserver(mDataChannel));
         }
         // Create a local media stream and attach it to the peer connection.
         MediaStream stream = mPeerConnectionFactory.createLocalMediaStream("102");
         stream.addTrack(mLocalAudioTrack);
-        stream.addTrack(mLocalVideoTrack);
         mLocalPeer.addStream(stream);
     }
 
@@ -975,7 +782,6 @@ public class CallFragment extends Fragment {
                 mPeerName.setElevation(8);
 
                 mPeerAvatar.setVisibility(View.INVISIBLE);
-                mRemoteVideoView.setVisibility(View.VISIBLE);
             } else {
                 ConstraintSet cs = new ConstraintSet();
                 cs.clone(mLayout);
@@ -984,7 +790,6 @@ public class CallFragment extends Fragment {
                 cs.setHorizontalBias(R.id.peerName, 0.5f);
                 cs.applyTo(mLayout);
                 mPeerAvatar.setVisibility(View.VISIBLE);
-                mRemoteVideoView.setVisibility(View.INVISIBLE);
             }
         });
     }

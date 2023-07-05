@@ -15,7 +15,6 @@ public class Const {
     public static final String INTENT_EXTRA_SEQ = "id.bluebird.chat.SEQ";
     public static final String INTENT_EXTRA_CALL_DIRECTION = "co.tinode.tindroid.CALL_DIRECTION";
     public static final String INTENT_EXTRA_CALL_ACCEPTED = "id.bluebird.chat.CALL_ACCEPTED";
-    public static final String INTENT_EXTRA_CALL_AUDIO_ONLY = "id.bluebird.chat.CALL_AUDIO_ONLY";
 
     // Maximum length of user name or topic title.
     public static final int MAX_TITLE_LENGTH = 60;

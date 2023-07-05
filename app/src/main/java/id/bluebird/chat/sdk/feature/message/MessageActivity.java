@@ -71,6 +71,7 @@ import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
 import id.bluebird.chat.sdk.AttachmentHandler;
 import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.CallManager;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.feature.InvalidTopicFragment;
@@ -121,7 +122,7 @@ public class MessageActivity extends AppCompatActivity {
             Cursor c = dm.query(query);
             if (c.moveToFirst()) {
                 int idx = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-                int status = idx >=0 ? c.getInt(idx) : -1;
+                int status = idx >= 0 ? c.getInt(idx) : -1;
                 if (DownloadManager.STATUS_SUCCESSFUL == status) {
                     idx = c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
                     URI fileUri = idx >= 0 ? URI.create(c.getString(idx)) : null;
@@ -415,7 +416,9 @@ public class MessageActivity extends AppCompatActivity {
         return visible;
     }
 
-    /** Process Subscribe Chat List */
+    /**
+     * Process Subscribe Chat List
+     */
     private void topicAttach(boolean interactive) {
         if (!Cache.getTinode().isAuthenticated()) {
             // If connection is not ready, wait for completion. This method will be called again
@@ -479,11 +482,11 @@ public class MessageActivity extends AppCompatActivity {
                     }
                 })
                 .thenFinally(new PromisedReply.FinalListener() {
-            @Override
-            public void onFinally() {
-                setRefreshing(false);
-            }
-        });
+                    @Override
+                    public void onFinally() {
+                        setRefreshing(false);
+                    }
+                });
     }
 
     // Clean up everything related to the topic being replaced of removed.
@@ -511,6 +514,21 @@ public class MessageActivity extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         UiUtils.setVisibleTopic(hasFocus ? mTopicName : null);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (mTopic == null || !mTopic.isValid()) {
+            return false;
+        }
+
+        int id = item.getItemId();
+        if (id == R.id.action_audio_call) {
+            CallManager.placeOutgoingCall(this, mTopicName);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -618,7 +636,7 @@ public class MessageActivity extends AppCompatActivity {
 
     boolean sendMessage(Drafty content, int seq, boolean isReplacement) {
         if (mTopic != null) {
-            Map<String,Object> head = seq > 0 ?
+            Map<String, Object> head = seq > 0 ?
                     (isReplacement ? Tinode.headersForReplacement(seq) :
                             Tinode.headersForReply(seq)) :
                     null;

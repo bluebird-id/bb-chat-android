@@ -98,7 +98,6 @@
     <string name="select_image_or_video">छवि या वीडियो चुनें</string>
     <string name="video_call_channel_name">वीडियो कॉल्स</string>
     <string name="video_call_channel_description">वीडियो और ऑडियो कॉल</string>
-    <string name="tinode_video_call">टिनोड वीडियो कॉल</string>
     <string name="answer_call">उत्तर</string>
     <string name="decline_call">पतन</string>
     <string name="action_call">पुकारना</string>
