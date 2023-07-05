@@ -21,18 +21,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import id.bluebird.chat.AboutDialogFragment;
-import id.bluebird.chat.AttachmentHandler;
 import id.bluebird.chat.AvatarViewModel;
 import id.bluebird.chat.BrandingFragment;
 import id.bluebird.chat.Const;
 import id.bluebird.chat.CredentialsFragment;
 import id.bluebird.chat.ImageViewFragment;
 import id.bluebird.chat.LoginSettingsFragment;
+import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.feature.message.MessageActivity;
 import id.bluebird.chat.PasswordResetFragment;
 import id.bluebird.chat.R;
 import id.bluebird.chat.SignUpFragment;
-import id.bluebird.chat.UiUtils;
 import id.bluebird.chat.db.BaseDb;
 
 /**

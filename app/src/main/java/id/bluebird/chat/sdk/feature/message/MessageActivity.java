@@ -49,7 +49,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
-import id.bluebird.chat.AttachmentHandler;
 import id.bluebird.chat.Cache;
 import id.bluebird.chat.CallManager;
 import id.bluebird.chat.ChatsActivity;
@@ -63,7 +62,6 @@ import id.bluebird.chat.R;
 import id.bluebird.chat.TopicGeneralFragment;
 import id.bluebird.chat.TopicInfoFragment;
 import id.bluebird.chat.TopicSecurityFragment;
-import id.bluebird.chat.UiUtils;
 import id.bluebird.chat.VideoViewFragment;
 import id.bluebird.chat.account.ContactsManager;
 import id.bluebird.chat.account.Utils;
@@ -84,6 +82,8 @@ import co.tinode.tinodesdk.model.MsgServerPres;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
+import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.UiUtils;
 
 /**
  * View to display a single conversation

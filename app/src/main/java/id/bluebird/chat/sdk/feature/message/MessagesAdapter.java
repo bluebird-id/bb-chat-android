@@ -66,13 +66,11 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
-import id.bluebird.chat.AttachmentHandler;
 import id.bluebird.chat.Cache;
 import id.bluebird.chat.Const;
 import id.bluebird.chat.ForwardToFragment;
 import id.bluebird.chat.MediaControl;
 import id.bluebird.chat.R;
-import id.bluebird.chat.UiUtils;
 import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.db.MessageDb;
 import id.bluebird.chat.db.StoredMessage;
@@ -91,6 +89,8 @@ import co.tinode.tinodesdk.Topic;
 import co.tinode.tinodesdk.model.Drafty;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
+import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.UiUtils;
 
 /**
  * Handle display of a conversation

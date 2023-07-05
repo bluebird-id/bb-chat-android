@@ -29,13 +29,13 @@ import androidx.preference.PreferenceManager;
 import id.bluebird.chat.BrandingConfig;
 import id.bluebird.chat.Cache;
 import id.bluebird.chat.R;
-import id.bluebird.chat.TindroidApp;
-import id.bluebird.chat.UiUtils;
+import id.bluebird.chat.sdk.TindroidApp;
 import id.bluebird.chat.account.Utils;
 import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.model.AuthScheme;
 import co.tinode.tinodesdk.model.ServerMessage;
+import id.bluebird.chat.sdk.UiUtils;
 
 /**
  * A placeholder fragment containing a simple view.

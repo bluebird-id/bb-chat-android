@@ -1,4 +1,4 @@
-package id.bluebird.chat;
+package id.bluebird.chat.sdk;
 
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
@@ -30,7 +30,6 @@ import androidx.exifinterface.media.ExifInterface;
 import androidx.work.Constraints;
 import androidx.work.Data;
 import androidx.work.ExistingWorkPolicy;
-import androidx.work.ListenableWorker;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.Operation;
@@ -52,8 +51,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 
-import id.bluebird.chat.db.BaseDb;
-import id.bluebird.chat.media.VxCard;
 import co.tinode.tinodesdk.LargeFileHelper;
 import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.Storage;
@@ -62,39 +59,43 @@ import co.tinode.tinodesdk.Topic;
 import co.tinode.tinodesdk.model.Drafty;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.TheCard;
+import id.bluebird.chat.Cache;
+import id.bluebird.chat.R;
+import id.bluebird.chat.db.BaseDb;
+import id.bluebird.chat.media.VxCard;
 
 public class AttachmentHandler extends Worker {
-    final static String ARG_OPERATION = "operation";
-    final static String ARG_OPERATION_IMAGE = "image";
-    final static String ARG_OPERATION_FILE = "file";
-    final static String ARG_OPERATION_AUDIO = "audio";
-    final static String ARG_OPERATION_VIDEO = "video";
+    final public static String ARG_OPERATION = "operation";
+    final public static String ARG_OPERATION_IMAGE = "image";
+    final public static String ARG_OPERATION_FILE = "file";
+    final public static String ARG_OPERATION_AUDIO = "audio";
+    final public static String ARG_OPERATION_VIDEO = "video";
 
     // Bundle argument names.
-    final static String ARG_TOPIC_NAME = Const.INTENT_EXTRA_TOPIC;
-    final static String ARG_LOCAL_URI = "local_uri";
-    final static String ARG_REMOTE_URI = "remote_uri";
-    final static String ARG_SRC_BYTES = "bytes";
+    final public static String ARG_TOPIC_NAME = Const.INTENT_EXTRA_TOPIC;
+    final public static String ARG_LOCAL_URI = "local_uri";
+    final public static String ARG_REMOTE_URI = "remote_uri";
+    final public static String ARG_SRC_BYTES = "bytes";
     final static String ARG_SRC_BITMAP = "bitmap";
-    final static String ARG_PREVIEW = "preview";
-    final static String ARG_MIME_TYPE = "mime";
-    final static String ARG_PRE_MIME_TYPE = "pre_mime";
-    final static String ARG_PRE_URI = "pre_rem_uri";
-    final static String ARG_IMAGE_WIDTH = "width";
-    final static String ARG_IMAGE_HEIGHT = "height";
-    final static String ARG_DURATION = "duration";
-    final static String ARG_FILE_SIZE = "fileSize";
+    final public static String ARG_PREVIEW = "preview";
+    final public static String ARG_MIME_TYPE = "mime";
+    final public static String ARG_PRE_MIME_TYPE = "pre_mime";
+    final public static String ARG_PRE_URI = "pre_rem_uri";
+    final public static String ARG_IMAGE_WIDTH = "width";
+    final public static String ARG_IMAGE_HEIGHT = "height";
+    final public static String ARG_DURATION = "duration";
+    final public static String ARG_FILE_SIZE = "fileSize";
 
-    final static String ARG_FILE_PATH = "filePath";
-    final static String ARG_FILE_NAME = "fileName";
-    final static String ARG_MSG_ID = "msgId";
-    final static String ARG_IMAGE_CAPTION = "caption";
-    final static String ARG_PROGRESS = "progress";
-    final static String ARG_ERROR = "error";
-    final static String ARG_FATAL = "fatal";
-    final static String ARG_AVATAR = "square_img";
+    final public static String ARG_FILE_PATH = "filePath";
+    final public static String ARG_FILE_NAME = "fileName";
+    final public static String ARG_MSG_ID = "msgId";
+    final public static String ARG_IMAGE_CAPTION = "caption";
+    final public static String ARG_PROGRESS = "progress";
+    final public static String ARG_ERROR = "error";
+    final public static String ARG_FATAL = "fatal";
+    final public static String ARG_AVATAR = "square_img";
 
-    final static String TAG_UPLOAD_WORK = "AttachmentUploader";
+    final public static String TAG_UPLOAD_WORK = "AttachmentUploader";
 
     private static final String TAG = "AttachmentHandler";
 
@@ -195,7 +196,7 @@ public class AttachmentHandler extends Worker {
         return result;
     }
 
-    static Operation enqueueMsgAttachmentUploadRequest(AppCompatActivity activity, String operation, Bundle args) {
+    public static Operation enqueueMsgAttachmentUploadRequest(AppCompatActivity activity, String operation, Bundle args) {
         String topicName = args.getString(AttachmentHandler.ARG_TOPIC_NAME);
         // Create a new message which will be updated with upload progress.
         Drafty content = new Drafty();
@@ -254,7 +255,7 @@ public class AttachmentHandler extends Worker {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    static long enqueueDownloadAttachment(AppCompatActivity activity, String ref, byte[] bits,
+    public static long enqueueDownloadAttachment(AppCompatActivity activity, String ref, byte[] bits,
                                           String fname, String mimeType) {
         long downloadId = -1;
         if (ref != null) {
@@ -444,7 +445,7 @@ public class AttachmentHandler extends Worker {
 
     @NonNull
     @Override
-    public ListenableWorker.Result doWork() {
+    public Result doWork() {
         return uploadMessageAttachment(getApplicationContext(), getInputData());
     }
 
@@ -458,7 +459,7 @@ public class AttachmentHandler extends Worker {
     }
 
     // This is long running/blocking call. It should not be called on UI thread.
-    private ListenableWorker.Result uploadMessageAttachment(final Context context, final Data args) {
+    private Result uploadMessageAttachment(final Context context, final Data args) {
         Storage store = BaseDb.getInstance().getStore();
 
         // File upload "file", "image", "audio", "video".
@@ -495,7 +496,7 @@ public class AttachmentHandler extends Worker {
 
             if (uploadDetails.fileSize == 0) {
                 Log.w(TAG, "File size is zero; uri=" + uri + "; file=" + filePath);
-                return ListenableWorker.Result.failure(
+                return Result.failure(
                         result.putBoolean(ARG_FATAL, true)
                                 .putString(ARG_ERROR, context.getString(R.string.unable_to_attach_file)).build());
             }
@@ -550,7 +551,7 @@ public class AttachmentHandler extends Worker {
                         // Image poster is greater than video itself. This is not currently supported.
                         Log.w(TAG, "Video poster size " + uploadDetails.previewSize +
                                 " is greater than video " + uploadDetails.fileSize);
-                        return ListenableWorker.Result.failure(
+                        return Result.failure(
                                 result.putBoolean(ARG_FATAL, true)
                                         .putString(ARG_ERROR, context.getString(R.string.unable_to_attach_file)).build());
                     }
@@ -563,7 +564,7 @@ public class AttachmentHandler extends Worker {
                     is.close();
                 }
                 Log.w(TAG, "Unable to process attachment: too big, size=" + uploadDetails.fileSize);
-                return ListenableWorker.Result.failure(
+                return Result.failure(
                         result.putString(ARG_ERROR,
                                 context.getString(
                                         R.string.attachment_too_large,
@@ -713,11 +714,11 @@ public class AttachmentHandler extends Worker {
         if (success) {
             // Success: mark message as ready for delivery. If content==null it won't be saved.
             store.msgReady(topic, msgId, content);
-            return ListenableWorker.Result.success(result.build());
+            return Result.success(result.build());
         } else {
             // Failure. Draft has been discarded earlier. We cannot discard it here because
             // copyStream cannot be interrupted.
-            return ListenableWorker.Result.failure(result.build());
+            return Result.failure(result.build());
         }
     }
 
