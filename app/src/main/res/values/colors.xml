@@ -50,16 +50,20 @@
     <color name="colorReplyBubble">#10333333</color>
     <color name="colorReplyText">#666666</color>
 
+    <color name="colorImageMetaPanel">#80FFFFFF</color>
+
     <!-- Audio waveform color -->
     <color name="waveform">#60333333</color>
     <color name="waveformPast">#80000000</color>
 
     <!-- Indicator of user's online/offline status -->
-
+    <string name="action_download">Download</string>
     <!-- Background color in avatar uploads -->
     <color name="colorImagePreviewBg">#CCCCCC</color>
 
     <color name="colorImagePlaceholder">#CCCCCC</color>
+
+    <string name="image_too_small">Image is too small</string>
 
     <!-- Background colors for LetterTileDrawables. -->
     <array name="letter_tile_colors_light">
@@ -105,5 +109,6 @@
     <color name="letter_tile_text_color_dark">#dedede</color>
     <color name="letter_tile_bg_color_dark">#777</color>
 
+    <string name="image_download_success">Image saved to gallery</string>
     <color name="launcherBackground">#ffffff</color>
 </resources>

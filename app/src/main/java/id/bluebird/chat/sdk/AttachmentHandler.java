@@ -75,7 +75,7 @@ public class AttachmentHandler extends Worker {
     final public static String ARG_LOCAL_URI = "local_uri";
     final public static String ARG_REMOTE_URI = "remote_uri";
     final public static String ARG_SRC_BYTES = "bytes";
-    final static String ARG_SRC_BITMAP = "bitmap";
+    final public static String ARG_SRC_BITMAP = "bitmap";
     final public static String ARG_PREVIEW = "preview";
     final public static String ARG_MIME_TYPE = "mime";
     final public static String ARG_PRE_MIME_TYPE = "pre_mime";

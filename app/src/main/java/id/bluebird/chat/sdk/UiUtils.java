@@ -547,7 +547,7 @@ public class UiUtils {
     }
 
     @NonNull
-    static Bitmap rotateBitmap(@NonNull Bitmap bmp, int orientation) {
+    public static Bitmap rotateBitmap(@NonNull Bitmap bmp, int orientation) {
         Matrix matrix = new Matrix();
         switch (orientation) {
             case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:

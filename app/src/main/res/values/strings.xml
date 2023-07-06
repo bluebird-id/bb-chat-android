@@ -80,12 +80,17 @@
     <string name="deleted">deleted</string>
     <string name="peers_messaging_disabled">Peer\'s messaging is disabled</string>
     <string name="action_enable">Enable</string>
+    <string name="file_name_label">File name:</string>
+    <string name="content_type_label">Content type:</string>
+    <string name="image_size_label">Size:</string>
     <string name="button_hint_start_new_chat">Start new chat</string>
     <string name="outgoing_call">Outgoing call</string>
     <string name="incoming_call">Incoming call</string>
 
     <string name="default_contact_name">Tinode User %1$s</string>
     <string name="permission_missing">Required permission is missing</string>
+    <string name="image_caption_hint">Image caption</string>
+    <string name="tinode_image" translatable="false">tinode_image</string>
     <string name="invalid_content">invalid content</string>
     <string name="failed">failed</string>
     <string name="processing">processing …</string>
@@ -99,6 +104,7 @@
     <string name="attachment">Attachment</string>
     <string name="unknown">Unknown</string>
     <string name="form">Form</string>
+    <string name="accept_avatar_button_hint">Accept avatar</string>
     <string name="online_now">online now</string>
     <string name="action_reply">Reply</string>
     <string name="action_forward">Forward</string>
@@ -125,6 +131,7 @@
     <string name="toggle_microphone_button">Mute/unmute call</string>
     <string name="finish_call_button">Finish call</string>
     <string name="video_calls_unavailable">Video calls unavailable</string>
+    <string name="image_preview">Image preview</string>
     <string name="edited">edited</string>
     <string name="video">Video</string>
     <string name="broken_video">Invalid or unknown video format.</string>

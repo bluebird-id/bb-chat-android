@@ -75,6 +75,7 @@ import id.bluebird.chat.sdk.CallManager;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.feature.InvalidTopicFragment;
+import id.bluebird.chat.sdk.feature.previewmedia.ImageViewFragment;
 
 /**
  * View to display a single conversation
@@ -84,15 +85,9 @@ public class MessageActivity extends AppCompatActivity {
 
     static final String FRAGMENT_MESSAGES = "msg";
     static final String FRAGMENT_INVALID = "invalid";
-    static final String FRAGMENT_INFO = "info";
-    static final String FRAGMENT_GENERAL = "general";
-    static final String FRAGMENT_PERMISSIONS = "permissions";
-    static final String FRAGMENT_EDIT_MEMBERS = "edit_members";
     static final String FRAGMENT_VIEW_IMAGE = "view_image";
     static final String FRAGMENT_VIEW_VIDEO = "view_video";
     static final String FRAGMENT_FILE_PREVIEW = "file_preview";
-    static final String FRAGMENT_AVATAR_PREVIEW = "avatar_preview";
-    static final String FRAGMENT_FORWARD_TO = "forward_to";
 
     static final String TOPIC_NAME = "topicName";
 
@@ -589,6 +584,9 @@ public class MessageActivity extends AppCompatActivity {
                     break;
                 case FRAGMENT_INVALID:
                     fragment = new InvalidTopicFragment();
+                    break;
+                case FRAGMENT_VIEW_IMAGE:
+                    fragment = new ImageViewFragment();
                     break;
                 default:
                     throw new IllegalArgumentException("Failed to create fragment: unknown tag " + tag);

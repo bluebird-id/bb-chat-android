@@ -37,4 +37,5 @@
     <color name="circularProgressBg">#FF666666</color>
     <color name="circularProgressFg">#FFCCCCCC</color>
 
+    <color name="colorImageMetaPanel">#80000000</color>
 </resources>

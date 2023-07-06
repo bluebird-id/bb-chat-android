@@ -97,6 +97,6 @@ public class MediaPickerContract extends ActivityResultContract<Object, Uri> {
             path.mkdirs();
         }
 
-        return FileProvider.getUriForFile(context, "co.tinode.tindroid.provider", file);
+        return FileProvider.getUriForFile(context, "id.bluebird.chat.provider", file);
     }
 }
