@@ -145,4 +145,5 @@
     <string name="unable_to_place_call">Unable to make this call</string>
     <string name="phone_number_hint">Mobile phone number</string>
     <string name="configure_connection">Configure connection</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>
