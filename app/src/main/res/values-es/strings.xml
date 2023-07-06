@@ -21,7 +21,6 @@
 
     <!-- Menu actions -->
     <string name="action_settings">Ajustes</string>
-    <string name="action_delete">Eliminar</string>
     <string name="action_about">Acerca</string>
     <string name="action_send_now">Enviar ahora</string>
     <string name="action_copy">Copiar</string>
@@ -87,7 +86,6 @@
     <string name="form">Formulario</string>
     <string name="online_now">en línea</string>
     <string name="action_reply">Respuesta</string>
-    <string name="action_forward">Reenviar</string>
     <string name="record_audio_button_hint">Mantenga presionado para grabar un mensaje de voz</string>
     <string name="audio">Audio</string>
     <string name="unable_to_play_audio">No se puede reproducir este mensaje de audio</string>

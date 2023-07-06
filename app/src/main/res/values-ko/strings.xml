@@ -21,7 +21,6 @@
 
     <!-- Menu actions -->
     <string name="action_settings">설정</string>
-    <string name="action_delete">삭제</string>
     <string name="action_about">정보</string>
     <string name="action_send_now">전송</string>
     <string name="action_copy">복사</string>
@@ -87,7 +86,6 @@
     <string name="form">양식</string>
     <string name="online_now">현재접속중</string>
     <string name="action_reply">회신하다</string>
-    <string name="action_forward">리디렉션</string>
     <string name="audio">오디오</string>
     <string name="record_audio_button_hint">길게 눌러 음성 메시지 녹음</string>
     <string name="unable_to_play_audio">이 음성 메시지를 재생할 수 없습니다</string>

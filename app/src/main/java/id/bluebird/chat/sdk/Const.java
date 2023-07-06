@@ -1,11 +1,6 @@
 package id.bluebird.chat.sdk;
 
 public class Const {
-    public static final int ACTION_UPDATE_SELF_SUB = 0;
-    public static final int ACTION_UPDATE_SUB = 1;
-    public static final int ACTION_UPDATE_AUTH = 2;
-    public static final int ACTION_UPDATE_ANON = 3;
-
     public static final String PREF_TYPING_NOTIF = "pref_typingNotif";
     public static final String PREF_READ_RCPT = "pref_readReceipts";
 
@@ -16,14 +11,8 @@ public class Const {
     public static final String INTENT_EXTRA_CALL_DIRECTION = "id.bluebird.chat.CALL_DIRECTION";
     public static final String INTENT_EXTRA_CALL_ACCEPTED = "id.bluebird.chat.CALL_ACCEPTED";
 
-    // Maximum length of user name or topic title.
-    public static final int MAX_TITLE_LENGTH = 60;
-    // Maximum length of topic description.
-    public static final int MAX_DESCRIPTION_LENGTH = 360;
     // Length of quoted text when replying.
     public static final int QUOTED_REPLY_LENGTH = 64;
-    // Length of quoted text when altering a message.
-    public static final int EDIT_PREVIEW_LENGTH = 64;
 
     // Maximum linear dimensions of images.
     static final int MAX_BITMAP_SIZE = 1024;

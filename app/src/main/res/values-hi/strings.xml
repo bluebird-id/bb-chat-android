@@ -15,7 +15,6 @@
     <string name="settings_tls_explained">सर्वर से कनेक्शन एन्क्रिप्ट करें</string>
     <string name="settings_host_name_explained">\'%1$s\' से कनेक्ट हो रहा है</string>
     <string name="action_settings">समायोजन</string>
-    <string name="action_delete">मिटाना</string>
     <string name="action_about">के बारे में</string>
     <string name="action_send_now">अब भेजें</string>
     <string name="action_copy">प्रतिलिपि</string>
@@ -71,7 +70,6 @@
     <string name="form">प्रपत्र</string>
     <string name="online_now">अब ऑनलाइन हैं</string>
     <string name="action_reply">जवाब</string>
-    <string name="action_forward">आगे</string>
     <string name="record_audio_button_hint">ध्वनि संदेश रिकॉर्ड करने के लिए दबाए रखें</string>
     <string name="audio">ऑडियो</string>
     <string name="unable_to_play_audio">यह ऑडियो संदेश चलाने में असमर्थ</string>

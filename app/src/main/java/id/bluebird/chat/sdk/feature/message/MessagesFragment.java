@@ -87,7 +87,6 @@ import id.bluebird.chat.R;
 import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.db.SqlStore;
 import id.bluebird.chat.db.StoredTopic;
-import id.bluebird.chat.format.SendForwardedFormatter;
 import id.bluebird.chat.format.SendReplyFormatter;
 import id.bluebird.chat.media.VxCard;
 import id.bluebird.chat.sdk.AttachmentHandler;
@@ -138,7 +137,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
     private UiUtils.MsgAction mTextAction = UiUtils.MsgAction.NONE;
     private int mQuotedSeqID = -1;
     private Drafty mQuote = null;
-    private Drafty mContentToForward = null;
     private Drafty mForwardSender = null;
 
     private MediaRecorder mAudioRecorder = null;
@@ -354,9 +352,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
         AppCompatImageButton send = view.findViewById(R.id.chatSendButton);
         send.setOnClickListener(v -> sendText(activity));
-        view.findViewById(R.id.chatForwardButton).setOnClickListener(v -> sendText(activity));
-        AppCompatImageButton doneEditing = view.findViewById(R.id.chatEditDoneButton);
-        doneEditing.setOnClickListener(v -> sendText(activity));
 
         // Send image button
         view.findViewById(R.id.attachImage).setOnClickListener(v -> openMediaSelector(activity));
@@ -366,7 +361,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
         // Cancel reply preview button.
         view.findViewById(R.id.cancelPreview).setOnClickListener(v -> cancelPreview(activity));
-        view.findViewById(R.id.cancelForwardingPreview).setOnClickListener(v -> cancelPreview(activity));
 
         EditText editor = view.findViewById(R.id.editMessage);
         ViewCompat.setOnReceiveContentListener(editor, SUPPORTED_MIME_TYPES, new StickerReceiver());
@@ -383,17 +377,10 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                     activity.sendKeyPress();
                 }
 
-                // Show either [send] or [record audio] or [done editing] button.
-                if (mTextAction == UiUtils.MsgAction.EDIT) {
-                    doneEditing.setVisibility(View.VISIBLE);
-                    audio.setVisibility(View.INVISIBLE);
-                    send.setVisibility(View.INVISIBLE);
-                } else if (charSequence.length() > 0) {
-                    doneEditing.setVisibility(View.INVISIBLE);
+                if (charSequence.length() > 0) {
                     audio.setVisibility(View.INVISIBLE);
                     send.setVisibility(View.VISIBLE);
                 } else {
-                    doneEditing.setVisibility(View.INVISIBLE);
                     audio.setVisibility(View.VISIBLE);
                     send.setVisibility(View.INVISIBLE);
                 }
@@ -786,8 +773,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
         if (!mTopic.isWriter() || mTopic.isBlocked() || mTopic.isDeleted()) {
             setSendPanelVisible(activity, R.id.sendMessageDisabled);
-        } else if (mContentToForward != null) {
-            showContentToForward(activity, mForwardSender, mContentToForward);
         } else {
             Subscription peer = mTopic.getPeer();
             boolean isJoiner = peer != null && peer.acs != null && peer.acs.isJoiner(Acs.Side.WANT);
@@ -1054,9 +1039,9 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         mMediaPickerLauncher.launch(null);
     }
 
-    private boolean sendMessage(Drafty content, int seqId, boolean isReplacement) {
+    private boolean sendMessage(Drafty content, int seqId) {
         MessageActivity activity = (MessageActivity) requireActivity();
-        boolean done = activity.sendMessage(content, seqId, isReplacement);
+        boolean done = activity.sendMessage(content, seqId);
         if (done) {
             scrollToBottom(false);
         }
@@ -1072,26 +1057,13 @@ public class MessagesFragment extends Fragment implements MenuProvider {
             return;
         }
 
-        if (mContentToForward != null) {
-            if (sendMessage(mForwardSender.appendLineBreak().append(mContentToForward), -1, false)) {
-                mForwardSender = null;
-                mContentToForward = null;
-            }
-            activity.findViewById(R.id.forwardMessagePanel).setVisibility(View.GONE);
-            activity.findViewById(R.id.sendMessagePanel).setVisibility(View.VISIBLE);
-            return;
-        }
-
         String message = inputField.getText().toString().trim();
         if (!message.equals("")) {
             Drafty msg = Drafty.parse(message);
-            boolean isReplacement = false;
-            if (mTextAction == UiUtils.MsgAction.EDIT) {
-                isReplacement = true;
-            } else if (mQuote != null) {
+            if (mQuote != null) {
                 msg = mQuote.append(msg);
             }
-            if (sendMessage(msg, mQuotedSeqID, isReplacement)) {
+            if (sendMessage(msg, mQuotedSeqID)) {
                 // Message is successfully queued, clear text from the input field and redraw the list.
                 inputField.getText().clear();
                 if (mQuotedSeqID > 0) {
@@ -1135,37 +1107,27 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
         mQuotedSeqID = -1;
         mQuote = null;
-        mContentToForward = null;
         mForwardSender = null;
 
         activity.findViewById(R.id.replyPreviewWrapper).setVisibility(View.GONE);
-        activity.findViewById(R.id.forwardMessagePanel).setVisibility(View.GONE);
         activity.findViewById(R.id.sendMessagePanel).setVisibility(View.VISIBLE);
-        if (mTextAction == UiUtils.MsgAction.EDIT) {
-            ((EditText) activity.findViewById(R.id.editMessage)).setText("");
-            activity.findViewById(R.id.chatEditDoneButton).setVisibility(View.INVISIBLE);
-            activity.findViewById(R.id.chatAudioButton).setVisibility(View.VISIBLE);
-        }
 
         mTextAction = UiUtils.MsgAction.NONE;
     }
 
     void startEditing(Activity activity, String original, Drafty quote, int seq) {
-        handleQuotedText(activity, UiUtils.MsgAction.EDIT, original, quote, seq);
+        handleQuotedText(activity, original, quote, seq);
     }
 
     void showReply(Activity activity, Drafty quote, int seq) {
-        handleQuotedText(activity, UiUtils.MsgAction.REPLY, null, quote, seq);
+        handleQuotedText(activity, null, quote, seq);
     }
 
-    private void handleQuotedText(Activity activity, UiUtils.MsgAction action,
-                                  String original, Drafty quote, int seq) {
+    private void handleQuotedText(Activity activity, String original, Drafty quote, int seq) {
         mQuotedSeqID = seq;
         mQuote = quote;
-        mContentToForward = null;
         mForwardSender = null;
 
-        activity.findViewById(R.id.forwardMessagePanel).setVisibility(View.GONE);
         activity.findViewById(R.id.sendMessagePanel).setVisibility(View.VISIBLE);
         activity.findViewById(R.id.replyPreviewWrapper).setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(original)) {
@@ -1176,30 +1138,13 @@ public class MessagesFragment extends Fragment implements MenuProvider {
             editText.requestFocus();
             activity.findViewById(R.id.chatAudioButton).setVisibility(View.INVISIBLE);
             activity.findViewById(R.id.chatSendButton).setVisibility(View.INVISIBLE);
-            activity.findViewById(R.id.chatEditDoneButton).setVisibility(View.VISIBLE);
         } else {
             activity.findViewById(R.id.chatAudioButton).setVisibility(View.VISIBLE);
             activity.findViewById(R.id.chatSendButton).setVisibility(View.INVISIBLE);
-            activity.findViewById(R.id.chatEditDoneButton).setVisibility(View.INVISIBLE);
-            if (mTextAction == UiUtils.MsgAction.EDIT) {
-                ((EditText)activity.findViewById(R.id.editMessage)).setText("");
-            }
         }
         TextView previewHolder = activity.findViewById(R.id.contentPreview);
         previewHolder.setText(quote.format(new SendReplyFormatter(previewHolder)));
-        mTextAction = action;
-    }
-
-    private void showContentToForward(Activity activity, Drafty sender, Drafty content) {
-        mTextAction = UiUtils.MsgAction.FORWARD;
-        mQuotedSeqID = -1;
-        mQuote = null;
-
-        activity.findViewById(R.id.sendMessagePanel).setVisibility(View.GONE);
-        TextView previewHolder = activity.findViewById(R.id.forwardedContentPreview);
-        content = new Drafty().append(sender).appendLineBreak().append(content.preview(Const.QUOTED_REPLY_LENGTH));
-        previewHolder.setText(content.format(new SendForwardedFormatter(previewHolder)));
-        activity.findViewById(R.id.forwardMessagePanel).setVisibility(View.VISIBLE);
+        mTextAction = UiUtils.MsgAction.REPLY;
     }
 
     void topicChanged(String topicName, boolean reset) {

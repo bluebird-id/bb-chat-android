@@ -636,12 +636,9 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-    boolean sendMessage(Drafty content, int seq, boolean isReplacement) {
+    boolean sendMessage(Drafty content, int seq) {
         if (mTopic != null) {
-            Map<String, Object> head = seq > 0 ?
-                    (isReplacement ? Tinode.headersForReplacement(seq) :
-                            Tinode.headersForReply(seq)) :
-                    null;
+            Map<String, Object> head = seq > 0 ? (Tinode.headersForReply(seq)) : null;
             PromisedReply<ServerMessage> done = mTopic.publish(content, head);
             BaseDb.getInstance().getStore().msgPruneFailed(mTopic);
             runMessagesLoader(); // Refreshes the messages: hides removed, shows pending.

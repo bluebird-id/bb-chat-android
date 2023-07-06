@@ -21,7 +21,6 @@
 
     <!-- Menu actions -->
     <string name="action_settings">Paramètres</string>
-    <string name="action_delete">Effacer</string>
     <string name="action_about">A propos</string>
     <string name="action_send_now">Envoyer maintenant</string>
     <string name="action_copy">Copier</string>
@@ -88,7 +87,6 @@
     <string name="form">Formulaire</string>
     <string name="online_now">En ligne</string>
     <string name="action_reply">Répondre</string>
-    <string name="action_forward">Transférer</string>
     <string name="record_audio_button_hint">Appui long pour enregistrer un message vocal</string>
     <string name="audio">L\'audio</string>
     <string name="unable_to_play_audio">Impossible de lire ce message audio</string>

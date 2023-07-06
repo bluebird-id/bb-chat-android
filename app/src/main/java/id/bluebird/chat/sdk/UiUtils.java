@@ -107,7 +107,7 @@ public class UiUtils {
     private static final String PREF_FIRST_RUN = "firstRun";
 
     public enum MsgAction {
-        NONE, REPLY, FORWARD, EDIT
+        NONE, REPLY
     }
 
     public static void setupToolbar(final Activity activity, final VxCard pub,

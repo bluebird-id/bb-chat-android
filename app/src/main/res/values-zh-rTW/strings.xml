@@ -21,7 +21,6 @@
 
     <!-- Menu actions -->
     <string name="action_settings">設定</string>
-    <string name="action_delete">刪除</string>
     <string name="action_about">關於</string>
     <string name="action_send_now">立刻傳送</string>
     <string name="action_copy">複製</string>
@@ -87,7 +86,6 @@
     <string name="unknown">未知</string>
     <string name="form">表單</string>
     <string name="action_reply">回答</string>
-    <string name="action_forward">重定向</string>
     <string name="online_now">上線中</string>
     <string name="audio">聲音的</string>
     <string name="deleted">已刪除</string>

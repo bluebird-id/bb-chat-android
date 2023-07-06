@@ -21,7 +21,6 @@
 
     <!-- Menu actions -->
     <string name="action_settings">Einstellungen</string>
-    <string name="action_delete">Entfernen</string>
     <string name="action_about">Über</string>
     <string name="action_send_now">Jetzt senden</string>
     <string name="action_copy">Kopieren</string>
@@ -88,7 +87,6 @@
     <string name="form">Bilden</string>
     <string name="online_now">jetzt online</string>
     <string name="action_reply">Antwort</string>
-    <string name="action_forward">Nach vorne</string>
     <string name="lock_recording_for_long_messages">Aufnahme für lange Nachrichten sperren</string>
     <string name="deleted">gelöscht</string>
     <string name="pause_audio_button_hint">Wiedergabe pausieren</string>

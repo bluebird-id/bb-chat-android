@@ -21,7 +21,6 @@
 
     <!-- Menu actions -->
     <string name="action_settings">Configurações</string>
-    <string name="action_delete">Deletar</string>
     <string name="action_about">Sobre</string>
     <string name="action_send_now">Enviar agora</string>
     <string name="action_copy">Copiar</string>
@@ -89,7 +88,6 @@
     <string name="form">Formulário</string>
     <string name="online_now">online</string>
     <string name="action_reply">Responder</string>
-    <string name="action_forward">Encaminhar</string>
     <string name="lock_recording_for_long_messages">Gravação bloqueada para mensagens longas</string>
     <string name="deleted">Removido</string>
     <string name="pause_audio_button_hint">Pausar áudio</string>

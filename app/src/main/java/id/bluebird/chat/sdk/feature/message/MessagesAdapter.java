@@ -57,7 +57,6 @@ import androidx.work.WorkManager;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -66,6 +65,14 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
+import co.tinode.tinodesdk.ComTopic;
+import co.tinode.tinodesdk.MeTopic;
+import co.tinode.tinodesdk.PromisedReply;
+import co.tinode.tinodesdk.Storage;
+import co.tinode.tinodesdk.Tinode;
+import co.tinode.tinodesdk.Topic;
+import co.tinode.tinodesdk.model.Drafty;
+import co.tinode.tinodesdk.model.Subscription;
 import id.bluebird.chat.R;
 import id.bluebird.chat.db.BaseDb;
 import id.bluebird.chat.db.MessageDb;
@@ -76,15 +83,6 @@ import id.bluebird.chat.format.QuoteFormatter;
 import id.bluebird.chat.format.StableLinkMovementMethod;
 import id.bluebird.chat.format.ThumbnailTransformer;
 import id.bluebird.chat.media.VxCard;
-import co.tinode.tinodesdk.ComTopic;
-import co.tinode.tinodesdk.MeTopic;
-import co.tinode.tinodesdk.PromisedReply;
-import co.tinode.tinodesdk.Storage;
-import co.tinode.tinodesdk.Tinode;
-import co.tinode.tinodesdk.Topic;
-import co.tinode.tinodesdk.model.Drafty;
-import co.tinode.tinodesdk.model.ServerMessage;
-import co.tinode.tinodesdk.model.Subscription;
 import id.bluebird.chat.sdk.AttachmentHandler;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.Const;
@@ -161,7 +159,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 }
                 int selected = mSelectedItems.size();
                 menu.findItem(R.id.action_reply).setVisible(selected <= 1);
-                menu.findItem(R.id.action_forward).setVisible(selected <= 1);
                 return true;
             }
 
@@ -182,7 +179,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 mActivity.getMenuInflater().inflate(R.menu.menu_message_selected, menu);
-                menu.findItem(R.id.action_delete).setVisible(!ComTopic.isChannel(mTopicName));
                 return true;
             }
 
@@ -191,15 +187,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                 // Don't convert to switch: Android does not like it.
                 int id = menuItem.getItemId();
                 int[] selected = getSelectedArray();
-                if (id == R.id.action_edit) {
-                    if (selected != null) {
-                        showMessageQuote(UiUtils.MsgAction.EDIT, selected[0], Const.EDIT_PREVIEW_LENGTH);
-                    }
-                    return true;
-                } else if (id == R.id.action_delete) {
-                    sendDeleteMessages(selected);
-                    return true;
-                } else if (id == R.id.action_copy) {
+                if (id == R.id.action_copy) {
                     copyMessageText(selected);
                     return true;
                 } else if (id == R.id.action_send_now) {
@@ -208,7 +196,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                     return true;
                 } else if (id == R.id.action_reply) {
                     if (selected != null) {
-                        showMessageQuote(UiUtils.MsgAction.REPLY, selected[0], Const.QUOTED_REPLY_LENGTH);
+                        showMessageQuote(selected[0], Const.QUOTED_REPLY_LENGTH);
                     }
                     return true;
                 }
@@ -330,62 +318,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void sendDeleteMessages(final int[] positions) {
-        if (positions == null || positions.length == 0) {
-            return;
-        }
-
-        final Topic topic = Cache.getTinode().getTopic(mTopicName);
-        final Storage store = BaseDb.getInstance().getStore();
-        if (topic != null) {
-            ArrayList<Integer> toDelete = new ArrayList<>();
-            int i = 0;
-            int discarded = 0;
-            while (i < positions.length) {
-                int pos = positions[i++];
-                StoredMessage msg = getMessage(pos);
-                if (msg != null) {
-                    int replSeq = msg.getReplacementSeqId();
-                    if (replSeq > 0) {
-                        // Deleting all version of an edited message.
-                        int[] ids = store.getAllMsgVersions(topic, replSeq, -1);
-                        for (int id : ids) {
-                            if (BaseDb.isUnsentSeq(id)) {
-                                store.msgDiscardSeq(topic, id);
-                                discarded++;
-                            } else {
-                                toDelete.add(id);
-                            }
-                        }
-                    }
-
-                    if (msg.status == BaseDb.Status.SYNCED) {
-                        toDelete.add(msg.seq);
-                    } else {
-                        store.msgDiscard(topic, msg.getDbId());
-                        discarded++;
-                    }
-                }
-            }
-
-            if (!toDelete.isEmpty()) {
-                topic.delMessages(toDelete, true)
-                        .thenApply(new PromisedReply.SuccessListener<ServerMessage>() {
-                            @Override
-                            public PromisedReply<ServerMessage> onSuccess(ServerMessage result) {
-                                runLoader(false);
-                                mActivity.runOnUiThread(() -> updateSelectionMode());
-                                return null;
-                            }
-                        }, new UiUtils.ToastFailureListener(mActivity));
-            } else if (discarded > 0) {
-                runLoader(false);
-                updateSelectionMode();
-            }
-        }
-    }
-
     private String messageFrom(StoredMessage msg) {
         Tinode tinode =  Cache.getTinode();
         String uname = null;
@@ -413,7 +345,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         return uname;
     }
 
-    private void showMessageQuote(UiUtils.MsgAction action, int pos, int quoteLength) {
+    private void showMessageQuote(int pos, int quoteLength) {
         toggleSelectionAt(pos);
         notifyItemChanged(pos);
         updateSelectionMode();
@@ -429,18 +361,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             @Override
             public PromisedReply<Void[]> onSuccess(Void[] result) {
                 mActivity.runOnUiThread(() -> {
-                    if (action == UiUtils.MsgAction.REPLY) {
-                        Drafty reply = Drafty.quote(messageFrom(msg), msg.from, content);
-                        mActivity.showReply(reply, msg.seq);
-                    } else {
-                        // If the message being edited is a replacement message, use the original seqID.
-                        int seq = msg.getReplacementSeqId();
-                        if (seq <= 0) {
-                            seq = msg.seq;
-                        }
-                        String markdown = msg.content.toMarkdown(false);
-                        mActivity.startEditing(markdown, content.wrapInto("QQ"), seq);
-                    }
+                    Drafty reply = Drafty.quote(messageFrom(msg), msg.from, content);
+                    mActivity.showReply(reply, msg.seq);
                 });
                 return null;
             }
@@ -837,41 +759,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             } else {
                 mSelectionMode.setTitle(String.valueOf(selected));
                 Menu menu = mSelectionMode.getMenu();
-                boolean mutable = false;
                 boolean repliable = false;
                 if (selected == 1) {
                     StoredMessage msg = getMessage(mSelectedItems.keyAt(0));
                     if (msg != null && msg.status == BaseDb.Status.SYNCED) {
                         repliable = true;
-                        if (msg.content != null && msg.isMine()) {
-                            mutable = true;
-                            String[] types = new String[]{"AU", "EX", "FM", "IM", "VC", "VD"};
-                            Drafty.Entity[] ents = msg.content.getEntities();
-                            if (ents != null) {
-                                for (Drafty.Entity ent : ents) {
-                                    if (Arrays.binarySearch(types, ent.tp) >= 0) {
-                                        mutable = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (mutable) {
-                                Drafty.Style[] fmts = msg.content.getStyles();
-                                if (fmts != null) {
-                                    for (Drafty.Style fmt : fmts) {
-                                        if ("QQ".equals(fmt.tp)) {
-                                            mutable = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
-                menu.findItem(R.id.action_edit).setVisible(mutable);
                 menu.findItem(R.id.action_reply).setVisible(repliable);
-                menu.findItem(R.id.action_forward).setVisible(repliable);
             }
         }
     }
@@ -1231,7 +1126,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
                     json.put("seq", "" + mSeqId);
                     newMsg.attachJSON(json);
-                    mActivity.sendMessage(newMsg, -1, false);
+                    mActivity.sendMessage(newMsg, -1);
 
                 } else if ("url".equals(actionType)) {
                     URL url = new URL(Cache.getTinode().getBaseUrl(),

@@ -27,7 +27,6 @@
     <string name="new_message_channel_name">Новое сообщение</string>
     <string name="new_message">Новое сообщение</string>
     <string name="new_message_channel_description">Получено новое сообщение</string>
-    <string name="action_delete">Удалить</string>
     <string name="action_failed">Не получилось</string>
     <string name="action_settings">Настройки</string>
     <string name="attachment_too_large">Файл слишком большой: %1$s превышает %2$s лимит.</string>
@@ -72,7 +71,6 @@
     <string name="form">Форма</string>
     <string name="online_now">онлайн</string>
     <string name="action_reply">Ответить</string>
-    <string name="action_forward">Переслать</string>
     <string name="record_audio_button_hint">Удерживайте для записи голосового сообщения</string>
     <string name="audio">Аудио</string>
     <string name="button_hint_start_audio">Начать запись аудио</string>

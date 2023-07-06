@@ -21,7 +21,6 @@
 
     <!-- Menu actions -->
     <string name="action_settings">设置</string>
-    <string name="action_delete">删除</string>
     <string name="action_about">关于</string>
     <string name="action_send_now">立即发送</string>
     <string name="action_copy">复制</string>
@@ -87,7 +86,6 @@
     <string name="form">表格</string>
     <string name="online_now">在线</string>
     <string name="action_reply">回复</string>
-    <string name="action_forward">重定向</string>
     <string name="record_audio_button_hint">按住可录制语音留言</string>
     <string name="audio">声音的</string>
     <string name="unable_to_play_audio">无法播放此音频消息</string>
