@@ -95,6 +95,7 @@
     <string name="failed">failed</string>
     <string name="processing">processing …</string>
 
+    <string name="invalid_file" translatable="false">invalid</string>
     <string name="never">never</string>
     <string name="just_now">just now</string>
 
@@ -140,6 +141,7 @@
     <string name="video_call_channel_description">Video and audio calls</string>
     <string name="answer_call">Answer</string>
     <string name="decline_call">Decline</string>
+    <string name="document_preview">Document preview</string>
     <string name="action_call">Call</string>
     <string name="tinode_audio_call">Tinode Call</string>
     <string name="unable_to_place_call">Unable to make this call</string>

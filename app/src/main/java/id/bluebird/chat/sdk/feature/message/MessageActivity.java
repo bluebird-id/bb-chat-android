@@ -73,6 +73,7 @@ import id.bluebird.chat.sdk.AttachmentHandler;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.CallManager;
 import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.FilePreviewFragment;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.feature.InvalidTopicFragment;
 import id.bluebird.chat.sdk.feature.previewmedia.ImageViewFragment;
@@ -587,6 +588,9 @@ public class MessageActivity extends AppCompatActivity {
                     break;
                 case FRAGMENT_VIEW_IMAGE:
                     fragment = new ImageViewFragment();
+                    break;
+                case FRAGMENT_FILE_PREVIEW:
+                    fragment = new FilePreviewFragment();
                     break;
                 default:
                     throw new IllegalArgumentException("Failed to create fragment: unknown tag " + tag);

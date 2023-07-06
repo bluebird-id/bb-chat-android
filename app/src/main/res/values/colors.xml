@@ -17,6 +17,7 @@
     <color name="colorChipBackground">#ECEFF1</color>
     <color name="colorChipBorder">#90A4AE</color>
 
+    <color name="colorGray">#CCCCCC</color>
     <color name="colorDarkGray">#757575</color>
 
     <color name="colorListDivider">#CCCCCC</color>
