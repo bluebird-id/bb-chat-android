@@ -24,7 +24,7 @@ import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
 import co.tinode.tinodesdk.model.ServerMessage;
 import id.bluebird.chat.R;
-import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.CallManager;
 import id.bluebird.chat.sdk.Const;

@@ -84,18 +84,18 @@ import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
 import id.bluebird.chat.R;
-import id.bluebird.chat.db.BaseDb;
-import id.bluebird.chat.db.SqlStore;
-import id.bluebird.chat.db.StoredTopic;
-import id.bluebird.chat.format.SendReplyFormatter;
-import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.db.BaseDb;
+import id.bluebird.chat.sdk.db.SqlStore;
+import id.bluebird.chat.sdk.db.StoredTopic;
+import id.bluebird.chat.sdk.format.SendReplyFormatter;
+import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.AttachmentHandler;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.MediaPickerContract;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.widgets.MovableActionButton;
-import id.bluebird.chat.widgets.WaveDrawable;
+import id.bluebird.chat.sdk.widgets.MovableActionButton;
+import id.bluebird.chat.sdk.widgets.WaveDrawable;
 
 /**
  * Fragment handling message display and message sending.

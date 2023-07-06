@@ -18,7 +18,7 @@ import java.util.Map;
 
 import co.tinode.tinodesdk.Tinode;
 import id.bluebird.chat.R;
-import id.bluebird.chat.format.FullFormatter;
+import id.bluebird.chat.sdk.format.FullFormatter;
 
 public class MediaControl {
     private static final String TAG = "MediaControl";

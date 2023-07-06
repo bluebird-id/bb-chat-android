@@ -148,14 +148,14 @@
         <!-- FirebaseMessagingService performs security checks at runtime,
              no need for explicit permissions despite exported="true".
              Using tools:ignore="ExportedService" to disable the warning -->
-        <service android:name=".services.FBaseMessagingService"
+        <service android:name=".sdk.services.FBaseMessagingService"
             android:exported="true" tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- Service to place and receive calls. -->
-        <service android:name=".services.CallConnectionService"
+        <service android:name=".sdk.services.CallConnectionService"
             android:exported="true"
             android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE">
             <intent-filter>

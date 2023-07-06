@@ -81,15 +81,15 @@ import co.tinode.tinodesdk.Topic;
 import co.tinode.tinodesdk.model.ServerMessage;
 import id.bluebird.chat.BuildConfig;
 import id.bluebird.chat.R;
-import id.bluebird.chat.account.Utils;
-import id.bluebird.chat.db.BaseDb;
-import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.account.Utils;
+import id.bluebird.chat.sdk.db.BaseDb;
+import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.feature.login.LoginActivity;
 import id.bluebird.chat.sdk.feature.message.MessageActivity;
-import id.bluebird.chat.widgets.LetterTileDrawable;
-import id.bluebird.chat.widgets.OnlineDrawable;
-import id.bluebird.chat.widgets.RoundImageDrawable;
-import id.bluebird.chat.widgets.UrlLayerDrawable;
+import id.bluebird.chat.sdk.widgets.LetterTileDrawable;
+import id.bluebird.chat.sdk.widgets.OnlineDrawable;
+import id.bluebird.chat.sdk.widgets.RoundImageDrawable;
+import id.bluebird.chat.sdk.widgets.UrlLayerDrawable;
 
 /**
  * Static utilities for UI support.

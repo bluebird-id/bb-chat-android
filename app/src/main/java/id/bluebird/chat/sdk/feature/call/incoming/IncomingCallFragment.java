@@ -35,7 +35,7 @@ import co.tinode.tinodesdk.ComTopic;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.model.MsgServerInfo;
 import id.bluebird.chat.R;
-import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;

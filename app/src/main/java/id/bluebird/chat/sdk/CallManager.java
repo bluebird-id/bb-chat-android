@@ -39,10 +39,10 @@ import co.tinode.tinodesdk.MeTopic;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
 import id.bluebird.chat.R;
-import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.feature.call.CallActivity;
-import id.bluebird.chat.services.CallConnection;
-import id.bluebird.chat.services.CallConnectionService;
+import id.bluebird.chat.sdk.services.CallConnection;
+import id.bluebird.chat.sdk.services.CallConnectionService;
 
 public class CallManager {
     private static final String TAG = "CallManager";

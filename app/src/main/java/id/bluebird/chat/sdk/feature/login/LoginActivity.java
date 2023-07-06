@@ -1,28 +1,22 @@
 package id.bluebird.chat.sdk.feature.login;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import id.bluebird.chat.R;
-import id.bluebird.chat.db.BaseDb;
-import id.bluebird.chat.sdk.AttachmentHandler;
+import id.bluebird.chat.sdk.db.BaseDb;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.feature.message.MessageActivity;

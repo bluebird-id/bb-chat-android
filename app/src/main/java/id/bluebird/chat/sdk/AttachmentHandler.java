@@ -60,8 +60,8 @@ import co.tinode.tinodesdk.model.Drafty;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.TheCard;
 import id.bluebird.chat.R;
-import id.bluebird.chat.db.BaseDb;
-import id.bluebird.chat.media.VxCard;
+import id.bluebird.chat.sdk.db.BaseDb;
+import id.bluebird.chat.sdk.media.VxCard;
 
 public class AttachmentHandler extends Worker {
     final public static String ARG_OPERATION = "operation";

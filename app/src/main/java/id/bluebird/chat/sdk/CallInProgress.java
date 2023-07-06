@@ -7,7 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import id.bluebird.chat.services.CallConnection;
+import id.bluebird.chat.sdk.services.CallConnection;
 
 /**
  * Struct to hold video call metadata.

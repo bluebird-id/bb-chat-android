@@ -50,7 +50,7 @@ import id.bluebird.chat.sdk.AttachmentHandler;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.feature.message.MessageActivity;
-import id.bluebird.chat.widgets.OverlaidImageView;
+import id.bluebird.chat.sdk.widgets.OverlaidImageView;
 
 /**
  * Fragment for expanded display of an image: being attached or received.

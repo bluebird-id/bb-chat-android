@@ -58,9 +58,9 @@ import co.tinode.tinodesdk.ServerResponseException;
 import co.tinode.tinodesdk.Tinode;
 import id.bluebird.chat.BuildConfig;
 import id.bluebird.chat.R;
-import id.bluebird.chat.account.ContactsObserver;
-import id.bluebird.chat.account.Utils;
-import id.bluebird.chat.db.BaseDb;
+import id.bluebird.chat.sdk.account.ContactsObserver;
+import id.bluebird.chat.sdk.account.Utils;
+import id.bluebird.chat.sdk.db.BaseDb;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 

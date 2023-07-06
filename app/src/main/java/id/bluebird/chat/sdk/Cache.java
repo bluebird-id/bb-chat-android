@@ -19,9 +19,9 @@ import co.tinode.tinodesdk.model.MsgServerData;
 import co.tinode.tinodesdk.model.MsgServerInfo;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
-import id.bluebird.chat.db.BaseDb;
-import id.bluebird.chat.media.VxCard;
-import id.bluebird.chat.services.CallConnection;
+import id.bluebird.chat.sdk.db.BaseDb;
+import id.bluebird.chat.sdk.media.VxCard;
+import id.bluebird.chat.sdk.services.CallConnection;
 
 /**
  * Shared resources.

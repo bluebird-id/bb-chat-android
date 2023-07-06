@@ -30,7 +30,7 @@ import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.BrandingConfig;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.TindroidApp;
-import id.bluebird.chat.account.Utils;
+import id.bluebird.chat.sdk.account.Utils;
 import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.model.AuthScheme;
