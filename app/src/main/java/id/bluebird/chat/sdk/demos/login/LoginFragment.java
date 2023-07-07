@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature.login;
+package id.bluebird.chat.sdk.demos.login;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

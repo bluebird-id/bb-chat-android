@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature.call.incoming;
+package id.bluebird.chat.sdk.demos.call.incoming;
 
 import android.Manifest;
 import android.app.Activity;
@@ -39,7 +39,7 @@ import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.feature.call.CallActivity;
+import id.bluebird.chat.sdk.demos.call.CallActivity;
 
 /**
  * Incoming call view with accept/decline buttons.

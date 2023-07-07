@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature.message;
+package id.bluebird.chat.sdk.demos.message;
 
 import android.Manifest;
 import android.animation.ValueAnimator;

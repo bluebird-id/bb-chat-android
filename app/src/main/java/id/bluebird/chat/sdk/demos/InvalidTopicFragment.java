@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature;
+package id.bluebird.chat.sdk.demos;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

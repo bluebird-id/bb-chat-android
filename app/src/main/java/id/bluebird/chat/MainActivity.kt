@@ -1,5 +1,6 @@
 package id.bluebird.chat
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,14 +17,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import id.bluebird.chat.methods.login
+import id.bluebird.chat.sdk.db.BaseDb
 import id.bluebird.chat.ui.theme.BluebirdChatTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -41,37 +48,57 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Image(
-                modifier = modifier.size(75.dp),
-                painter = painterResource(id = R.drawable.ic_logo_bluebird),
-                contentDescription = null
-            )
-            Text(
-                text = stringResource(id = R.string.app_name),
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = modifier
-            )
-            Spacer(modifier = modifier.height(32.dp))
-        }
+fun MainScreen(
+    modifier: Modifier = Modifier,
+) {
+    val db = BaseDb.getInstance()
+    val isLoading = remember { mutableStateOf(false) }
+    val isLoginSuccess = remember { mutableStateOf(db.isReady) }
 
+    val context = LocalContext.current as Activity
+
+    LoadingSurface(isLoading.value) {
         Column(
-            modifier = Modifier.weight(1f, false),
+            modifier = modifier.padding(32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            Button(onClick = { /*TODO*/ }) {
-                Text(
-                    text = stringResource(id = R.string.login_hint),
-                    style = MaterialTheme.typography.titleLarge,
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    modifier = modifier.size(75.dp),
+                    painter = painterResource(id = R.drawable.ic_logo_bluebird),
+                    contentDescription = null
                 )
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    style = MaterialTheme.typography.headlineLarge,
+                    modifier = modifier
+                )
+                Spacer(modifier = modifier.height(32.dp))
+            }
+
+            Column(
+                modifier = Modifier.weight(1f, false),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Button(
+                    onClick = {
+                        login(
+                            activity = context,
+                            isLoginSuccess = isLoginSuccess,
+                            isLoading = isLoading
+                        )
+                    },
+                    enabled = !isLoginSuccess.value,
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.login_hint),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
             }
         }
     }

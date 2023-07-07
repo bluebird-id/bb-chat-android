@@ -91,7 +91,7 @@
             android:resource="@color/colorAccent" />
 
         <activity
-            android:name=".sdk.feature.SplashActivity"
+            android:name=".sdk.demos.SplashActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/SplashTheme">
@@ -102,7 +102,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".sdk.feature.login.LoginActivity"
+            android:name=".sdk.demos.login.LoginActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme">
@@ -121,7 +121,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".sdk.feature.message.MessageActivity"
+            android:name=".sdk.demos.message.MessageActivity"
             android:exported="true"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize">
@@ -143,7 +143,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".sdk.feature.call.CallActivity"
+            android:name=".sdk.demos.call.CallActivity"
             android:exported="false"
             android:screenOrientation="locked"
             android:showOnLockScreen="true">

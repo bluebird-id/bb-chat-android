@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature.login;
+package id.bluebird.chat.sdk.demos.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.db.BaseDb;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.feature.message.MessageActivity;
+import id.bluebird.chat.sdk.demos.message.MessageActivity;
 
 /**
  * LoginActivity is a FrameLayout which switches between fragments:

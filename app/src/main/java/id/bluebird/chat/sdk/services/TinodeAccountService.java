@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import id.bluebird.chat.sdk.account.Utils;
-import id.bluebird.chat.sdk.feature.login.LoginActivity;
+import id.bluebird.chat.sdk.demos.login.LoginActivity;
 
 /**
  * Authenticator service: make Tinode login work nicely with the Android authentication system.

@@ -40,7 +40,7 @@ import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
 import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.media.VxCard;
-import id.bluebird.chat.sdk.feature.call.CallActivity;
+import id.bluebird.chat.sdk.demos.call.CallActivity;
 import id.bluebird.chat.sdk.services.CallConnection;
 import id.bluebird.chat.sdk.services.CallConnectionService;
 

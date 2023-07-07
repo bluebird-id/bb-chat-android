@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature.message;
+package id.bluebird.chat.sdk.demos.message;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -74,8 +74,8 @@ import id.bluebird.chat.sdk.CallManager;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.FilePreviewFragment;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.feature.InvalidTopicFragment;
-import id.bluebird.chat.sdk.feature.previewmedia.ImageViewFragment;
+import id.bluebird.chat.sdk.demos.InvalidTopicFragment;
+import id.bluebird.chat.sdk.demos.previewmedia.ImageViewFragment;
 
 /**
  * View to display a single conversation

@@ -39,7 +39,7 @@ import id.bluebird.chat.sdk.CallInProgress;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.HangUpBroadcastReceiver;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.feature.message.MessageActivity;
+import id.bluebird.chat.sdk.demos.message.MessageActivity;
 
 /**
  * Receive and handle (e.g. show) a push notification message.

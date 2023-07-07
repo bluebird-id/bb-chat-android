@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature.call;
+package id.bluebird.chat.sdk.demos.call;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -28,7 +28,7 @@ import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.CallManager;
 import id.bluebird.chat.sdk.Const;
-import id.bluebird.chat.sdk.feature.call.incoming.IncomingCallFragment;
+import id.bluebird.chat.sdk.demos.call.incoming.IncomingCallFragment;
 
 public class CallActivity extends AppCompatActivity  {
     private static final String TAG = "CallActivity";

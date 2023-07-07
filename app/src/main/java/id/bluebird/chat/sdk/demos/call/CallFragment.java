@@ -1,4 +1,4 @@
-package id.bluebird.chat.sdk.feature.call;
+package id.bluebird.chat.sdk.demos.call;
 
 import android.Manifest;
 import android.app.Activity;
