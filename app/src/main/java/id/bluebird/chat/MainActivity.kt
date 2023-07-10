@@ -1,6 +1,7 @@
 package id.bluebird.chat
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,8 +26,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import id.bluebird.chat.methods.login
+import id.bluebird.chat.methods.toMessageScreen
+import id.bluebird.chat.sdk.Const
 import id.bluebird.chat.sdk.db.BaseDb
+import id.bluebird.chat.sdk.demos.login.LoginActivity
+import id.bluebird.chat.sdk.demos.message.MessageActivity
 import id.bluebird.chat.ui.theme.BluebirdChatTheme
 
 class MainActivity : ComponentActivity() {
@@ -96,6 +102,18 @@ fun MainScreen(
                 ) {
                     Text(
                         text = stringResource(id = R.string.login_hint),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
+                Spacer(modifier = modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        toMessageScreen(context)
+                    },
+                    enabled = isLoginSuccess.value,
+                ) {
+                    Text(
+                        text = "Open Chat",
                         style = MaterialTheme.typography.titleLarge,
                     )
                 }
