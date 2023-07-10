@@ -145,7 +145,7 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
         }
     }
 
-    static synchronized void stopWatchingContacts() {
+    public static synchronized void stopWatchingContacts() {
         if (sContactsObserver != null) {
             sContext.getContentResolver().unregisterContentObserver(sContactsObserver);
         }

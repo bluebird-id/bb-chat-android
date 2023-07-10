@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import id.bluebird.chat.methods.login
+import id.bluebird.chat.methods.logout
 import id.bluebird.chat.methods.toCallScreen
 import id.bluebird.chat.methods.toMessageScreen
 import id.bluebird.chat.sdk.db.BaseDb
@@ -55,7 +57,7 @@ fun MainScreen(
 ) {
     val db = BaseDb.getInstance()
     val isLoading = remember { mutableStateOf(false) }
-    val isLoginSuccess = remember { mutableStateOf(db.isReady) }
+    val isLogin = remember { mutableStateOf(db.isReady) }
     val topicName = "usr7yG--GVH87o"
 
     val context = LocalContext.current as Activity
@@ -87,52 +89,63 @@ fun MainScreen(
                 modifier = Modifier.weight(1f, false),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Button(
-                    onClick = {
-                        login(
-                            activity = context,
-                            isLoginSuccess = isLoginSuccess,
-                            isLoading = isLoading
-                        )
-                    },
-                    enabled = !isLoginSuccess.value,
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.login_hint),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-                Spacer(modifier = modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        toMessageScreen(
-                            context = context,
-                            topicName = topicName
-                        )
-                    },
-                    enabled = isLoginSuccess.value,
-                ) {
-                    Text(
-                        text = "Open Chat",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-                Spacer(modifier = modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        toCallScreen(
-                            context = context,
-                            topicName = topicName
-                        )
-                    },
-                    enabled = isLoginSuccess.value,
-                ) {
-                    Text(
-                        text = "Open Call",
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
+                MainButton (
+                    modifier = modifier,
+                    onClick = { login(
+                        activity = context,
+                        isLoginSuccess = isLogin,
+                        isLoading = isLoading,
+                    ) },
+                    enabled = !isLogin.value,
+                    textButton = stringResource(id = R.string.login_hint)
+                )
+                MainButton (
+                    modifier = modifier,
+                    onClick = { toMessageScreen(
+                        context = context,
+                        topicName = topicName,
+                    ) },
+                    enabled = isLogin.value,
+                    textButton = "Open Chat"
+                )
+                MainButton (
+                    modifier = modifier,
+                    onClick = { toCallScreen(
+                        context = context,
+                        topicName = topicName,
+                    ) },
+                    enabled = isLogin.value,
+                    textButton = "Open Call"
+                )
+                MainButton (
+                    modifier = modifier,
+                    onClick = { logout(
+                        isLogin = isLogin,
+                        db = db,
+                    ) },
+                    enabled = isLogin.value,
+                    textButton = "Logout"
+                )
             }
         }
     }
+}
+
+@Composable
+fun MainButton(
+    modifier: Modifier,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    textButton: String,
+) {
+    TextButton(
+        onClick = onClick,
+        enabled = enabled,
+    ) {
+        Text(
+            text = textButton,
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
+    Spacer(modifier = modifier.height(16.dp))
 }

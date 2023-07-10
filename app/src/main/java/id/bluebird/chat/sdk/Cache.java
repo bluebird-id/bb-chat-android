@@ -143,7 +143,7 @@ public class Cache {
     }
 
     // Invalidate existing cache.
-    static void invalidate() {
+    public static void invalidate() {
         endCallInProgress();
         setSelectedTopicName(null);
         if (sInstance.mTinode != null) {
