@@ -91,7 +91,7 @@ fun MainScreen(
             ) {
                 MainButton (
                     modifier = modifier,
-                    onClick = { login(
+                    onClick = { BBChat.login(
                         activity = context,
                         isLoginSuccess = isLogin,
                         isLoading = isLoading,
@@ -101,7 +101,7 @@ fun MainScreen(
                 )
                 MainButton (
                     modifier = modifier,
-                    onClick = { toMessageScreen(
+                    onClick = { BBChat.toMessageScreen(
                         context = context,
                         topicName = topicName,
                     ) },
@@ -110,7 +110,7 @@ fun MainScreen(
                 )
                 MainButton (
                     modifier = modifier,
-                    onClick = { toCallScreen(
+                    onClick = { BBChat.toCallScreen(
                         context = context,
                         topicName = topicName,
                     ) },
@@ -119,10 +119,7 @@ fun MainScreen(
                 )
                 MainButton (
                     modifier = modifier,
-                    onClick = { logout(
-                        isLogin = isLogin,
-                        db = db,
-                    ) },
+                    onClick = { isLogin.value = BBChat.logout() },
                     enabled = isLogin.value,
                     textButton = "Logout"
                 )
