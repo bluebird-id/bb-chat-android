@@ -587,7 +587,7 @@ public class SqlStore implements Storage {
         return range;
     }
 
-    private static class MessageList implements Iterator<Message>, Closeable {
+    public static class MessageList implements Iterator<Message>, Closeable {
         private final Cursor mCursor;
         private final int mPreviewLength;
 

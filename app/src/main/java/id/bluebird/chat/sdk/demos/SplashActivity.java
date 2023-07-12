@@ -5,10 +5,10 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import id.bluebird.chat.sdk.db.BaseDb;
+import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.db.BaseDb;
 import id.bluebird.chat.sdk.demos.login.LoginActivity;
-import id.bluebird.chat.sdk.demos.message.MessageActivity;
 
 /**
  * Splash screen on startup

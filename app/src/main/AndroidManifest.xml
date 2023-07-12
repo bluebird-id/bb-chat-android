@@ -114,7 +114,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".sdk.demos.message.MessageActivity"
+            android:name=".methods.message.MessageActivity"
             android:exported="true"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustResize">

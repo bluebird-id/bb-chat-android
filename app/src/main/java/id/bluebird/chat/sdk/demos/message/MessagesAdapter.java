@@ -88,6 +88,7 @@ import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.MediaControl;
 import id.bluebird.chat.sdk.UiUtils;
+import id.bluebird.chat.methods.message.MessageActivity;
 
 /**
  * Handle display of a conversation

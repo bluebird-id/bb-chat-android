@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import id.bluebird.chat.R;
+import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.account.Utils;
 import id.bluebird.chat.sdk.format.FontFormatter;
 import id.bluebird.chat.sdk.media.VxCard;
@@ -39,7 +40,6 @@ import id.bluebird.chat.sdk.CallInProgress;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.HangUpBroadcastReceiver;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.demos.message.MessageActivity;
 
 /**
  * Receive and handle (e.g. show) a push notification message.

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import id.bluebird.chat.R;
-import id.bluebird.chat.sdk.demos.message.MessageActivity;
+import id.bluebird.chat.methods.message.MessageActivity;
 
 public class FilePreviewFragment extends Fragment {
     // Icon ID for mime type. Add more mime type to icon mappings here.

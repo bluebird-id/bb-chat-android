@@ -96,6 +96,7 @@ import id.bluebird.chat.sdk.MediaPickerContract;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.widgets.MovableActionButton;
 import id.bluebird.chat.sdk.widgets.WaveDrawable;
+import id.bluebird.chat.methods.message.MessageActivity;
 
 /**
  * Fragment handling message display and message sending.
@@ -106,7 +107,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
     private static final String[] SUPPORTED_MIME_TYPES = new String[]{"image/*"};
 
-    static final String MESSAGE_TO_SEND = "messageText";
+    public static final String MESSAGE_TO_SEND = "messageText";
     static final String MESSAGE_TEXT_ACTION = "messageTextAction";
     static final String MESSAGE_QUOTED = "quotedDrafty";
     static final String MESSAGE_QUOTED_SEQ_ID = "quotedSeqID";
@@ -511,7 +512,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         }
     }
 
-    void runMessagesLoader(String topicName) {
+   public void runMessagesLoader(String topicName) {
         if (mMessagesAdapter != null) {
             mMessagesAdapter.resetContent(topicName);
         }
@@ -861,7 +862,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         return false;
     }
 
-    void setRefreshing(boolean active) {
+    public void setRefreshing(boolean active) {
         if (!isAdded()) {
             return;
         }
@@ -990,7 +991,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    void notifyDataSetChanged(boolean meta) {
+    public void notifyDataSetChanged(boolean meta) {
         if (meta) {
             updateFormValues();
         } else {
@@ -1115,11 +1116,11 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         mTextAction = UiUtils.MsgAction.NONE;
     }
 
-    void startEditing(Activity activity, String original, Drafty quote, int seq) {
+    public void startEditing(Activity activity, String original, Drafty quote, int seq) {
         handleQuotedText(activity, original, quote, seq);
     }
 
-    void showReply(Activity activity, Drafty quote, int seq) {
+    public void showReply(Activity activity, Drafty quote, int seq) {
         handleQuotedText(activity, null, quote, seq);
     }
 
@@ -1147,7 +1148,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         mTextAction = UiUtils.MsgAction.REPLY;
     }
 
-    void topicChanged(String topicName, boolean reset) {
+    public void topicChanged(String topicName, boolean reset) {
         boolean changed = (mTopicName == null || !mTopicName.equals(topicName));
         mTopicName = topicName;
         if (mTopicName != null) {

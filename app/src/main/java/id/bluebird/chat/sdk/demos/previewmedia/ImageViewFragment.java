@@ -46,10 +46,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import id.bluebird.chat.R;
+import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.AttachmentHandler;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.demos.message.MessageActivity;
 import id.bluebird.chat.sdk.widgets.OverlaidImageView;
 
 /**

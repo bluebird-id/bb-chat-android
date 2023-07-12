@@ -4,7 +4,7 @@ import android.app.Activity
 import androidx.compose.runtime.MutableState
 import id.bluebird.chat.sdk.db.BaseDb
 import id.bluebird.chat.methods.login as BBChatLogin
-import id.bluebird.chat.methods.toMessageScreen as BBChatToMessageScreen
+import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
 import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
 import id.bluebird.chat.methods.logout as BBChatLogout
 

@@ -16,10 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import id.bluebird.chat.R;
-import id.bluebird.chat.sdk.db.BaseDb;
+import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.demos.message.MessageActivity;
+import id.bluebird.chat.sdk.db.BaseDb;
 
 /**
  * LoginActivity is a FrameLayout which switches between fragments:
