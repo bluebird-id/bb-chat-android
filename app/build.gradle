@@ -1,7 +1,6 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.google.protobuf'
 
@@ -23,7 +22,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "id.bluebird.chat"
+//        applicationId "id.bluebird.chat"
         minSdkVersion 24
         targetSdkVersion 33
         vectorDrawables.useSupportLibrary = true
@@ -45,7 +44,7 @@ android {
         release {
             resValue "string", "default_host_name", '"api.tinode.co"'
             minifyEnabled true
-            shrinkResources true
+//            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
