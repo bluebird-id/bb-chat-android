@@ -1,8 +1,7 @@
 package id.bluebird.chat.methods
 
 import android.app.Activity
-import android.widget.Toast
-import androidx.compose.runtime.MutableState
+import android.util.Log
 import androidx.preference.PreferenceManager
 import co.tinode.tinodesdk.PromisedReply
 import co.tinode.tinodesdk.model.AuthScheme
@@ -12,11 +11,36 @@ import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.TindroidApp
 import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.Utils
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-fun login(
+private var userName: String? = null
+private var passWord: String? = null
+
+fun loginOrRegister(
+    username: String, password: String,
     activity: Activity,
-    isLoginSuccess: MutableState<Boolean>,
-    isLoading: MutableState<Boolean>
+    onSuccess: (result: String?) -> Unit,
+    onError: (result: String?) -> Unit
+) {
+    userName = username
+    passWord = password
+
+    GlobalScope.launch {
+        loginTinode(activity, result = { result, error ->
+            if (result) {
+                onSuccess.invoke("Login Success")
+            } else {
+                onError.invoke(error)
+            }
+        })
+    }
+
+}
+
+private fun loginTinode(
+    activity: Activity,
+    result: (Boolean, String) -> Unit
 ) {
     val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
     val tinode = Cache.getTinode()
@@ -24,18 +48,15 @@ fun login(
     val hostName: String =
         sharedPref.getString(Utils.PREFS_HOST_NAME, TindroidApp.getDefaultHostName())!!
     val tls: Boolean = sharedPref.getBoolean(Utils.PREFS_USE_TLS, TindroidApp.getDefaultTLS())
-    val username = "customer"
-    val password = username
 
-    isLoading.value = true
-
+    Log.e("BBChat", "loginTinode: $userName $passWord")
     // This is called on the websocket thread.
     tinode.connect(hostName, tls, false)
         .thenApply(
             object : PromisedReply.SuccessListener<ServerMessage<*, *, *, *>?>() {
                 override fun onSuccess(result: ServerMessage<*, *, *, *>?):
                         PromisedReply<ServerMessage<*, *, *, *>?> =
-                    tinode.loginBasic(username, password)
+                    tinode.loginBasic(userName, passWord)
             })
         .thenApply(
             object : PromisedReply.SuccessListener<ServerMessage<*, *, *, *>?>() {
@@ -44,7 +65,7 @@ fun login(
                     UiUtils.updateAndroidAccount(
                         activity,
                         tinode.myId,
-                        AuthScheme.basicInstance(username, password).toString(),
+                        AuthScheme.basicInstance(userName, passWord).toString(),
                         tinode.authToken,
                         tinode.authTokenExpiration
                     )
@@ -53,26 +74,17 @@ fun login(
                     if (msg != null && msg.ctrl.code >= 300 &&
                         msg.ctrl.text.contains("validate credentials")
                     ) {
+
                         val message: String = activity.getString(R.string.error_login_failed)
+                        result.invoke(false, message + "${msg.ctrl.code}")
 
-                        activity.runOnUiThread {
-                            Toast.makeText(
-                                activity,
-                                message + "${msg.ctrl.code}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
                     } else {
+
                         tinode.setAutoLoginToken(tinode.authToken)
+                        result.invoke(true, "")
 
-                        isLoginSuccess.value = true
-
-                        activity.runOnUiThread {
-                            Toast.makeText(activity, "Login Success", Toast.LENGTH_SHORT).show()
-                        }
                     }
 
-                    isLoading.value = false
                     return null
                 }
             })
@@ -82,18 +94,19 @@ fun login(
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
 
                     val message: String = activity.getString(R.string.error_login_failed)
-                    val errMessage = if (err != null) {
-                        message + err.message
-                    } else {
-                        ""
-                    }
+                    val errMessage = if (err != null) { message + err.message } else { "" }
 
-                    isLoading.value = false
-
-                    activity.runOnUiThread {
-                        Toast.makeText(activity, errMessage, Toast.LENGTH_SHORT).show()
-                    }
+                    result.invoke(false, errMessage)
                     return null
                 }
             })
 }
+
+private fun registerTinode() {
+
+}
+
+private fun registerChatService() {
+
+}
+

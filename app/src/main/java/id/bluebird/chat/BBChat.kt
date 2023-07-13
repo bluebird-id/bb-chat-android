@@ -1,9 +1,7 @@
 package id.bluebird.chat
 
 import android.app.Activity
-import androidx.compose.runtime.MutableState
-import id.bluebird.chat.sdk.db.BaseDb
-import id.bluebird.chat.methods.login as BBChatLogin
+import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
 import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
 import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
 import id.bluebird.chat.methods.logout as BBChatLogout
@@ -12,10 +10,17 @@ class BBChat {
 
     companion object {
         fun login(
+            username: String,
+            password: String,
             activity: Activity,
-            isLoginSuccess: MutableState<Boolean>,
-            isLoading: MutableState<Boolean>
-        ) = BBChatLogin(activity, isLoginSuccess, isLoading)
+            onSuccess: (result: String?) -> Unit,
+            onError: (result: String?) -> Unit
+        ) = BBChatLogin(
+            username = username,
+            password = password,
+            activity = activity,
+            onSuccess = onSuccess,
+            onError = onError)
 
         fun toMessageScreen(
             context: Activity,
