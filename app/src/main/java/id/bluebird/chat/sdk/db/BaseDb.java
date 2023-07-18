@@ -30,7 +30,7 @@ public class BaseDb extends SQLiteOpenHelper {
     /**
      * Filename for SQLite file.
      */
-    private static final String DATABASE_NAME = "base.db";
+    private static final String DATABASE_NAME = "bluebird.chat.base.db";
     private static BaseDb sInstance = null;
     private StoredAccount mAcc = null;
     private SqlStore mStore = null;

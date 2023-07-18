@@ -1,6 +1,8 @@
 package id.bluebird.chat.methods
 
+import android.accounts.AccountManager
 import android.app.Activity
+import android.content.ContentResolver
 import android.util.Log
 import androidx.preference.PreferenceManager
 import co.tinode.tinodesdk.PromisedReply
@@ -11,9 +13,10 @@ import co.tinode.tinodesdk.model.Credential
 import co.tinode.tinodesdk.model.MetaSetDesc
 import co.tinode.tinodesdk.model.ServerMessage
 import id.bluebird.chat.R
-import id.bluebird.chat.sdk.AttachmentHandler
 import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.MyAttachmentHandler
+import id.bluebird.chat.sdk.MyTindroidApp
+import id.bluebird.chat.sdk.MyUiUtils
 import id.bluebird.chat.sdk.TindroidApp
 import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.Utils
@@ -88,6 +91,7 @@ private suspend fun loginTinode(
                     } else {
 
                         tinode.setAutoLoginToken(tinode.authToken)
+                        onSuccessLoginTinode(activity, tinode.myId)
                         completion.invoke(true, "Login Success")
 
                     }
@@ -203,6 +207,17 @@ private fun registerTinode(
 
 
         })
+}
+
+private fun onSuccessLoginTinode(activity: Activity, tinodeId: String) {
+
+    val acc = Utils.getSavedAccount(AccountManager.get(activity), tinodeId)
+    if (acc != null) {
+        Log.e("BBChat", "onSuccessLoginTinode: ${acc.name} ${acc.type}")
+        MyUiUtils.requestImmediateContactsSync(acc)
+        ContentResolver.setSyncAutomatically(acc, Utils.SYNC_AUTHORITY, true)
+        MyTindroidApp.startWatchingContacts(activity, acc)
+    }
 }
 
 private fun registerChatService(

@@ -31,6 +31,7 @@ import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.ContactsManager
 import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.demos.InvalidTopicFragment
+import id.bluebird.chat.sdk.demos.call.CallActivity
 import id.bluebird.chat.sdk.demos.message.MessagesFragment
 import id.bluebird.chat.sdk.media.VxCard
 
@@ -165,7 +166,16 @@ fun MessageActivity.changeTopic(
     val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     nm.cancel(topicName, 0)
 
+    Log.e("BBChat", "changeTopic: $topicName")
     val tinode = Cache.getTinode()
+
+
+    val myTopic = tinode.getTopic(topicName)
+    if (myTopic == null) {
+        Log.e("BBChat", "Invalid topic '$mTopicName'")
+        return false
+    }
+
     val topic: ComTopic<VxCard> = try {
         tinode.getTopic(topicName) as ComTopic<VxCard>
     } catch (ex: ClassCastException) {

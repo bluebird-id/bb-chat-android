@@ -134,6 +134,7 @@ class MessageActivity : AppCompatActivity() {
         if (TextUtils.isEmpty(mTopicName)) {
             topicName = readTopicNameFromIntent(intent)
         }
+        Log.e("BBChat", topicName.toString())
         if (!changeTopic(topicName, false)) {
             Cache.setSelectedTopicName(null)
             finish()
@@ -240,8 +241,8 @@ class MessageActivity : AppCompatActivity() {
     public override fun onDestroy() {
         super.onDestroy()
         mMessageSender.shutdownNow()
-        unregisterReceiver(onDownloadComplete)
-        unregisterReceiver(onNotificationClick)
+        //unregisterReceiver(onDownloadComplete)
+        //unregisterReceiver(onNotificationClick)
     }
 
     fun runMessagesLoader() {
