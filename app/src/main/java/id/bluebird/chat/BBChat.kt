@@ -11,13 +11,11 @@ class BBChat {
     companion object {
         fun login(
             username: String,
-            password: String,
             activity: Activity,
             onSuccess: (result: String?) -> Unit,
             onError: (result: String?) -> Unit
         ) = BBChatLogin(
             username = username,
-            password = password,
             activity = activity,
             onSuccess = onSuccess,
             onError = onError)

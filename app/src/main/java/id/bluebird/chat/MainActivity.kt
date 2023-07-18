@@ -3,6 +3,7 @@ package id.bluebird.chat
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -100,20 +101,11 @@ fun MainScreen(
                     label = { Text("Username") },
                     modifier = Modifier.testTag("username_field")
                 )
-
-                OutlinedTextField(
-                    value = passwordState.value,
-                    onValueChange = { passwordState.value = it },
-                    label = { Text("Password") },
-                    modifier = Modifier.testTag("password_field")
-                )
-
-
+                Spacer(modifier = modifier.height(16.dp))
                 MainButton (
                     modifier = modifier,
                     onClick = { BBChat.login(
                         username = usernameState.value,
-                        password = passwordState.value,
                         activity = context,
                         onSuccess = {
                             isLogin.value = true
