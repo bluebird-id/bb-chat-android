@@ -7,9 +7,8 @@ android {
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 33
-        buildConfigField 'int', 'VERSION_CODE', "${rootProject.ext.version_code}"
-        buildConfigField 'String', 'VERSION_NAME', "\"${rootProject.ext.version_name}\""
-
+        buildConfigField 'int', 'VERSION_CODE', "1"
+        buildConfigField 'String', 'VERSION_NAME', "\"0.0.0\""
     }
 
     buildTypes {

@@ -58,24 +58,115 @@
     </queries>
 
     <application
+        android:name=".sdk.TindroidApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
-        android:theme="@style/AppThemeDemo"
-        tools:replace="android:theme"
+        android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,DataExtractionRules"
         tools:targetApi="q">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/AppThemeDemo">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" /> <!-- Default icon for push notifications. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_icon_push" /> <!-- Default color for push notifications. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
+        <activity
+            android:name=".sdk.demos.SplashActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/SplashTheme"/>
+        <activity
+            android:name=".sdk.demos.login.LoginActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!--
+                This is a catch-all URL pattern.
+                Retarded Android is unable to parse URLs with fragments
+                -->
+                <data
+                    android:host="web.tinode.co"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".methods.message.MessageActivity"
+            android:exported="true"
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter
+                android:icon="@mipmap/ic_launcher"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/vnd.co.tinode.im" />
+            </intent-filter>
+            <intent-filter>
+
+                <!-- this is used when a AndroidNotification is provided in an FCM push message -->
+                <action android:name=".MessageActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".sdk.demos.call.CallActivity"
+            android:exported="false"
+            android:screenOrientation="locked"
+            android:showOnLockScreen="true">
+            <intent-filter>
+                <action android:name="tindroidx.intent.action.call.INCOMING" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <!--
+ FirebaseMessagingService performs security checks at runtime,
+             no need for explicit permissions despite exported="true".
+             Using tools:ignore="ExportedService" to disable the warning
+        -->
+        <service
+            android:name=".sdk.services.FBaseMessagingService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service> <!-- Service to place and receive calls. -->
+        <service
+            android:name=".sdk.services.CallConnectionService"
+            android:exported="true"
+            android:permission="android.permission.BIND_TELECOM_CONNECTION_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.ConnectionService" />
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="id.bluebird.chat.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
+
 </manifest>
