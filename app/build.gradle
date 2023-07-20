@@ -3,11 +3,11 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'com.google.protobuf'
 
-// See explanation here: https://stackoverflow.com/questions/20562189/sign-apk-without-putting-keystore-info-in-build-gradle
-//def keystorePropertiesFile = rootProject.file("keystore.properties")
-//def keystoreProperties = new Properties()
-//keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+def keyPropertiesFile = rootProject.file("local.properties")
+def keyProperties = new Properties()
+keyProperties.load(new FileInputStream(keyPropertiesFile))
 
 android {
     compileSdkVersion 33
@@ -140,10 +140,41 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // You need to build grpc-java to obtain these libraries below.
+    implementation "io.grpc:grpc-okhttp:1.43.1"
+    implementation "io.grpc:grpc-protobuf-lite:1.43.1"
+    implementation "io.grpc:grpc-stub:1.43.1"
+    implementation "io.grpc:grpc-android:1.43.1"
 }
 
 configurations {
     all {
         exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
+    }
+}
+
+protobuf {
+    def protobuf_platform = { ->
+        return keyProperties.getProperty("protobuf_platform", "") // for support apple silicon
+    }
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.12.0${protobuf_platform}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.37.0${protobuf_platform}"
+        }
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java { option 'lite' }
+            }
+            task.plugins {
+                grpc { option 'lite' }
+            }
+        }
     }
 }
