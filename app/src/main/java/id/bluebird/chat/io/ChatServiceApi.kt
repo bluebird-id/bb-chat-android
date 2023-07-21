@@ -7,9 +7,14 @@ import grpc.Chatservice
 import id.bluebird.chat.io.network.Result
 import id.bluebird.chat.io.network.awaitResult
 import io.grpc.ManagedChannel
+import io.grpc.ManagedChannelBuilder
 import java.util.concurrent.TimeUnit
 
-class ChatServiceApi(val factory: () -> ManagedChannel) {
+class ChatServiceApi() {
+
+    val channel: ManagedChannel = ManagedChannelBuilder.forAddress("0.tcp.ap.ngrok.io", 12776)
+        .usePlaintext()
+        .build()
 
     private fun createRegisterParam(
         clientId: String,
@@ -25,7 +30,7 @@ class ChatServiceApi(val factory: () -> ManagedChannel) {
         transform: Chatservice.RegisterResponse.() -> T
     ): Result<T> {
         val request = createRegisterParam(clientId, tinodeId)
-        return factory().futureStubResult(transform) {
+        return channel.futureStubResult(transform) {
             register(request)
         }
     }

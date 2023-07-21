@@ -13,6 +13,8 @@ import co.tinode.tinodesdk.model.Credential
 import co.tinode.tinodesdk.model.MetaSetDesc
 import co.tinode.tinodesdk.model.ServerMessage
 import id.bluebird.chat.R
+import id.bluebird.chat.io.ChatServiceApi
+import id.bluebird.chat.io.ChatServiceRepositoryImpl
 import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.MyAttachmentHandler
 import id.bluebird.chat.sdk.MyTindroidApp
@@ -23,6 +25,7 @@ import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.media.VxCard
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import id.bluebird.chat.io.network.Result
 
 private var userName: String? = null
 private var passWord: String? = null
@@ -225,7 +228,25 @@ private fun registerChatService(
     completion: (Boolean, String) -> Unit,
     tinodeId: String
 ) {
-    Log.e("BBChat", "tinode id = $tinodeId")
-    completion.invoke(true, "tinode id = $tinodeId")
+    Log.e("BBChat", "register chat service tinode id = $tinodeId")
+
+    GlobalScope.launch {
+        val clientId = userName ?: ""
+
+        val repository = ChatServiceRepositoryImpl(ChatServiceApi())
+        when(val response = repository.register(clientId, tinodeId) ) {
+            is Result.Ok -> {
+                completion.invoke(true, "register success ${response.data.message}")
+            }
+            is Result.Exception -> {
+                completion.invoke(false, "register failed ${response.errorMessage}")
+            }
+            else -> {
+                completion.invoke(false, "register failed Network")
+            }
+        }
+    }
+
+
 }
 
