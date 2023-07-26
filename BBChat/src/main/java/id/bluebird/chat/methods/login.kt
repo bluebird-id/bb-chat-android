@@ -101,6 +101,7 @@ private suspend fun loginTinode(
         sharedPref.getString(Utils.PREFS_HOST_NAME, TindroidApp.getDefaultHostName())!!
     val tls: Boolean = sharedPref.getBoolean(Utils.PREFS_USE_TLS, TindroidApp.getDefaultTLS())
 
+    Log.e("BBChat", "loginTinode: host:$hostName $userName $passWord")
     // This is called on the websocket thread.
     tinode.connect(hostName, tls, false)
         .thenApply(

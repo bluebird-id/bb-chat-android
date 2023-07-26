@@ -1,5 +1,7 @@
 package id.bluebird.chat.io
 
+import grpc.Chatservice.GetParticipantsResponse
+import id.bluebird.chat.io.model.ParticipantsResp
 import id.bluebird.chat.io.model.RegisterResp
 import id.bluebird.chat.io.network.Result
 
@@ -7,7 +9,7 @@ interface ChatServiceRepository {
 
     suspend fun register(clientId: String, tinodeId: String): Result<RegisterResp>
 
-    //suspend fun getParticipants(): Result<GetParticipantsResponse>
+    suspend fun getParticipants(orderId: String): Result<ParticipantsResp>
 }
 
 class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi): ChatServiceRepository {
@@ -20,9 +22,11 @@ class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi): Cha
         }
     }
 
-//    override suspend fun getParticipants(): Result<GetParticipantsResponse> {
-//        return chatServiceApi.getParticipantsFuture() {
-//            //GetParticipantsResponse(code, status, message, data)
-//        }
-//    }
+    override suspend fun getParticipants(orderId: String): Result<ParticipantsResp> {
+        return chatServiceApi.getParticipantByOrderIdFuture(orderId) {
+            val response = ParticipantsResp()
+            response.setItem(this)
+            response
+        }
+    }
 }

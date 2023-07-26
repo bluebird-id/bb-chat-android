@@ -330,9 +330,9 @@ public class UiUtils {
         TindroidApp.stopWatchingContacts();
         Cache.invalidate();
 
-        Intent intent = new Intent(context, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
+//        Intent intent = new Intent(context, LoginActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        context.startActivity(intent);
     }
 
     static synchronized void requestImmediateContactsSync(Account acc) {

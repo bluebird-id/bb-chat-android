@@ -16,6 +16,7 @@ class ChatServiceApi {
         .usePlaintext()
         .build()
 
+    /*** login or register ***/
     private fun createRegisterParam(
         clientId: String,
         tinodeId: String
@@ -35,6 +36,24 @@ class ChatServiceApi {
         }
     }
 
+    /*** get participant ***/
+    private fun getParticipantRequest(
+        orderId: String
+    ): Chatservice.GetParticipantsRequest = Chatservice.GetParticipantsRequest.newBuilder()
+        .setOrderId(orderId)
+        .build()
+
+    suspend fun <T: Any> getParticipantByOrderIdFuture(
+        orderId: String,
+        transform: Chatservice.GetParticipantsResponse.() -> T
+    ): Result<T> {
+        val request = getParticipantRequest(orderId)
+        return channel.futureStubResult(transform) {
+            getParticipants(request)
+        }
+    }
+
+    /*** call grpc ***/
     suspend fun <T : Any, R : Any> ManagedChannel.futureStubResult(
         transform: T.() -> R,
         action: ChatServiceFutureStub.() -> ListenableFuture<T>

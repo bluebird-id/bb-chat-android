@@ -142,7 +142,22 @@ fun MainScreen(
                     enabled = !isLogin.value,
                     textButton = stringResource(id = R.string.login_hint)
                 )
-                MainButton(
+                MainButton (
+                    modifier = modifier,
+                    onClick = { BBChat.getRoom(
+                        context = context,
+                        orderId = "123",
+                        onSuccess = {
+                            Log.e("BBChat", "onSuccess: $it")
+                        },
+                        onError = {
+                            Log.e("BBChat", "onError: $it")
+                        }
+                    ) },
+                    enabled = isLogin.value,
+                    textButton = "Get Room / Participant"
+                )
+                MainButton (
                     modifier = modifier,
                     onClick = {
                         BBChat.toMessageScreen(

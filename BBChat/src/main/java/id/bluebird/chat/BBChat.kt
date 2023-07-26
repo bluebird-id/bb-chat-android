@@ -5,6 +5,7 @@ import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
 import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
 import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
 import id.bluebird.chat.methods.logout as BBChatLogout
+import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom
 
 class BBChat {
 
@@ -14,11 +15,14 @@ class BBChat {
             activity: Activity,
             onSuccess: (result: String?) -> Unit,
             onError: (result: String?) -> Unit
-        ) = BBChatLogin(
-            username = username,
-            activity = activity,
-            onSuccess = onSuccess,
-            onError = onError)
+        ) = BBChatLogin(username, activity, onSuccess, onError)
+
+        fun getRoom(
+            context: Activity,
+            orderId: String,
+            onSuccess: (result: String?) -> Unit,
+            onError: (result: String?) -> Unit
+        ) = BBChatGetRoom(context, orderId, onSuccess, onError)
 
         fun toMessageScreen(
             context: Activity,
