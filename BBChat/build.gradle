@@ -1,10 +1,11 @@
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'maven-publish'
 
-// See explanation here: https://stackoverflow.com/questions/20562189/sign-apk-without-putting-keystore-info-in-build-gradle
-//def keystorePropertiesFile = rootProject.file("keystore.properties")
-//def keystoreProperties = new Properties()
-//keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+def keyPropertiesFile = rootProject.file("local.properties")
+def keyProperties = new Properties()
+keyProperties.load(new FileInputStream(keyPropertiesFile))
 
 android {
     compileSdkVersion 33
@@ -41,7 +42,7 @@ android {
         }
         release {
             resValue "string", "default_host_name", '"dev-tinode.bluebird.id"'
-            minifyEnabled true
+            minifyEnabled false
 //            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
@@ -51,8 +52,8 @@ android {
         // Flag to enable support for the new language APIs.
         coreLibraryDesugaringEnabled true
 
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     packagingOptions {
         resources {
@@ -60,7 +61,7 @@ android {
         }
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 }
 
@@ -130,10 +131,55 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // You need to build grpc-java to obtain these libraries below.
+    implementation "io.grpc:grpc-okhttp:1.43.1"
+    implementation "io.grpc:grpc-protobuf-lite:1.43.1"
+    implementation "io.grpc:grpc-stub:1.43.1"
+    implementation "io.grpc:grpc-android:1.43.1"
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
 }
 
 configurations {
     all {
         exclude group: 'androidx.lifecycle', module: 'lifecycle-viewmodel-ktx'
+    }
+}
+
+protobuf {
+    def protobuf_platform = { ->
+        return keyProperties.getProperty("protobuf_platform", "") // for support apple silicon
+    }
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.12.0${protobuf_platform}"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.37.0${protobuf_platform}"
+        }
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java { option 'lite' }
+            }
+            task.plugins {
+                grpc { option 'lite' }
+            }
+        }
+    }
+}
+
+afterEvaluate{
+    publishing {
+        publications{
+            release(MavenPublication){
+                from components.release
+                groupId = 'com.github.alan-tayirazraq'
+                artifactId = 'BBChat'
+                version = '0.0.6'
+            }
+        }
     }
 }

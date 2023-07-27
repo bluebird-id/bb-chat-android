@@ -10,8 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 rootProject.name = "BluebirdChat"
-include ':app',':tinodesdk'
-include ':BBChat'
+include ':app',':BBChat',':tinodesdk'
