@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingHorizontal="6dp"
-    android:paddingVertical="8dp"
+    android:paddingVertical="16dp"
     android:visibility="visible"
     tools:ignore="RtlSymmetry">
 
@@ -22,11 +22,11 @@
             android:id="@+id/cancelPreview"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:paddingStart="2dp"
             android:paddingEnd="2dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
             app:srcCompat="@drawable/ic_close"
-            app:tint="?android:textColorPrimary"/>
+            app:tint="?android:textColorPrimary" />
 
         <TextView
             android:id="@+id/contentPreview"
@@ -41,6 +41,7 @@
             tools:ignore="RtlSymmetry"
             tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -71,15 +72,17 @@
             android:id="@+id/editMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
             android:layout_weight="1"
-            android:padding="8dp"
             android:background="@drawable/bg_round_message"
             android:hint="@string/new_message_hint"
             android:imeOptions="actionSend"
             android:importantForAutofill="no"
             android:inputType="textMultiLine|textCapSentences"
             android:maxLines="3"
-            android:textColor="?android:textColorPrimary" />
+            android:padding="8dp"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="14sp" />
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -97,7 +100,7 @@
                 android:paddingEnd="6dp"
                 android:visibility="visible"
                 app:srcCompat="@drawable/ic_mic"
-                app:tint="?attr/colorAccent" />
+                app:tint="@color/colorAccent" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/chatSendButton"
@@ -110,7 +113,7 @@
                 android:paddingEnd="6dp"
                 android:visibility="invisible"
                 app:srcCompat="@drawable/ic_send"
-                app:tint="?attr/colorAccent" />
+                app:tint="@color/colorAccent" />
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>

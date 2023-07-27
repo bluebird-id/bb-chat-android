@@ -15,11 +15,18 @@
             tools:ignore="AlwaysShowAction" />
     </group>
 
+<!--    <item-->
+<!--        android:id="@+id/action_audio_call"-->
+<!--        android:orderInCategory="102"-->
+<!--        android:title="@string/action_call"-->
+<!--        android:icon="@drawable/ic_call"-->
+<!--        app:iconTint="?android:textColorPrimary"-->
+<!--        app:showAsAction="never" />-->
+
     <item
         android:id="@+id/action_audio_call"
-        android:orderInCategory="102"
-        android:title="@string/action_call"
-        android:icon="@drawable/ic_call"
-        app:iconTint="?android:textColorPrimary"
-        app:showAsAction="never" />
+        android:title="Rate App"
+        android:icon="@drawable/icon_dial"
+        android:orderInCategory="100"
+        app:showAsAction="always|withText"/>
 </menu>

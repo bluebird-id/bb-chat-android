@@ -140,7 +140,8 @@ public class UiUtils {
                 } else {
                     toolbar.setSubtitle(null);
                 }
-                constructToolbarLogo(activity, pub, topicName, showOnline, deleted);
+                toolbar.setSubtitle(null);
+                //constructToolbarLogo(activity, pub, topicName, showOnline, deleted);
             } else {
                 toolbar.setTitle(R.string.app_name);
                 toolbar.setSubtitle(null);

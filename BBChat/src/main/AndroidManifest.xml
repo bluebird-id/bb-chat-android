@@ -142,6 +142,7 @@
         <activity
             android:name=".sdk.demos.call.CallActivity"
             android:exported="false"
+            android:theme="@style/AppTheme"
             android:screenOrientation="locked"
             android:showOnLockScreen="true">
             <intent-filter>

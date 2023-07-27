@@ -714,8 +714,12 @@ public class Tinode {
                             pkt.ctrl.code < ServerMessage.STATUS_BAD_REQUEST) {
                         fh.future.resolve(pkt);
                     } else {
-                        fh.future.reject(new ServerResponseException(pkt.ctrl.code, pkt.ctrl.text,
-                                pkt.ctrl.getStringParam("what", null)));
+                        try{
+                            fh.future.reject(new ServerResponseException(pkt.ctrl.code, pkt.ctrl.text,
+                                    pkt.ctrl.getStringParam("what", null)));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

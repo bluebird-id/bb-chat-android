@@ -9,6 +9,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import co.tinode.tinodesdk.ComTopic
@@ -82,6 +83,7 @@ class MessageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_messages)
 
         setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupReceiver()
 
@@ -100,6 +102,10 @@ class MessageActivity : AppCompatActivity() {
         )
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
+
     private fun setupMessageSender() {
         mMessageSender = PausableSingleThreadExecutor()
 
@@ -115,6 +121,9 @@ class MessageActivity : AppCompatActivity() {
         return if (item.itemId == R.id.action_audio_call) {
             CallManager.placeOutgoingCall(this, mTopicName)
             true
+        }else if(item.itemId == android.R.id.home){
+            finish()
+            false
         } else {
             false
         }
