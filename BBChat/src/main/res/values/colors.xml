@@ -7,7 +7,7 @@
     <color name="colorPositiveAction">#FF326F3E</color>
     <color name="colorNeutralAction">#FF909090</color>
 
-    <color name="colorAccent">#00897B</color>
+    <color name="colorAccent">#005EB8</color>
     <color name="colorButtonNormal">#D6D7D7</color>
 
     <color name="colorSwipeChervon">#FFF</color>
@@ -44,7 +44,7 @@
     <color name="colorMessageBubbleMine">#FFFAFAFA</color>
     <color name="colorMessageBubbleMineFlashing">#FCCC</color>
     <color name="colorMessageBubbleMineFlashingLight">#FEEE</color>
-    <color name="colorMessageBubbleOther">#FFC5E1A5</color>
+    <color name="colorMessageBubbleOther">#005EB8</color>
     <color name="colorMessageBubbleOtherFlashing">#FF85A165</color>
     <color name="colorMessageBubbleOtherFlashingLight">#FFA5C185</color>
 

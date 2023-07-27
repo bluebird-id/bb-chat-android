@@ -36,7 +36,7 @@
                 android:minWidth="112dp"
                 android:paddingStart="14dp"
                 android:paddingEnd="4dp"
-                android:textColor="?android:textColorPrimary"
+                android:textColor="@color/white"
                 tools:ignore="RtlSymmetry"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
 
@@ -65,7 +65,7 @@
                     android:layout_gravity="end"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
-                    android:textColor="?android:textColorSecondary"
+                    android:textColor="@color/white"
                     android:textSize="11sp"
                     tools:ignore="SmallSp"
                     tools:text="Jun 11 22:17" />

@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="6dp"
+    android:paddingHorizontal="6dp"
+    android:paddingVertical="8dp"
     android:visibility="visible"
     tools:ignore="RtlSymmetry">
 
@@ -51,10 +52,9 @@
             android:layout_weight="0"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/send_image_button_hint"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            app:srcCompat="@drawable/ic_photo"
-            app:tint="?attr/colorAccent" />
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            app:srcCompat="@drawable/icon_camera" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/attachFile"
@@ -63,16 +63,17 @@
             android:layout_weight="0"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/send_file_button_hint"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            app:srcCompat="@drawable/ic_attach"
-            app:tint="?attr/colorAccent" />
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
+            app:srcCompat="@drawable/icon_picture" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/editMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:padding="8dp"
+            android:background="@drawable/bg_round_message"
             android:hint="@string/new_message_hint"
             android:imeOptions="actionSend"
             android:importantForAutofill="no"
