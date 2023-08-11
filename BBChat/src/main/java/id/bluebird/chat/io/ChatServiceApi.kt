@@ -10,9 +10,9 @@ import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import java.util.concurrent.TimeUnit
 
-class ChatServiceApi() {
+class ChatServiceApi {
 
-    val channel: ManagedChannel = ManagedChannelBuilder.forAddress("0.tcp.ap.ngrok.io", 12776)
+    val channel: ManagedChannel = ManagedChannelBuilder.forAddress("34.124.216.166", 6969)
         .usePlaintext()
         .build()
 

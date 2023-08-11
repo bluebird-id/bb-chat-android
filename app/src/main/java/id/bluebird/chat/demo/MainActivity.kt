@@ -3,6 +3,7 @@ package id.bluebird.chat.demo
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -32,8 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import id.bluebird.chat.BBChat
 import id.bluebird.chat.R
-import id.bluebird.chat.sdk.db.BaseDb
 import id.bluebird.chat.demo.theme.BluebirdChatTheme
+import id.bluebird.chat.sdk.db.BaseDb
 
 class MainActivity : ComponentActivity() {
 
@@ -61,7 +62,7 @@ fun MainScreen(
     val db = BaseDb.getInstance()
     val isLoading = remember { mutableStateOf(false) }
     val isLogin = remember { mutableStateOf(db.isReady) }
-    val topicName = "usruznniMR-vM4"
+    val topicName = "usr9BOf-Re1YBY"
 
     val context = LocalContext.current as Activity
 
@@ -85,7 +86,6 @@ fun MainScreen(
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = modifier
                 )
-                Spacer(modifier = modifier.height(32.dp))
             }
 
             val usernameState = remember { mutableStateOf("customer") }
@@ -104,42 +104,58 @@ fun MainScreen(
                     modifier = Modifier.testTag("username_field")
                 )
                 Spacer(modifier = modifier.height(16.dp))
-                MainButton (
+                MainButton(
                     modifier = modifier,
-                    onClick = { BBChat.login(
-                        username = usernameState.value,
-                        activity = context,
-                        onSuccess = {
-                            isLogin.value = true
-                            Log.e("BBChat", "onSuccess: $it")
-                        },
-                        onError = {
-                            isLogin.value = false
-                            Log.e("BBChat", "onError: $it")
-                        }
-                    ) },
-                    enabled = true,
+                    onClick = {
+                        isLoading.value = true
+
+                        BBChat.login(
+                            username = usernameState.value,
+                            activity = context,
+                            onSuccess = {
+                                isLogin.value = true
+                                isLoading.value = false
+
+                                Log.e("BBChat", "onSuccess: $it")
+                            },
+                            onError = {
+                                isLogin.value = false
+                                isLoading.value = false
+
+                                Log.e("BBChat", "onError: $it")
+
+                                context.runOnUiThread {
+                                    Toast.makeText(context, "onError: $it", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
+                    },
+                    enabled = !isLogin.value,
                     textButton = stringResource(id = R.string.login_hint)
                 )
-                MainButton (
+                MainButton(
                     modifier = modifier,
-                    onClick = { BBChat.toMessageScreen(
-                        context = context,
-                        topicName = topicName,
-                    ) },
+                    onClick = {
+                        BBChat.toMessageScreen(
+                            context = context,
+                            topicName = topicName,
+                        )
+                    },
                     enabled = isLogin.value,
                     textButton = "Open Chat"
                 )
-                MainButton (
+                MainButton(
                     modifier = modifier,
-                    onClick = { BBChat.toCallScreen(
-                        context = context,
-                        topicName = topicName,
-                    ) },
+                    onClick = {
+                        BBChat.toCallScreen(
+                            context = context,
+                            topicName = topicName,
+                        )
+                    },
                     enabled = isLogin.value,
                     textButton = "Open Call"
                 )
-                MainButton (
+                MainButton(
                     modifier = modifier,
                     onClick = { isLogin.value = BBChat.logout() },
                     enabled = isLogin.value,

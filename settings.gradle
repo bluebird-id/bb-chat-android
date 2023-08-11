@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "BluebirdChat"
-include ':app',':BBChat',':tinodesdk'
+rootProject.name = "android-bb-chat"
+include ':app', ':BBChat',':tinodesdk'

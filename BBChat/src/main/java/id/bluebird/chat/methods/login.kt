@@ -95,6 +95,10 @@ private suspend fun loginTinode(
 
                         tinode.setAutoLoginToken(tinode.authToken)
                         onSuccessLoginTinode(activity, tinode.myId)
+
+                        //For fetch topic list from bb-tinode server who attach to user
+                        Cache.attachMeTopic(null)
+
                         completion.invoke(true, "Login Success")
 
                     }
