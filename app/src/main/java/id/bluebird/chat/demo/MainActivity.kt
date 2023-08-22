@@ -89,7 +89,7 @@ fun MainScreen(
             }
 
             val usernameState = remember { mutableStateOf("customer") }
-            val passwordState = remember { mutableStateOf("customer") }
+            val passwordState = remember { mutableStateOf(usernameState.value) }
 
 
             Column(
@@ -103,6 +103,15 @@ fun MainScreen(
                     label = { Text("Username") },
                     modifier = Modifier.testTag("username_field")
                 )
+                if(false){
+                    OutlinedTextField(
+                        value = passwordState.value,
+                        onValueChange = { passwordState.value = it },
+                        label = { Text("Password") },
+                        modifier = Modifier
+                            .testTag("password_field")
+                    )
+                }
                 Spacer(modifier = modifier.height(16.dp))
                 MainButton(
                     modifier = modifier,

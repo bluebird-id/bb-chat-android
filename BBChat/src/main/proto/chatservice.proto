@@ -2,7 +2,6 @@ syntax="proto3";
 
 package grpc;
 
-
 service ChatService{
     rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc GetParticipants(GetParticipantsRequest) returns (GetParticipantsResponse);
@@ -23,4 +22,5 @@ message GetParticipantsRequest {
 
 message GetParticipantsResponse{
     repeated string participants_id_list = 1;
+    string room_id = 2;
 }

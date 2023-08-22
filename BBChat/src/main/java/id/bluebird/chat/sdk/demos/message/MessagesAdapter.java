@@ -693,10 +693,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             return;
         }
         int from = vh.mMessageBubble.getResources().getColor(isMine ?
-                R.color.colorMessageBubbleMine : R.color.colorMessageBubbleOther, null);
+                R.color.colorMessageBubbleOther : R.color.colorMessageBubbleMine, null);
         int to = vh.mMessageBubble.getResources().getColor(isMine ?
-                (light ? R.color.colorMessageBubbleMineFlashingLight : R.color.colorMessageBubbleMineFlashing) :
-                (light ? R.color.colorMessageBubbleOtherFlashingLight: R.color.colorMessageBubbleOtherFlashing),
+                (light ? R.color.colorMessageBubbleOtherFlashingLight : R.color.colorMessageBubbleOtherFlashing) :
+                (light ? R.color.colorMessageBubbleMineFlashingLight: R.color.colorMessageBubbleMineFlashing),
                 null);
         ValueAnimator colorAnimation = ValueAnimator.ofArgb(from, to, from);
         colorAnimation.setDuration(light ? MESSAGE_BUBBLE_ANIMATION_SHORT : MESSAGE_BUBBLE_ANIMATION_LONG);

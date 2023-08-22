@@ -45,6 +45,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
@@ -765,8 +766,13 @@ public class UiUtils {
     }
 
     public static void setMessageStatusIcon(ImageView holder, int status, int read, int recv) {
+        Context context = holder.getContext();
         if (status <= BaseDb.Status.SENDING.value) {
             holder.setImageResource(R.drawable.ic_schedule);
+            holder.setColorFilter(
+                    ContextCompat.getColor(context, android.R.color.white),
+                    android.graphics.PorterDuff.Mode.SRC_IN
+            );
         } else if (status == BaseDb.Status.FAILED.value) {
             holder.setImageResource(R.drawable.ic_warning);
         } else {
@@ -774,8 +780,16 @@ public class UiUtils {
                 holder.setImageResource(R.drawable.ic_done_all2);
             } else if (recv > 0) {
                 holder.setImageResource(R.drawable.ic_done_all);
+                holder.setColorFilter(
+                        ContextCompat.getColor(context, android.R.color.white),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                );
             } else {
                 holder.setImageResource(R.drawable.ic_done);
+                holder.setColorFilter(
+                        ContextCompat.getColor(context, android.R.color.white),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                );
             }
         }
     }
