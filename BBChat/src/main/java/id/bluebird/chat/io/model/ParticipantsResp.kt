@@ -4,9 +4,12 @@ import grpc.Chatservice
 
 class ParticipantsResp {
 
-    var participants = ArrayList<String>()
+    var participants: Participants = Participants()
 
     fun setItem(response: Chatservice.GetParticipantsResponse) {
-        participants = response.participantsIdListList as ArrayList<String>
+        participants = Participants(
+            participantsIdlist = response.participantsIdListList,
+            roomId = response.roomId,
+        )
     }
 }

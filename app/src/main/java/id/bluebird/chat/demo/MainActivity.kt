@@ -62,7 +62,7 @@ fun MainScreen(
     val db = BaseDb.getInstance()
     val isLoading = remember { mutableStateOf(false) }
     val isLogin = remember { mutableStateOf(db.isReady) }
-    val topicName = "usr9BOf-Re1YBY"
+    val topicName = remember { mutableStateOf("") }
 
     val context = LocalContext.current as Activity
 
@@ -88,7 +88,7 @@ fun MainScreen(
                 )
             }
 
-            val usernameState = remember { mutableStateOf("customer") }
+            val usernameState = remember { mutableStateOf("customer113") }
             val passwordState = remember { mutableStateOf(usernameState.value) }
 
 
@@ -103,7 +103,7 @@ fun MainScreen(
                     label = { Text("Username") },
                     modifier = Modifier.testTag("username_field")
                 )
-                if(false){
+                if (false) {
                     OutlinedTextField(
                         value = passwordState.value,
                         onValueChange = { passwordState.value = it },
@@ -134,7 +134,8 @@ fun MainScreen(
                                 Log.e("BBChat", "onError: $it")
 
                                 context.runOnUiThread {
-                                    Toast.makeText(context, "onError: $it", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "onError: $it", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
                             }
                         )
@@ -142,30 +143,46 @@ fun MainScreen(
                     enabled = !isLogin.value,
                     textButton = stringResource(id = R.string.login_hint)
                 )
-                MainButton (
+                MainButton(
                     modifier = modifier,
-                    onClick = { BBChat.getRoom(
-                        context = context,
-                        orderId = "123",
-                        onSuccess = {
-                            Log.e("BBChat", "onSuccess: $it")
-                        },
-                        onError = {
-                            Log.e("BBChat", "onError: $it")
-                        }
-                    ) },
+                    onClick = {
+                        isLoading.value = true
+
+                        BBChat.getRoom(
+                            context = context,
+                            orderId = "23423482384",
+                            onSuccess = {
+                                isLoading.value = false
+
+                                topicName.value = it ?: ""
+
+                                context.runOnUiThread {
+                                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            },
+                            onError = {
+                                isLoading.value = false
+
+                                context.runOnUiThread {
+                                    Toast.makeText(context, "Failed", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
+                        )
+                    },
                     enabled = isLogin.value,
                     textButton = "Get Room / Participant"
                 )
-                MainButton (
+                MainButton(
                     modifier = modifier,
                     onClick = {
                         BBChat.toMessageScreen(
                             context = context,
-                            topicName = topicName,
+                            topicName = topicName.value,
                         )
                     },
-                    enabled = isLogin.value,
+                    enabled = isLogin.value && topicName.value.isNotEmpty(),
                     textButton = "Open Chat"
                 )
                 MainButton(
@@ -173,15 +190,18 @@ fun MainScreen(
                     onClick = {
                         BBChat.toCallScreen(
                             context = context,
-                            topicName = topicName,
+                            topicName = topicName.value,
                         )
                     },
-                    enabled = isLogin.value,
+                    enabled = isLogin.value && topicName.value.isNotEmpty(),
                     textButton = "Open Call"
                 )
                 MainButton(
                     modifier = modifier,
-                    onClick = { isLogin.value = BBChat.logout() },
+                    onClick = {
+                        isLogin.value = BBChat.logout()
+                        topicName.value = ""
+                    },
                     enabled = isLogin.value,
                     textButton = "Logout"
                 )
