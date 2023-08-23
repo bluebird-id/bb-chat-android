@@ -23,9 +23,13 @@ import id.bluebird.chat.sdk.TindroidApp
 import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.media.VxCard
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import id.bluebird.chat.io.network.Result
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+
+
+val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 private var userName: String? = null
 private var passWord: String? = null
@@ -39,22 +43,57 @@ fun loginOrRegister(
     userName = username
     passWord = username
 
-    GlobalScope.launch {
+    coroutineScope.launch {
+
+        // LOGIN TINODE
         loginTinode(activity, completion = { result, error ->
-            if (result) {
-                onSuccess.invoke("Login Success")
+
+            if (result?.isNotEmpty() == true) {
+
+                // LOGIN TINODE SUCCESS
+                // LOGIN OR REGISTER CHAT SERVICE
+                loginOrRegisterChatService(activity, result, completion = { _, _ ->
+                    onSuccess.invoke("Login Success")
+                })
+
             } else {
-                onError.invoke(error)
+
+                if (error?.contains("401") == true) {
+
+                    // LOGIN TINODE ACCOUNT NOT FOUND
+                    registerTinode(activity, completion = { result, error ->
+
+                        if (result?.isNotEmpty() == true) {
+
+                            loginOrRegisterChatService(activity, result, completion = { _, _ ->
+                                    onSuccess.invoke("Login Success")
+                            })
+
+                        } else {
+                            onError.invoke(error)
+                        }
+                    })
+
+                } else {
+
+                    // LOGIN TINODE SERVER ERROR
+                    onError.invoke(error)
+
+                }
+
             }
         })
+
+
     }
 
 }
 
 private suspend fun loginTinode(
     activity: Activity,
-    completion: (Boolean, String) -> Unit
+    completion: (String?, String?) -> Unit
 ) {
+    Log.e("BBChat", "loginTinode: $userName $passWord")
     val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
     val tinode = Cache.getTinode()
 
@@ -62,7 +101,6 @@ private suspend fun loginTinode(
         sharedPref.getString(Utils.PREFS_HOST_NAME, TindroidApp.getDefaultHostName())!!
     val tls: Boolean = sharedPref.getBoolean(Utils.PREFS_USE_TLS, TindroidApp.getDefaultTLS())
 
-    Log.e("BBChat", "loginTinode: $userName $passWord")
     // This is called on the websocket thread.
     tinode.connect(hostName, tls, false)
         .thenApply(
@@ -89,17 +127,16 @@ private suspend fun loginTinode(
                     ) {
 
                         val message: String = activity.getString(R.string.error_login_failed)
-                        completion.invoke(false, message + " ${msg.ctrl.code}")
+                        completion.invoke(null, message + " ${msg.ctrl.code}")
 
                     } else {
 
                         tinode.setAutoLoginToken(tinode.authToken)
-                        onSuccessLoginTinode(activity, tinode.myId)
 
                         //For fetch topic list from bb-tinode server who attach to user
                         Cache.attachMeTopic(null)
 
-                        completion.invoke(true, "Login Success")
+                        completion.invoke(tinode.myId, null)
 
                     }
 
@@ -112,17 +149,8 @@ private suspend fun loginTinode(
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
 
                     val message: String = activity.getString(R.string.error_login_failed)
-                    val errMessage = if (err != null) {
-                        " -> " + message + err.message
-                    } else {
-                        ""
-                    }
+                    completion.invoke(null, message + " " + err?.message)
 
-                    if (err?.message?.contains("401") == true) {
-                        registerTinode(activity, completion)
-                    } else {
-                        completion.invoke(false, errMessage)
-                    }
                     return null
                 }
             })
@@ -130,9 +158,11 @@ private suspend fun loginTinode(
 
 private fun registerTinode(
     activity: Activity,
-    completion: (Boolean, String) -> Unit
+    completion: (String?, String?) -> Unit
 ) {
     // This is called on the websocket thread.
+
+    Log.e("BBChat", "register tinode: $userName $passWord")
     val tinode = Cache.getTinode()
     val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
     val hostName = sharedPref.getString(Utils.PREFS_HOST_NAME, TindroidApp.getDefaultHostName())
@@ -180,15 +210,12 @@ private fun registerTinode(
                         ?: 0) >= 300 && result?.ctrl?.text?.contains("validate credentials") == true
                 ) {
 
-                    Log.e("BBChat", "Register Failed ${result.ctrl.code}")
-                    completion.invoke(false, "Register Failed ${result.ctrl.code}")
+                    completion.invoke(null, "Register Failed ${result.ctrl.code}")
 
                 } else {
 
                     tinode.setAutoLoginToken(tinode.authToken)
-                    Log.e("BBChat", "Register Success")
-                    completion.invoke(true, "Register Success")
-                    registerChatService(activity, completion, tinode.myId)
+                    completion.invoke(tinode.myId, "Register Success")
                 }
                 return null
             }
@@ -207,8 +234,7 @@ private fun registerTinode(
                     "Failed create account"
                 }
 
-                Log.e("BBChat", errMessage)
-                completion.invoke(false, errMessage)
+                completion.invoke(null, errMessage)
                 return null
             }
 
@@ -227,30 +253,25 @@ private fun onSuccessLoginTinode(activity: Activity, tinodeId: String) {
     }
 }
 
-private fun registerChatService(
+private fun loginOrRegisterChatService(
     activity: Activity,
-    completion: (Boolean, String) -> Unit,
-    tinodeId: String
+    tinodeId: String,
+    completion: (String?, String?) -> Unit
 ) {
-    Log.e("BBChat", "register chat service tinode id = $tinodeId")
-
-    GlobalScope.launch {
+    Log.e("BBChat", "login or register chat service: $userName $passWord")
+    coroutineScope.launch {
         val clientId = userName ?: ""
 
         val repository = ChatServiceRepositoryImpl(ChatServiceApi())
-        when(val response = repository.register(clientId, tinodeId) ) {
+        when (val response = repository.register(clientId, tinodeId)) {
             is Result.Ok -> {
-                completion.invoke(true, "register success ${response.data.message}")
+                completion.invoke("register success ${response.data.message}", null)
             }
+
             is Result.Exception -> {
-                completion.invoke(false, "register failed ${response.errorMessage}")
-            }
-            else -> {
-                completion.invoke(false, "register failed Network")
+                completion.invoke(null, "register failed ${response.errorMessage}")
             }
         }
     }
-
-
 }
 
