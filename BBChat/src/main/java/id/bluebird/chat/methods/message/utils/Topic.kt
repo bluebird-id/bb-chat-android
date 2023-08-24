@@ -169,15 +169,8 @@ fun MessageActivity.changeTopic(
     Log.e("BBChat", "changeTopic: $topicName")
     val tinode = Cache.getTinode()
 
-
-    val myTopic = tinode.getTopic(topicName)
-    if (myTopic == null) {
-        Log.e("BBChat", "Invalid topic '$mTopicName'")
-        return false
-    }
-
-    val topic: ComTopic<VxCard> = try {
-        tinode.getTopic(topicName) as ComTopic<VxCard>
+    val topic: ComTopic<VxCard>? = try {
+        tinode.getTopic(topicName) as ComTopic<VxCard>?
     } catch (ex: ClassCastException) {
         Log.w(MessageActivity.TAG, "Failed to switch topics: non-comm topic")
         return false
