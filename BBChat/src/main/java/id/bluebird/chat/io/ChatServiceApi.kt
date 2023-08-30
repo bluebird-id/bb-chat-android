@@ -26,10 +26,7 @@ class ChatServiceApi {
 
             return object : ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOptions.withDeadlineAfter(30, TimeUnit.SECONDS))) {
                 override fun sendMessage(message: ReqT) {
-                    if (true) {
-                        val headersBuilder = Headers.Builder()
-                        headersBuilder.add("userid", "driver12")
-                    }
+
                     super.sendMessage(message)
 
                 }
@@ -39,6 +36,14 @@ class ChatServiceApi {
                 }
 
                 override fun start(responseListener: Listener<RespT>?, headers: Metadata?) {
+                    lateinit var metadata: Metadata
+                    if (true) {
+                        val USRID_KEY: Metadata.Key<String> = Metadata.Key.of("userid", Metadata.ASCII_STRING_MARSHALLER)
+                        headers?.put(USRID_KEY, "driver12")
+                        headers?.let{
+                            metadata = headers
+                        }
+                    }
                     super.start(responseListener, headers)
                 }
             }
