@@ -6,14 +6,48 @@ import grpc.ChatServiceGrpc.ChatServiceFutureStub
 import grpc.Chatservice
 import id.bluebird.chat.io.network.Result
 import id.bluebird.chat.io.network.awaitResult
+import io.grpc.CallOptions
+import io.grpc.Channel
+import io.grpc.ClientCall
+import io.grpc.ClientInterceptor
+import io.grpc.ForwardingClientCall
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
+import io.grpc.Metadata
+import io.grpc.MethodDescriptor
+import okhttp3.Headers
 import java.util.concurrent.TimeUnit
 
 class ChatServiceApi {
 
+    private val interceptor = object : ClientInterceptor {
+
+        override fun <ReqT, RespT> interceptCall(method: MethodDescriptor<ReqT, RespT>, callOptions: CallOptions, next: Channel): ClientCall<ReqT, RespT> {
+
+            return object : ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOptions.withDeadlineAfter(30, TimeUnit.SECONDS))) {
+                override fun sendMessage(message: ReqT) {
+                    if (true) {
+                        val headersBuilder = Headers.Builder()
+                        headersBuilder.add("userid", "driver12")
+                    }
+                    super.sendMessage(message)
+
+                }
+
+                override fun request(numMessages: Int) {
+                    super.request(numMessages)
+                }
+
+                override fun start(responseListener: Listener<RespT>?, headers: Metadata?) {
+                    super.start(responseListener, headers)
+                }
+            }
+        }
+    }
+
     val channel: ManagedChannel = ManagedChannelBuilder.forAddress("34.124.216.166", 6969)
         .usePlaintext()
+        .intercept(interceptor)
         .build()
 
     /*** login or register ***/
