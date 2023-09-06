@@ -39,7 +39,7 @@ class ChatServiceApi {
                     lateinit var metadata: Metadata
                     if (true) {
                         val USRID_KEY: Metadata.Key<String> = Metadata.Key.of("userid", Metadata.ASCII_STRING_MARSHALLER)
-                        headers?.put(USRID_KEY, "driver12")
+                        headers?.put(USRID_KEY, "customer1114")
                         headers?.let{
                             metadata = headers
                         }

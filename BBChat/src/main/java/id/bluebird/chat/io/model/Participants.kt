@@ -6,8 +6,8 @@ import java.io.Serializable
 
 @Keep
 class Participants(
-    @SerializedName("participants_id_list")
-    val participantsIdlist: List<String> = listOf(),
-    @SerializedName("room_id")
-    val roomId: String = "",
+    @SerializedName("call_room_id")
+    val callRoomId: String = "",
+    @SerializedName("chat_room_id")
+    val chatRoomId: String = "",
 ) : Serializable

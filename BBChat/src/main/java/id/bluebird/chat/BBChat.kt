@@ -1,11 +1,12 @@
 package id.bluebird.chat
 
 import android.app.Activity
+import id.bluebird.chat.io.model.Participants
+import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom
 import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
+import id.bluebird.chat.methods.logout as BBChatLogout
 import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
 import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
-import id.bluebird.chat.methods.logout as BBChatLogout
-import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom
 
 class BBChat {
 
@@ -20,7 +21,7 @@ class BBChat {
         fun getRoom(
             context: Activity,
             orderId: String,
-            onSuccess: (result: String?) -> Unit,
+            onSuccess: (result: Participants?) -> Unit,
             onError: (result: String?) -> Unit
         ) = BBChatGetRoom(context, orderId, onSuccess, onError)
 

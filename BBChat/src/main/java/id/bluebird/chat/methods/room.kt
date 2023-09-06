@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Log
 import id.bluebird.chat.io.ChatServiceApi
 import id.bluebird.chat.io.ChatServiceRepositoryImpl
+import id.bluebird.chat.io.model.Participants
 import id.bluebird.chat.io.network.Result
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -11,7 +12,7 @@ import kotlinx.coroutines.launch
 fun getRoomByOrderId(
     activity: Activity,
     orderId: String,
-    onSuccess: (result: String?) -> Unit,
+    onSuccess: (result: Participants?) -> Unit,
     onError: (result: String?) -> Unit
 ) {
     Log.e("BBChat", "GetParticipant , orderid = $orderId")
@@ -21,7 +22,7 @@ fun getRoomByOrderId(
         val repository = ChatServiceRepositoryImpl(ChatServiceApi())
         when (val response = repository.getParticipants(orderId)) {
             is Result.Ok -> {
-                onSuccess.invoke(response.data.participants.roomId)
+                onSuccess.invoke(response.data.participants)
             }
 
             is Result.Exception -> {

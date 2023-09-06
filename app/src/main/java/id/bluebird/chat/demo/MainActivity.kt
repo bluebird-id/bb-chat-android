@@ -62,7 +62,8 @@ fun MainScreen(
     val db = BaseDb.getInstance()
     val isLoading = remember { mutableStateOf(false) }
     val isLogin = remember { mutableStateOf(db.isReady) }
-    val topicName = remember { mutableStateOf("") }
+    val chatTopicName = remember { mutableStateOf("") }
+    val callTopicName = remember { mutableStateOf("") }
 
     val context = LocalContext.current as Activity
 
@@ -88,8 +89,10 @@ fun MainScreen(
                 )
             }
 
-            val usernameState = remember { mutableStateOf("customer113") }
+            val usernameState = remember { mutableStateOf("customer1114") }
             val passwordState = remember { mutableStateOf(usernameState.value) }
+
+            val orderIdState = remember { mutableStateOf("") }
 
 
             Column(
@@ -103,6 +106,14 @@ fun MainScreen(
                     label = { Text("Username") },
                     modifier = Modifier.testTag("username_field")
                 )
+                if (isLogin.value && chatTopicName.value.isEmpty()) {
+                    OutlinedTextField(
+                        value = orderIdState.value,
+                        onValueChange = { orderIdState.value = it },
+                        label = { Text("Order Id") },
+                        modifier = Modifier.testTag("order_id_field")
+                    )
+                }
                 if (false) {
                     OutlinedTextField(
                         value = passwordState.value,
@@ -150,11 +161,12 @@ fun MainScreen(
 
                         BBChat.getRoom(
                             context = context,
-                            orderId = "23423482384",
+                            orderId = orderIdState.value,
                             onSuccess = {
                                 isLoading.value = false
 
-                                topicName.value = it ?: ""
+                                chatTopicName.value = it?.chatRoomId ?: ""
+                                callTopicName.value = it?.callRoomId ?: ""
 
                                 context.runOnUiThread {
                                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT)
@@ -171,7 +183,7 @@ fun MainScreen(
                             }
                         )
                     },
-                    enabled = isLogin.value,
+                    enabled = isLogin.value && chatTopicName.value.isEmpty(),
                     textButton = "Get Room / Participant"
                 )
                 MainButton(
@@ -179,10 +191,10 @@ fun MainScreen(
                     onClick = {
                         BBChat.toMessageScreen(
                             context = context,
-                            topicName = topicName.value,
+                            topicName = chatTopicName.value,
                         )
                     },
-                    enabled = isLogin.value && topicName.value.isNotEmpty(),
+                    enabled = isLogin.value && chatTopicName.value.isNotEmpty(),
                     textButton = "Open Chat"
                 )
                 MainButton(
@@ -190,17 +202,18 @@ fun MainScreen(
                     onClick = {
                         BBChat.toCallScreen(
                             context = context,
-                            topicName = topicName.value,
+                            topicName = callTopicName.value,
                         )
                     },
-                    enabled = isLogin.value && topicName.value.isNotEmpty(),
+                    enabled = isLogin.value && callTopicName.value.isNotEmpty(),
                     textButton = "Open Call"
                 )
                 MainButton(
                     modifier = modifier,
                     onClick = {
                         isLogin.value = BBChat.logout()
-                        topicName.value = ""
+                        chatTopicName.value = ""
+                        callTopicName.value = ""
                     },
                     enabled = isLogin.value,
                     textButton = "Logout"

@@ -8,8 +8,8 @@ class ParticipantsResp {
 
     fun setItem(response: Chatservice.GetParticipantsResponse) {
         participants = Participants(
-            participantsIdlist = response.participantsIdListList,
-            roomId = response.roomId,
+            chatRoomId = response.chatRoomId,
+            callRoomId = response.callRoomId,
         )
     }
 }
