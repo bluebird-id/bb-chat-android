@@ -15,16 +15,24 @@ import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.grpc.Metadata
 import io.grpc.MethodDescriptor
-import okhttp3.Headers
 import java.util.concurrent.TimeUnit
 
 class ChatServiceApi {
 
     private val interceptor = object : ClientInterceptor {
 
-        override fun <ReqT, RespT> interceptCall(method: MethodDescriptor<ReqT, RespT>, callOptions: CallOptions, next: Channel): ClientCall<ReqT, RespT> {
+        override fun <ReqT, RespT> interceptCall(
+            method: MethodDescriptor<ReqT, RespT>,
+            callOptions: CallOptions,
+            next: Channel
+        ): ClientCall<ReqT, RespT> {
 
-            return object : ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(next.newCall(method, callOptions.withDeadlineAfter(30, TimeUnit.SECONDS))) {
+            return object : ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(
+                next.newCall(
+                    method,
+                    callOptions.withDeadlineAfter(30, TimeUnit.SECONDS)
+                )
+            ) {
                 override fun sendMessage(message: ReqT) {
 
                     super.sendMessage(message)
@@ -38,9 +46,10 @@ class ChatServiceApi {
                 override fun start(responseListener: Listener<RespT>?, headers: Metadata?) {
                     lateinit var metadata: Metadata
                     if (true) {
-                        val USRID_KEY: Metadata.Key<String> = Metadata.Key.of("userid", Metadata.ASCII_STRING_MARSHALLER)
-                        headers?.put(USRID_KEY, "customer1114")
-                        headers?.let{
+                        val USRID_KEY: Metadata.Key<String> =
+                            Metadata.Key.of("userid", Metadata.ASCII_STRING_MARSHALLER)
+                        headers?.put(USRID_KEY, "customer23")
+                        headers?.let {
                             metadata = headers
                         }
                     }
@@ -82,7 +91,7 @@ class ChatServiceApi {
         .setOrderId(orderId)
         .build()
 
-    suspend fun <T: Any> getParticipantByOrderIdFuture(
+    suspend fun <T : Any> getParticipantByOrderIdFuture(
         orderId: String,
         transform: Chatservice.GetParticipantsResponse.() -> T
     ): Result<T> {

@@ -30,7 +30,7 @@ import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.demos.call.incoming.IncomingCallFragment;
 import id.bluebird.chat.sdk.media.VxCard;
 
-public class CallActivity extends AppCompatActivity  {
+public class CallActivity extends AppCompatActivity {
     private static final String TAG = "CallActivity";
 
     static final String FRAGMENT_ACTIVE = "active_call";
@@ -80,15 +80,38 @@ public class CallActivity extends AppCompatActivity  {
 
         mTopicName = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC);
         mSeq = intent.getIntExtra(Const.INTENT_EXTRA_SEQ, -1);
-        // noinspection unchecked
-        mTopic = (ComTopic<VxCard>) mTinode.getTopic(mTopicName);
-        if (mTopic == null) {
-            Log.e(TAG, "Invalid topic '" + mTopicName + "'");
-            finish();
+//        // noinspection unchecked
+//        mTopic = (ComTopic<VxCard>) mTinode.getTopic(mTopicName);
+//        if (mTopic == null) {
+//            Log.e(TAG, "Invalid topic '" + mTopicName + "'");
+//            finish();
+//            return;
+//        }
+
+        ComTopic<VxCard> topic;
+        try {
+            //noinspection unchecked
+            topic = (ComTopic<VxCard>) mTinode.getTopic(mTopicName);
+        } catch (ClassCastException ex) {
+            Log.w(TAG, "Failed to switch topics: non-comm topic");
             return;
         }
+        mTopic = topic;
 
-        Cache.setSelectedTopicName(mTopicName);
+        if (mTopic == null) {
+            Cache.setSelectedTopicName(mTopicName);
+
+            try {
+                //noinspection unchecked
+                mTopic = (ComTopic<VxCard>) mTinode.newTopic(mTopicName, null);
+            } catch (ClassCastException ex) {
+                Log.w(TAG, "New topic is a non-comm topic: " + mTopicName);
+                return;
+            }
+        } else {
+            Cache.setSelectedTopicName(mTopicName);
+        }
+
         mLoginListener = new EventListener();
         mTinode.addListener(mLoginListener);
 
@@ -116,10 +139,10 @@ public class CallActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_call);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         // Turn screen on and unlock.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {

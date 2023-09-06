@@ -89,7 +89,7 @@ fun MainScreen(
                 )
             }
 
-            val usernameState = remember { mutableStateOf("customer1114") }
+            val usernameState = remember { mutableStateOf("customer23") }
             val passwordState = remember { mutableStateOf(usernameState.value) }
 
             val orderIdState = remember { mutableStateOf("") }
@@ -104,7 +104,8 @@ fun MainScreen(
                     value = usernameState.value,
                     onValueChange = { usernameState.value = it },
                     label = { Text("Username") },
-                    modifier = Modifier.testTag("username_field")
+                    modifier = Modifier.testTag("username_field"),
+                    enabled = !isLogin.value,
                 )
                 if (isLogin.value && chatTopicName.value.isEmpty()) {
                     OutlinedTextField(
