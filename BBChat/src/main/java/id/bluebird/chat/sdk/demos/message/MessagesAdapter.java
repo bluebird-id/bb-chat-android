@@ -108,12 +108,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     // Bits defining message bubble variations
     // _TIP == "single", i.e. has a bubble tip.
     // _DATE == the date bubble is visible.
-    private static final int VIEWTYPE_SIDE_LEFT   = 0b000010;
-    private static final int VIEWTYPE_SIDE_RIGHT  = 0b000100;
-    private static final int VIEWTYPE_TIP         = 0b001000;
-    private static final int VIEWTYPE_AVATAR      = 0b010000;
-    private static final int VIEWTYPE_DATE        = 0b100000;
-    private static final int VIEWTYPE_INVALID     = 0b000000;
+    private static final int VIEWTYPE_SIDE_LEFT = 0b000010;
+    private static final int VIEWTYPE_SIDE_RIGHT = 0b000100;
+    private static final int VIEWTYPE_TIP = 0b001000;
+    private static final int VIEWTYPE_AVATAR = 0b010000;
+    private static final int VIEWTYPE_DATE = 0b100000;
+    private static final int VIEWTYPE_INVALID = 0b000000;
 
     // Duration of a message bubble animation in ms.
     private static final int MESSAGE_BUBBLE_ANIMATION_SHORT = 150;
@@ -320,7 +320,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     private String messageFrom(StoredMessage msg) {
-        Tinode tinode =  Cache.getTinode();
+        Tinode tinode = Cache.getTinode();
         String uname = null;
         if (tinode.isMe(msg.from)) {
             MeTopic<VxCard> me = tinode.getMeTopic();
@@ -428,12 +428,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
         int layoutId = -1;
         if ((viewType & VIEWTYPE_SIDE_LEFT) != 0) {
-            if ((viewType & VIEWTYPE_AVATAR) != 0 && (viewType & VIEWTYPE_TIP) != 0) {
-                layoutId = R.layout.message_left_single_avatar;
-            } else if ((viewType & VIEWTYPE_TIP) != 0) {
+            if ((viewType & VIEWTYPE_TIP) != 0) {
                 layoutId = R.layout.message_left_single;
-            } else if ((viewType & VIEWTYPE_AVATAR) != 0) {
-                layoutId = R.layout.message_left_avatar;
             } else {
                 layoutId = R.layout.message_left;
             }
@@ -695,8 +691,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         int from = vh.mMessageBubble.getResources().getColor(isMine ?
                 R.color.colorMessageBubbleOther : R.color.colorMessageBubbleMine, null);
         int to = vh.mMessageBubble.getResources().getColor(isMine ?
-                (light ? R.color.colorMessageBubbleOtherFlashingLight : R.color.colorMessageBubbleOtherFlashing) :
-                (light ? R.color.colorMessageBubbleMineFlashingLight: R.color.colorMessageBubbleMineFlashing),
+                        (light ? R.color.colorMessageBubbleOtherFlashingLight : R.color.colorMessageBubbleOtherFlashing) :
+                        (light ? R.color.colorMessageBubbleMineFlashingLight : R.color.colorMessageBubbleMineFlashing),
                 null);
         ValueAnimator colorAnimation = ValueAnimator.ofArgb(from, to, from);
         colorAnimation.setDuration(light ? MESSAGE_BUBBLE_ANIMATION_SHORT : MESSAGE_BUBBLE_ANIMATION_LONG);
@@ -956,6 +952,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                                 mRippleOverlay.postDelayed(() -> mRippleOverlay.setPressed(false), 250);
                             }
                         }
+
                         @Override
                         public boolean onDown(@NonNull MotionEvent ev) {
                             // Convert click coordinates in itemView to TexView.
@@ -1191,7 +1188,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             }
 
             Bundle args = null;
-            Uri ref =  UiUtils.getUriVal("ref", data);
+            Uri ref = UiUtils.getUriVal("ref", data);
             if (ref != null) {
                 args = new Bundle();
                 args.putParcelable(AttachmentHandler.ARG_REMOTE_URI, ref);
@@ -1214,6 +1211,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
             return args;
         }
+
         private boolean clickImage(Map<String, Object> data) {
             Bundle args = mediaClick(data);
 
