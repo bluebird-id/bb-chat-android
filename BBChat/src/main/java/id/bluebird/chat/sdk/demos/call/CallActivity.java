@@ -78,7 +78,7 @@ public class CallActivity extends AppCompatActivity {
 
         mTinode = Cache.getTinode();
 
-        mTopicName = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC);
+        mTopicName = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC_CHAT);
         mSeq = intent.getIntExtra(Const.INTENT_EXTRA_SEQ, -1);
 //        // noinspection unchecked
 //        mTopic = (ComTopic<VxCard>) mTinode.getTopic(mTopicName);
@@ -230,7 +230,7 @@ public class CallActivity extends AppCompatActivity {
         }
 
         args = args != null ? args : new Bundle();
-        args.putString(Const.INTENT_EXTRA_TOPIC, mTopicName);
+        args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
         args.putInt(Const.INTENT_EXTRA_SEQ, mSeq);
 
         if (fragment.getArguments() != null) {

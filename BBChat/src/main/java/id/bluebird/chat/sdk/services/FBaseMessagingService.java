@@ -302,7 +302,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
             requestCode = topicName.hashCode();
             // Communication on a known topic
             intent = new Intent(this, MessageActivity.class);
-            intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName);
+            intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent,
@@ -345,7 +345,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
                         final Intent intent = new Intent(this, HangUpBroadcastReceiver.class);
                         intent.setAction(Const.INTENT_ACTION_CALL_CLOSE);
-                        intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName);
+                        intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
                         intent.putExtra(Const.INTENT_EXTRA_SEQ, origSeq);
                         lbm.sendBroadcast(intent);
                     }

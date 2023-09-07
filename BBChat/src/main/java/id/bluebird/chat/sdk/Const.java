@@ -6,7 +6,8 @@ public class Const {
 
     public static final String INTENT_ACTION_CALL_CLOSE = "bluebird.intent.action.call.CLOSE";
 
-    public static final String INTENT_EXTRA_TOPIC = "id.bluebird.chat.TOPIC";
+    public static final String INTENT_EXTRA_TOPIC_CHAT = "id.bluebird.chat.TOPIC_CHAT";
+    public static final String INTENT_EXTRA_TOPIC_CALL = "id.bluebird.chat.TOPIC_CALL";
     public static final String INTENT_EXTRA_SEQ = "id.bluebird.chat.SEQ";
     public static final String INTENT_EXTRA_CALL_DIRECTION = "id.bluebird.chat.CALL_DIRECTION";
     public static final String INTENT_EXTRA_CALL_ACCEPTED = "id.bluebird.chat.CALL_ACCEPTED";

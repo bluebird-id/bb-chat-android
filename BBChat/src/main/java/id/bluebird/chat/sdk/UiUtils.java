@@ -85,7 +85,6 @@ import id.bluebird.chat.R;
 import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.account.Utils;
 import id.bluebird.chat.sdk.db.BaseDb;
-import id.bluebird.chat.sdk.demos.login.LoginActivity;
 import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.widgets.LetterTileDrawable;
 import id.bluebird.chat.sdk.widgets.OnlineDrawable;
@@ -320,7 +319,7 @@ public class UiUtils {
 
         Intent intent = new Intent(activity, MessageActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra(Const.INTENT_EXTRA_TOPIC, "usr7yG--GVH87o");
+        intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, "usr7yG--GVH87o");
         activity.startActivity(intent);
         activity.finish();
     }

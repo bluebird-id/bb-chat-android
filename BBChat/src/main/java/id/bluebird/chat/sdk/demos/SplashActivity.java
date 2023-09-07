@@ -26,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         Intent launch = new Intent(this, BaseDb.getInstance().isReady() ?
                 MessageActivity.class : LoginActivity.class);
         launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        launch.putExtra(Const.INTENT_EXTRA_TOPIC, "usr7yG--GVH87o");
+        launch.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, "usr7yG--GVH87o");
         startActivity(launch);
         finish();
     }

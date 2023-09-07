@@ -192,7 +192,8 @@ fun MainScreen(
                     onClick = {
                         BBChat.toMessageScreen(
                             context = context,
-                            topicName = chatTopicName.value,
+                            topicChatName = chatTopicName.value,
+                            topicCallName = callTopicName.value,
                         )
                     },
                     enabled = isLogin.value && chatTopicName.value.isNotEmpty(),

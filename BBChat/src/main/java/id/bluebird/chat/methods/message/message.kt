@@ -5,10 +5,15 @@ import android.content.Intent
 import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.Const
 
-fun toMessageScreen(context: Activity, topicName: String) {
+fun toMessageScreen(
+    context: Activity,
+    chatTopicName: String,
+    callTopicName: String,
+) {
     val tinode = Cache.getTinode()
     val launch = Intent(context, MessageActivity::class.java)
-    launch.putExtra(Const.INTENT_EXTRA_TOPIC, topicName)
+    launch.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, chatTopicName)
+    launch.putExtra(Const.INTENT_EXTRA_TOPIC_CALL, callTopicName)
     launch.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
     context.startActivity(launch)
 }

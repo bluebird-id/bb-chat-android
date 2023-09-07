@@ -163,15 +163,15 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
     private final ActivityResultLauncher<String> mFileOpenerRequestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-        // Check if permission is granted.
-        if (isGranted) {
-            openFileSelector(requireActivity());
-        }
-    });
+                // Check if permission is granted.
+                if (isGranted) {
+                    openFileSelector(requireActivity());
+                }
+            });
 
     private final ActivityResultLauncher<String[]> mImagePickerRequestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-                for (Map.Entry<String,Boolean> e : result.entrySet()) {
+                for (Map.Entry<String, Boolean> e : result.entrySet()) {
                     // Check if all required permissions are granted.
                     if (!e.getValue()) {
                         return;
@@ -184,7 +184,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
     private final ActivityResultLauncher<String[]> mAudioRecorderPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
-                for (Map.Entry<String,Boolean> e : result.entrySet()) {
+                for (Map.Entry<String, Boolean> e : result.entrySet()) {
                     if (!e.getValue()) {
                         // Some permission is missing. Disable audio recording button.
                         Activity activity = requireActivity();
@@ -211,7 +211,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                 final Bundle args = new Bundle();
                 args.putParcelable(AttachmentHandler.ARG_LOCAL_URI, uri);
                 args.putString(AttachmentHandler.ARG_OPERATION, AttachmentHandler.ARG_OPERATION_FILE);
-                args.putString(Const.INTENT_EXTRA_TOPIC, mTopicName);
+                args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
                 // Show attachment preview.
                 activity.showFragment(MessageActivity.FRAGMENT_FILE_PREVIEW, args, true);
             });
@@ -248,7 +248,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                 args.putString(AttachmentHandler.ARG_OPERATION,
                         isVideo ? AttachmentHandler.ARG_OPERATION_VIDEO :
                                 AttachmentHandler.ARG_OPERATION_IMAGE);
-                args.putString(Const.INTENT_EXTRA_TOPIC, mTopicName);
+                args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
 
                 // Show attachment preview.
                 activity.showFragment(isVideo ? MessageActivity.FRAGMENT_VIEW_VIDEO :
@@ -489,7 +489,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
         Bundle args = getArguments();
         if (args != null) {
-            mTopicName = args.getString(Const.INTENT_EXTRA_TOPIC);
+            mTopicName = args.getString(Const.INTENT_EXTRA_TOPIC_CHAT);
         }
 
         if (mTopicName != null) {
@@ -512,7 +512,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         }
     }
 
-   public void runMessagesLoader(String topicName) {
+    public void runMessagesLoader(String topicName) {
         if (mMessagesAdapter != null) {
             mMessagesAdapter.resetContent(topicName);
         }
@@ -639,7 +639,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         GestureDetector gd = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             public void onLongPress(@NonNull MotionEvent e) {
                 if (!UiUtils.isPermissionGranted(activity, Manifest.permission.RECORD_AUDIO)) {
-                    mAudioRecorderPermissionLauncher.launch(new String[] {
+                    mAudioRecorderPermissionLauncher.launch(new String[]{
                             Manifest.permission.RECORD_AUDIO, Manifest.permission.MODIFY_AUDIO_SETTINGS
                     });
                     return;
@@ -814,7 +814,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
         Bundle args = getArguments();
         if (args != null) {
-            args.putString(Const.INTENT_EXTRA_TOPIC, mTopicName);
+            args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
             // Save the text in the send field.
             String draft = ((EditText) activity.findViewById(R.id.editMessage)).getText().toString().trim();
             args.putString(MESSAGE_TO_SEND, draft);
@@ -839,9 +839,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
     public void onPrepareMenu(@NonNull Menu menu) {
         MenuProvider.super.onPrepareMenu(menu);
         if (mTopic != null && !mTopic.isDeleted()) {
-                boolean callsEnabled = mTopic.isP2PType() &&
-                        Cache.getTinode().getServerParam("iceServers") != null;
-                menu.findItem(R.id.action_audio_call).setVisible(callsEnabled);
+            menu.findItem(R.id.action_audio_call);
         }
     }
 
@@ -969,7 +967,8 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         if (mAudioRecorder != null) {
             try {
                 mAudioRecorder.stop();
-            } catch (RuntimeException ignored) {}
+            } catch (RuntimeException ignored) {
+            }
             mAudioRecorder.release();
             mAudioRecorder = null;
         }
@@ -1216,12 +1215,12 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                             AttachmentHandler.ARG_OPERATION_IMAGE, args);
                     if (op != null) {
                         op.getResult().addListener(() -> {
-                                    if (activity.isFinishing() || activity.isDestroyed()) {
-                                        return;
-                                    }
-                                    activity.syncAllMessages(true);
-                                    notifyDataSetChanged(false);
-                            }, ContextCompat.getMainExecutor(activity));
+                            if (activity.isFinishing() || activity.isDestroyed()) {
+                                return;
+                            }
+                            activity.syncAllMessages(true);
+                            notifyDataSetChanged(false);
+                        }, ContextCompat.getMainExecutor(activity));
                     }
                 }
             }
@@ -1340,7 +1339,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         private void compact() {
             int len = VISUALIZATION_BARS / 2;
             // Donwsample the main buffer: two consecutive samples make one new sample.
-            for (int i = 0; i < len; i ++) {
+            for (int i = 0; i < len; i++) {
                 mSamples[i] = (mSamples[i * 2] + mSamples[i * 2 + 1]) * 0.5f;
             }
             // Copy scratch buffer to the upper half the the main buffer.

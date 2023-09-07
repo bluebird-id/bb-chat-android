@@ -529,7 +529,7 @@ public class ImageViewFragment extends Fragment implements MenuProvider {
                     (int) cutOut.width(), (int) cutOut.height());
         }
 
-        String topicName = args.getString(Const.INTENT_EXTRA_TOPIC);
+        String topicName = args.getString(Const.INTENT_EXTRA_TOPIC_CHAT);
         ((AvatarCompletionHandler) activity).onAcceptAvatar(topicName, bmp);
 
         activity.getSupportFragmentManager().popBackStack();

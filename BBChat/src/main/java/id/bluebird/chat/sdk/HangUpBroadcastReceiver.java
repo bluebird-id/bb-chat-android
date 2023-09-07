@@ -20,7 +20,7 @@ public class HangUpBroadcastReceiver extends BroadcastReceiver {
         nm.cancel(CallManager.NOTIFICATION_TAG_INCOMING_CALL, 0);
 
         if (Const.INTENT_ACTION_CALL_CLOSE.equals(intent.getAction())) {
-            String topicName = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC);
+            String topicName = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC_CHAT);
             int seq = intent.getIntExtra(Const.INTENT_EXTRA_SEQ, -1);
             Topic topic = Cache.getTinode().getTopic(topicName);
             if (topic != null && seq > 0) {

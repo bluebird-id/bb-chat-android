@@ -31,17 +31,14 @@ import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.ContactsManager
 import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.demos.InvalidTopicFragment
-import id.bluebird.chat.sdk.demos.call.CallActivity
 import id.bluebird.chat.sdk.demos.message.MessagesFragment
 import id.bluebird.chat.sdk.media.VxCard
 
-
-
 // Get topic name from Intent the Activity was launched with (push notification, other app, other activity).
-fun MessageActivity.readTopicNameFromIntent(intent: Intent): String? {
+fun MessageActivity.readTopicNameChatFromIntent(intent: Intent): String? {
 
     // Check if the activity was launched by internally-generated intent.
-    var name = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC)
+    var name = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC_CHAT)
     if (!TextUtils.isEmpty(name)) {
         return name
     }
@@ -73,6 +70,14 @@ fun MessageActivity.readTopicNameFromIntent(intent: Intent): String? {
     return name
 }
 
+// Get topic name from Intent the Activity was launched with (push notification, other app, other activity).
+fun readTopicNameCallFromIntent(intent: Intent): String? {
+
+    // Check if the activity was launched by internally-generated intent.
+    var name = intent.getStringExtra(Const.INTENT_EXTRA_TOPIC_CALL)
+    return name
+}
+
 /**
  * Process Subscribe Chat List
  */
@@ -97,7 +102,7 @@ fun MessageActivity.topicAttach() {
 
     if (mTopic!!.isDeleted) {
         setRefreshing(false)
-        UiUtils.setupToolbar(this, mTopic!!.pub, mTopicName, false, null, true)
+        UiUtils.setupToolbar(this, mTopic!!.pub, mTopicChatName, false, null, true)
         maybeShowMessagesFragmentOnAttach()
         return
     }
@@ -118,7 +123,7 @@ fun MessageActivity.topicAttach() {
                     if (fragment is MessagesFragment) {
                         UiUtils.setupToolbar(
                             this@topicAttach, mTopic!!.pub,
-                            mTopicName, mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted
+                            mTopicChatName, mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted
                         )
                     }
                 }
@@ -178,17 +183,17 @@ fun MessageActivity.changeTopic(
     mTopic = topic
 
     var changed = false
-    if (mTopicName == null || mTopicName != topicName) {
+    if (mTopicChatName == null || mTopicChatName != topicName) {
         Cache.setSelectedTopicName(topicName)
-        mTopicName = topicName
+        mTopicChatName = topicName
         changed = true
 
         if (mTopic == null) {
-            UiUtils.setupToolbar(this, null, mTopicName, false, null, false)
+            UiUtils.setupToolbar(this, null, mTopicChatName, false, null, false)
             mTopic = try {
-                tinode.newTopic(mTopicName, null) as ComTopic<VxCard>
+                tinode.newTopic(mTopicChatName, null) as ComTopic<VxCard>
             } catch (ex: ClassCastException) {
-                Log.w(MessageActivity.TAG, "New topic is a non-comm topic: $mTopicName")
+                Log.w(MessageActivity.TAG, "New topic is a non-comm topic: $mTopicChatName")
                 return false
             }
             showFragment(MessageActivity.FRAGMENT_INVALID, null, false)
@@ -196,7 +201,7 @@ fun MessageActivity.changeTopic(
             // Check if another fragment is already visible. If so, don't change it.
         } else if (forceReset || UiUtils.getVisibleFragment(supportFragmentManager) == null) {
             UiUtils.setupToolbar(
-                this, mTopic!!.pub, mTopicName,
+                this, mTopic!!.pub, mTopicChatName,
                 mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted
             )
 
@@ -242,7 +247,7 @@ class TListener internal constructor(val activity: MessageActivity) : ComTopic.C
 
     override fun onSubscribe(code: Int, text: String) {
         // Topic name may change after subscription, i.e. new -> grpXXX
-        activity.mTopicName = activity.mTopic!!.name
+        activity.mTopicChatName = activity.mTopic!!.name
     }
 
     override fun onData(data: MsgServerData) {
@@ -274,7 +279,7 @@ class TListener internal constructor(val activity: MessageActivity) : ComTopic.C
 
             else -> Log.d(
                 TAG,
-                "Topic '" + activity.mTopicName + "' onPres what='" + pres.what + "' (unhandled)"
+                "Topic '" + activity.mTopicChatName + "' onPres what='" + pres.what + "' (unhandled)"
             )
         }
     }
@@ -406,7 +411,7 @@ fun MessageActivity.maybeShowMessagesFragmentOnAttach(): Fragment? {
         showFragment(MessageActivity.FRAGMENT_MESSAGES, null, false)
     } else {
         val fragmsg = fm.findFragmentByTag(MessageActivity.FRAGMENT_MESSAGES) as MessagesFragment?
-        fragmsg?.topicChanged(mTopicName, true)
+        fragmsg?.topicChanged(mTopicChatName, true)
     }
     return visible
 }

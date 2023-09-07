@@ -71,7 +71,7 @@ public class AttachmentHandler extends Worker {
     final public static String ARG_OPERATION_VIDEO = "video";
 
     // Bundle argument names.
-    final public static String ARG_TOPIC_NAME = Const.INTENT_EXTRA_TOPIC;
+    final public static String ARG_TOPIC_NAME = Const.INTENT_EXTRA_TOPIC_CHAT;
     final public static String ARG_LOCAL_URI = "local_uri";
     final public static String ARG_REMOTE_URI = "remote_uri";
     final public static String ARG_SRC_BYTES = "bytes";

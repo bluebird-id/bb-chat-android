@@ -108,7 +108,7 @@ public class IncomingCallFragment extends Fragment
         mListener = new InfoListener();
         tinode.addListener(mListener);
 
-        mTopicName = args.getString(Const.INTENT_EXTRA_TOPIC);
+        mTopicName = args.getString(Const.INTENT_EXTRA_TOPIC_CHAT);
         mSeq = args.getInt(Const.INTENT_EXTRA_SEQ);
 
         // Technically the call is from args.getString(Const.INTENT_EXTRA_SENDER_NAME)

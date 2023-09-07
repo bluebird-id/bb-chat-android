@@ -169,7 +169,7 @@ public class CallFragment extends Fragment {
         }
 
         Tinode tinode = Cache.getTinode();
-        String name = args.getString(Const.INTENT_EXTRA_TOPIC);
+        String name = args.getString(Const.INTENT_EXTRA_TOPIC_CHAT);
         // noinspection unchecked
         mTopic = (ComTopic<VxCard>) tinode.getTopic(name);
 

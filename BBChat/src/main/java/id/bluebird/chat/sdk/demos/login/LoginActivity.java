@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             // We already have a configured account. All good. Launch ContactsActivity and stop.
             Intent intent = new Intent(this, MessageActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra(Const.INTENT_EXTRA_TOPIC, "usr7yG--GVH87o");
+            intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, "usr7yG--GVH87o");
             startActivity(intent);
             finish();
             return;

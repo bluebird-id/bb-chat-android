@@ -9,7 +9,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import co.tinode.tinodesdk.ComTopic
@@ -26,7 +25,8 @@ import id.bluebird.chat.methods.message.utils.changeTopic
 import id.bluebird.chat.methods.message.utils.isFragmentVisible
 import id.bluebird.chat.methods.message.utils.onDownloadComplete
 import id.bluebird.chat.methods.message.utils.onNotificationClick
-import id.bluebird.chat.methods.message.utils.readTopicNameFromIntent
+import id.bluebird.chat.methods.message.utils.readTopicNameCallFromIntent
+import id.bluebird.chat.methods.message.utils.readTopicNameChatFromIntent
 import id.bluebird.chat.sdk.AttachmentHandler
 import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.CallManager
@@ -58,7 +58,9 @@ class MessageActivity : AppCompatActivity() {
     // Notification settings.
     private var mSendTypingNotifications = false
 
-    var mTopicName: String? = null
+    var mTopicChatName: String? = null
+
+    var mTopicCallName: String? = null
 
     var mMessageText: String? = null
 
@@ -78,7 +80,7 @@ class MessageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            mTopicName = savedInstanceState.getString(TOPIC_NAME)
+            mTopicChatName = savedInstanceState.getString(TOPIC_CHAT_NAME)
         }
         setContentView(R.layout.activity_messages)
 
@@ -119,7 +121,7 @@ class MessageActivity : AppCompatActivity() {
         }
 
         return if (item.itemId == R.id.action_audio_call) {
-            CallManager.placeOutgoingCall(this, mTopicName)
+            CallManager.placeOutgoingCall(this, mTopicCallName)
             true
         }else if(item.itemId == android.R.id.home){
             finish()
@@ -139,9 +141,10 @@ class MessageActivity : AppCompatActivity() {
         setupChatHistoryListener()
 
         // If topic name is not saved, get it from intent, internal or external.
-        var topicName = mTopicName
-        if (TextUtils.isEmpty(mTopicName)) {
-            topicName = readTopicNameFromIntent(intent)
+        var topicName = mTopicChatName
+        if (TextUtils.isEmpty(mTopicChatName)) {
+            topicName = readTopicNameChatFromIntent(intent)
+            mTopicCallName = readTopicNameCallFromIntent(intent)
         }
         Log.e("BBChat", topicName.toString())
         if (!changeTopic(topicName, false)) {
@@ -209,13 +212,13 @@ class MessageActivity : AppCompatActivity() {
 
     public override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(TOPIC_NAME, mTopicName)
+        outState.putString(TOPIC_CHAT_NAME, mTopicChatName)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         UiUtils.setVisibleTopic(
             if (hasFocus) {
-                mTopicName
+                mTopicChatName
             } else {
                 null
             }
@@ -266,7 +269,7 @@ class MessageActivity : AppCompatActivity() {
         val fragment =
             supportFragmentManager.findFragmentByTag(FRAGMENT_MESSAGES) as MessagesFragment?
         if (fragment != null && fragment.isVisible) {
-            fragment.runMessagesLoader(mTopicName)
+            fragment.runMessagesLoader(mTopicChatName)
         }
     }
 
@@ -294,7 +297,8 @@ class MessageActivity : AppCompatActivity() {
         }
 
         argsMutable = argsMutable ?: Bundle()
-        argsMutable.putString(Const.INTENT_EXTRA_TOPIC, mTopicName)
+        argsMutable.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicChatName)
+        argsMutable.putString(Const.INTENT_EXTRA_TOPIC_CALL, mTopicCallName)
 
         if (tag == FRAGMENT_MESSAGES) {
             argsMutable.putString(MessagesFragment.MESSAGE_TO_SEND, mMessageText)
@@ -397,7 +401,7 @@ class MessageActivity : AppCompatActivity() {
     // Schedule a delayed {note what="read"} notification.
     fun sendNoteRead(seq: Int) {
         if (mSendReadReceipts) {
-            val msg = mNoteReadHandler.obtainMessage(0, seq, 0, mTopicName)
+            val msg = mNoteReadHandler.obtainMessage(0, seq, 0, mTopicChatName)
             mNoteReadHandler.sendMessageDelayed(msg, MessageActivity.READ_DELAY.toLong())
         }
     }
@@ -426,7 +430,8 @@ class MessageActivity : AppCompatActivity() {
         const val FRAGMENT_VIEW_IMAGE = "view_image"
         const val FRAGMENT_VIEW_VIDEO = "view_video"
         const val FRAGMENT_FILE_PREVIEW = "file_preview"
-        const val TOPIC_NAME = "topicName"
+        const val TOPIC_CHAT_NAME = "topicChatName"
+        const val TOPIC_CALL_NAME = "topicCallName"
         const val MESSAGES_TO_LOAD = 24
         const val READ_DELAY = 1000
     }

@@ -119,7 +119,7 @@ public class CallManager {
         callParams.putParcelable(TelecomManager.EXTRA_PHONE_ACCOUNT_HANDLE, shared.mPhoneAccountHandle);
 
         Bundle extras = new Bundle();
-        extras.putString(Const.INTENT_EXTRA_TOPIC, callee);
+        extras.putString(Const.INTENT_EXTRA_TOPIC_CHAT, callee);
         callParams.putParcelable(TelecomManager.EXTRA_OUTGOING_CALL_EXTRAS, extras);
         try {
             telecomManager.placeCall(Uri.fromParts("tinode", callee, null), callParams);
@@ -139,7 +139,7 @@ public class CallManager {
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
         final Intent intent = new Intent(context, HangUpBroadcastReceiver.class);
         intent.setAction(Const.INTENT_ACTION_CALL_CLOSE);
-        intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName);
+        intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
         intent.putExtra(Const.INTENT_EXTRA_SEQ, seq);
         lbm.sendBroadcast(intent);
     }
@@ -161,7 +161,7 @@ public class CallManager {
         }
 
         Bundle extras = new Bundle();
-        extras.putString(Const.INTENT_EXTRA_TOPIC, caller);
+        extras.putString(Const.INTENT_EXTRA_TOPIC_CHAT, caller);
         extras.putInt(Const.INTENT_EXTRA_SEQ, seq);
 
         final ComTopic topic = (ComTopic) Cache.getTinode().getTopic(caller);
@@ -210,7 +210,7 @@ public class CallManager {
 
         Intent intent = new Intent(context, CallActivity.class);
         intent.setAction(CallActivity.INTENT_ACTION_CALL_START);
-        intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName);
+        intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         context.startActivity(intent);
     }
@@ -313,7 +313,7 @@ public class CallManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION
                 | Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName)
+        intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName)
                 .putExtra(Const.INTENT_EXTRA_SEQ, seq);
         intent.setClass(context, CallActivity.class);
         return PendingIntent.getActivity(context, 101, intent,
@@ -325,7 +325,7 @@ public class CallManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION
                 | Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName)
+        intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName)
                 .putExtra(Const.INTENT_EXTRA_SEQ, seq)
                 .putExtra(Const.INTENT_EXTRA_CALL_ACCEPTED, true);
         intent.setClass(context, CallActivity.class);
@@ -341,7 +341,7 @@ public class CallManager {
     private static PendingIntent declineIntent(Context context, String topicName, int seq) {
         final Intent intent = new Intent(context, HangUpBroadcastReceiver.class);
         intent.setAction(Const.INTENT_ACTION_CALL_CLOSE);
-        intent.putExtra(Const.INTENT_EXTRA_TOPIC, topicName);
+        intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
         intent.putExtra(Const.INTENT_EXTRA_SEQ, seq);
         return PendingIntent.getBroadcast(context, 103, intent,
                 PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
