@@ -102,7 +102,7 @@ fun MessageActivity.topicAttach() {
 
     if (mTopic!!.isDeleted) {
         setRefreshing(false)
-        UiUtils.setupToolbar(this, mTopic!!.pub, mTopicChatName, false, null, true)
+        UiUtils.setupToolbar(this, mTopic!!.pub, mTopicChatName, false, null, true, null)
         maybeShowMessagesFragmentOnAttach()
         return
     }
@@ -123,7 +123,7 @@ fun MessageActivity.topicAttach() {
                     if (fragment is MessagesFragment) {
                         UiUtils.setupToolbar(
                             this@topicAttach, mTopic!!.pub,
-                            mTopicChatName, mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted
+                            mTopicChatName, mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted, null
                         )
                     }
                 }
@@ -189,7 +189,7 @@ fun MessageActivity.changeTopic(
         changed = true
 
         if (mTopic == null) {
-            UiUtils.setupToolbar(this, null, mTopicChatName, false, null, false)
+            UiUtils.setupToolbar(this, null, mTopicChatName, false, null, false, null)
             mTopic = try {
                 tinode.newTopic(mTopicChatName, null) as ComTopic<VxCard>
             } catch (ex: ClassCastException) {
@@ -202,7 +202,7 @@ fun MessageActivity.changeTopic(
         } else if (forceReset || UiUtils.getVisibleFragment(supportFragmentManager) == null) {
             UiUtils.setupToolbar(
                 this, mTopic!!.pub, mTopicChatName,
-                mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted
+                mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted, null
             )
 
             // Reset requested or no fragment is visible. Show default and clear back stack.
@@ -344,7 +344,7 @@ class TListener internal constructor(val activity: MessageActivity) : ComTopic.C
                 } else if (fragment is MessagesFragment) {
                     UiUtils.setupToolbar(
                         activity, activity.mTopic!!.pub, activity.mTopic!!.name,
-                        activity.mTopic!!.online, activity.mTopic!!.lastSeen, activity.mTopic!!.isDeleted
+                        activity.mTopic!!.online, activity.mTopic!!.lastSeen, activity.mTopic!!.isDeleted, null
                     )
                     fragment.notifyDataSetChanged(true)
                 }

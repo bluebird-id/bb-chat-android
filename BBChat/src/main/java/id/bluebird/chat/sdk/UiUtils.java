@@ -110,8 +110,15 @@ public class UiUtils {
         NONE, REPLY
     }
 
-    public static void setupToolbar(final Activity activity, final VxCard pub,
-                             final String topicName, final boolean online, final Date lastSeen, boolean deleted) {
+    public static void setupToolbar(
+            final Activity activity,
+            final VxCard pub,
+            final String topicName,
+            final boolean online,
+            final Date lastSeen,
+            boolean deleted,
+            String otherTopicName
+    ) {
         if (activity == null || activity.isDestroyed() || activity.isFinishing()) {
             return;
         }
@@ -125,7 +132,7 @@ public class UiUtils {
             if (!TextUtils.isEmpty(topicName)) {
                 Boolean showOnline = online;
                 final String title = pub != null && pub.fn != null ?
-                        pub.fn : activity.getString(R.string.placeholder_contact_title);
+                        pub.fn : otherTopicName != null ? otherTopicName : activity.getString(R.string.placeholder_contact_title);
                 toolbar.setTitle(title);
                 if (ComTopic.isChannel(topicName)) {
                     showOnline = null;
@@ -348,7 +355,7 @@ public class UiUtils {
 
     public static LinkedList<String> getMissingPermissions(Context context, String[] permissions) {
         LinkedList<String> missing = new LinkedList<>();
-        for (String permission: permissions) {
+        for (String permission : permissions) {
             if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                 missing.add(permission);
             }
@@ -358,7 +365,7 @@ public class UiUtils {
 
     // Creates or updates the Android account associated with the given UID.
     public static void updateAndroidAccount(final Context context, final String uid, final String secret,
-                                     final String token, final Date tokenExpires) {
+                                            final String token, final Date tokenExpires) {
         final AccountManager am = AccountManager.get(context);
         final Account acc = Utils.createAccount(uid);
         // It's OK to call even if the account already exists.
@@ -483,8 +490,9 @@ public class UiUtils {
 
     /**
      * Ensure that the bitmap is square and no larger than the given max size.
-     * @param bmp       bitmap to scale
-     * @param size   maximum linear size of the bitmap.
+     *
+     * @param bmp  bitmap to scale
+     * @param size maximum linear size of the bitmap.
      * @return scaled bitmap or original, it it does not need ot be cropped or scaled.
      */
     @NonNull
@@ -525,7 +533,7 @@ public class UiUtils {
      * @param bmp       bitmap to scale.
      * @param maxWidth  maximum allowed bitmap width.
      * @param maxHeight maximum allowed bitmap height.
-     * @param upscale enable increasing size of the image (up to 10x).
+     * @param upscale   enable increasing size of the image (up to 10x).
      * @return scaled bitmap or original, it it does not need to be scaled.
      */
     @NonNull
@@ -639,9 +647,9 @@ public class UiUtils {
         } else {
             LetterTileDrawable drawable = new LetterTileDrawable(context);
             drawable.setContactTypeAndColor(
-                    Topic.isP2PType(address) ?
-                            LetterTileDrawable.ContactType.PERSON :
-                            LetterTileDrawable.ContactType.GROUP, disabled)
+                            Topic.isP2PType(address) ?
+                                    LetterTileDrawable.ContactType.PERSON :
+                                    LetterTileDrawable.ContactType.GROUP, disabled)
                     .setLetterAndColor(name, address, disabled)
                     .setIsCircular(true);
             return drawable;
@@ -795,9 +803,10 @@ public class UiUtils {
 
     /**
      * Send request to server with a new avatar after optionally uploading the avatar if required.
+     *
      * @param topic topic to update
-     * @param bmp new avatar
-     * @param <T> type of the topic
+     * @param bmp   new avatar
+     * @param <T>   type of the topic
      * @return result of the request to the server.
      */
     @SuppressWarnings("UnusedReturnValue")
@@ -812,15 +821,15 @@ public class UiUtils {
 
         return AttachmentHandler.uploadAvatar(pub, bmp, topic.getName())
                 .thenApply(new PromisedReply.SuccessListener<ServerMessage>() {
-            @Override
-            public PromisedReply<ServerMessage> onSuccess(ServerMessage result) {
-                String[] attachments = null;
-                if (pub.isPhotoRef()) {
-                    attachments = pub.getPhotoRefs();
-                }
-                return topic.setDescription(pub, null, attachments);
-            }
-        });
+                    @Override
+                    public PromisedReply<ServerMessage> onSuccess(ServerMessage result) {
+                        String[] attachments = null;
+                        if (pub.isPhotoRef()) {
+                            attachments = pub.getPhotoRefs();
+                        }
+                        return topic.setDescription(pub, null, attachments);
+                    }
+                });
     }
 
     public static boolean attachMeTopic(final Activity activity, final MeEventListener l) {
@@ -1054,7 +1063,7 @@ public class UiUtils {
 
     // Click on a view to open the given URL.
     static void clickToBrowseURL(View view, String url) {
-        Uri uri =  Uri.parse(url);
+        Uri uri = Uri.parse(url);
         if (uri == null) {
             return;
         }
