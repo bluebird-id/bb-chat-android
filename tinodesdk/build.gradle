@@ -6,7 +6,7 @@ android {
     namespace 'co.tinode.tinodesdk'
 
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 33
         buildConfigField 'int', 'VERSION_CODE', "1"
         buildConfigField 'String', 'VERSION_NAME', "\"0.0.0\""
@@ -47,7 +47,7 @@ afterEvaluate{
                 from components.release
                 groupId = 'com.github.alan-tayirazraq'
                 artifactId = 'tinodesdk'
-                version = '0.0.8'
+                version = '0.0.9'
             }
         }
     }

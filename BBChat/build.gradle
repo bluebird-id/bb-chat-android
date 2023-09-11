@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 23
         targetSdkVersion 33
         vectorDrawables.useSupportLibrary = true
 
@@ -180,7 +180,7 @@ afterEvaluate{
                 from components.release
                 groupId = 'com.github.alan-tayirazraq'
                 artifactId = 'BBChat'
-                version = '0.0.8'
+                version = '0.0.9'
             }
         }
     }

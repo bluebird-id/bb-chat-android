@@ -67,6 +67,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,DataExtractionRules"
+        tools:replace="android:icon"
         tools:targetApi="q">
 
         <meta-data
@@ -74,7 +75,8 @@
             android:resource="@string/asset_statements" /> <!-- Default icon for push notifications. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_icon_push" /> <!-- Default color for push notifications. -->
+            android:resource="@drawable/ic_icon_push"
+            tools:replace="android:resource" /> <!-- Default color for push notifications. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -85,19 +87,19 @@
 
             <!-- Required filter used by the system to launch the account service. -->
             <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator"/>
+                <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
             <!-- This points to an XMLf ile which describes the account service. -->
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator"/>
+                android:resource="@xml/authenticator" />
         </service>
 
         <activity
             android:name=".sdk.demos.SplashActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme" />
         <activity
             android:name=".sdk.demos.login.LoginActivity"
             android:exported="true"
@@ -142,9 +144,9 @@
         <activity
             android:name=".sdk.demos.call.CallActivity"
             android:exported="false"
-            android:theme="@style/AppTheme"
             android:screenOrientation="locked"
-            android:showOnLockScreen="true">
+            android:showOnLockScreen="true"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="tindroidx.intent.action.call.INCOMING" />
 
@@ -177,10 +179,12 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="id.bluebird.chat.provider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
+                android:resource="@xml/provider_paths"
+                tools:replace="android:resource" />
         </provider>
     </application>
 
