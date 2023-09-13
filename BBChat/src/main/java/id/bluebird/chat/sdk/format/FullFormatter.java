@@ -217,7 +217,7 @@ public class FullFormatter extends AbstractDraftyFormatter<SpannableStringBuilde
         StateListDrawable play = (StateListDrawable) AppCompatResources.getDrawable(ctx, R.drawable.ic_play_pause);
         //noinspection ConstantConditions
         play.setBounds(0, 0, play.getIntrinsicWidth() * 3 / 2, play.getIntrinsicHeight() * 3 / 2);
-        play.setTint(res.getColor(R.color.colorAccent, null));
+        play.setTint(res.getColor(android.R.color.black, null));
         ImageSpan span = new ImageSpan(play, ImageSpan.ALIGN_BOTTOM);
         final Rect bounds = span.getDrawable().getBounds();
         result.append(" ", span, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

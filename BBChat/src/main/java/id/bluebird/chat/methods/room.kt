@@ -1,6 +1,5 @@
 package id.bluebird.chat.methods
 
-import android.app.Activity
 import android.util.Log
 import id.bluebird.chat.io.ChatServiceApi
 import id.bluebird.chat.io.ChatServiceRepositoryImpl
@@ -10,7 +9,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 fun getRoomByOrderId(
-    activity: Activity,
+    userId: String,
     orderId: String,
     onSuccess: (result: Participants?) -> Unit,
     onError: (result: String?) -> Unit
@@ -19,7 +18,7 @@ fun getRoomByOrderId(
 
     GlobalScope.launch {
 
-        val repository = ChatServiceRepositoryImpl(ChatServiceApi())
+        val repository = ChatServiceRepositoryImpl(ChatServiceApi(userId))
         when (val response = repository.getParticipants(orderId)) {
             is Result.Ok -> {
                 onSuccess.invoke(response.data.participants)

@@ -19,11 +19,11 @@ class BBChat {
         ) = BBChatLogin(username, activity, onSuccess, onError)
 
         fun getRoom(
-            context: Activity,
+            userId: String,
             orderId: String,
             onSuccess: (result: Participants?) -> Unit,
             onError: (result: String?) -> Unit
-        ) = BBChatGetRoom(context, orderId, onSuccess, onError)
+        ) = BBChatGetRoom(userId, orderId, onSuccess, onError)
 
         fun toMessageScreen(
             context: Activity,

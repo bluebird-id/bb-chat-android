@@ -15,6 +15,7 @@ import co.tinode.tinodesdk.model.ServerMessage
 import id.bluebird.chat.R
 import id.bluebird.chat.io.ChatServiceApi
 import id.bluebird.chat.io.ChatServiceRepositoryImpl
+import id.bluebird.chat.io.network.Result
 import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.MyAttachmentHandler
 import id.bluebird.chat.sdk.MyTindroidApp
@@ -23,10 +24,9 @@ import id.bluebird.chat.sdk.TindroidApp
 import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.media.VxCard
-import kotlinx.coroutines.launch
-import id.bluebird.chat.io.network.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -52,7 +52,7 @@ fun loginOrRegister(
 
                 // LOGIN TINODE SUCCESS
                 // LOGIN OR REGISTER CHAT SERVICE
-                loginOrRegisterChatService(activity, result, completion = { _, _ ->
+                loginOrRegisterChatService(result, completion = { _, _ ->
                     onSuccess.invoke("Login Success")
                 })
 
@@ -65,8 +65,8 @@ fun loginOrRegister(
 
                         if (result?.isNotEmpty() == true) {
 
-                            loginOrRegisterChatService(activity, result, completion = { _, _ ->
-                                    onSuccess.invoke("Login Success")
+                            loginOrRegisterChatService(result, completion = { _, _ ->
+                                onSuccess.invoke("Login Success")
                             })
 
                         } else {
@@ -255,7 +255,6 @@ private fun onSuccessLoginTinode(activity: Activity, tinodeId: String) {
 }
 
 private fun loginOrRegisterChatService(
-    activity: Activity,
     tinodeId: String,
     completion: (String?, String?) -> Unit
 ) {
@@ -263,7 +262,7 @@ private fun loginOrRegisterChatService(
     coroutineScope.launch {
         val clientId = userName ?: ""
 
-        val repository = ChatServiceRepositoryImpl(ChatServiceApi())
+        val repository = ChatServiceRepositoryImpl(ChatServiceApi(null))
         when (val response = repository.register(clientId, tinodeId)) {
             is Result.Ok -> {
                 completion.invoke("register success ${response.data.message}", null)

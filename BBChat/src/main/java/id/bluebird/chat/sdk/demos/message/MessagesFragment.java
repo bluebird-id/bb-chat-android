@@ -210,12 +210,19 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                     return;
                 }
 
-                final Bundle args = new Bundle();
-                args.putParcelable(AttachmentHandler.ARG_LOCAL_URI, uri);
-                args.putString(AttachmentHandler.ARG_OPERATION, AttachmentHandler.ARG_OPERATION_FILE);
-                args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
-                // Show attachment preview.
-                activity.showFragment(MessageActivity.FRAGMENT_FILE_PREVIEW, args, true);
+
+                String mimeType = activity.getContentResolver().getType(uri);
+
+                if (mimeType != null && (mimeType.startsWith("image") || mimeType.startsWith("video"))) {
+                    handleMediaPickerLauncher(activity, uri);
+                } else {
+                    final Bundle args = new Bundle();
+                    args.putParcelable(AttachmentHandler.ARG_LOCAL_URI, uri);
+                    args.putString(AttachmentHandler.ARG_OPERATION, AttachmentHandler.ARG_OPERATION_FILE);
+                    args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
+                    // Show attachment preview.
+                    activity.showFragment(MessageActivity.FRAGMENT_FILE_PREVIEW, args, true);
+                }
             });
 
     private final ActivityResultLauncher<String> mNotificationsPermissionLauncher =
@@ -240,22 +247,26 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                     return;
                 }
 
-                String mimeType = activity.getContentResolver().getType(uri);
-                boolean isVideo = mimeType != null && mimeType.startsWith("video");
-
-                final Bundle args = new Bundle();
-                args.putParcelable(AttachmentHandler.ARG_LOCAL_URI, uri);
-                args.putString(AttachmentHandler.ARG_FILE_NAME, uri.getLastPathSegment());
-                args.putString(AttachmentHandler.ARG_FILE_PATH, uri.getPath());
-                args.putString(AttachmentHandler.ARG_OPERATION,
-                        isVideo ? AttachmentHandler.ARG_OPERATION_VIDEO :
-                                AttachmentHandler.ARG_OPERATION_IMAGE);
-                args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
-
-                // Show attachment preview.
-                activity.showFragment(isVideo ? MessageActivity.FRAGMENT_VIEW_VIDEO :
-                        MessageActivity.FRAGMENT_VIEW_IMAGE, args, true);
+                handleMediaPickerLauncher(activity, uri);
             });
+
+    private void handleMediaPickerLauncher(MessageActivity activity, Uri uri) {
+        String mimeType = activity.getContentResolver().getType(uri);
+        boolean isVideo = mimeType != null && mimeType.startsWith("video");
+
+        final Bundle args = new Bundle();
+        args.putParcelable(AttachmentHandler.ARG_LOCAL_URI, uri);
+        args.putString(AttachmentHandler.ARG_FILE_NAME, uri.getLastPathSegment());
+        args.putString(AttachmentHandler.ARG_FILE_PATH, uri.getPath());
+        args.putString(AttachmentHandler.ARG_OPERATION,
+                isVideo ? AttachmentHandler.ARG_OPERATION_VIDEO :
+                        AttachmentHandler.ARG_OPERATION_IMAGE);
+        args.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicName);
+
+        // Show attachment preview.
+        activity.showFragment(isVideo ? MessageActivity.FRAGMENT_VIEW_VIDEO :
+                MessageActivity.FRAGMENT_VIEW_IMAGE, args, true);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

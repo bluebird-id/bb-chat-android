@@ -17,7 +17,9 @@ import io.grpc.Metadata
 import io.grpc.MethodDescriptor
 import java.util.concurrent.TimeUnit
 
-class ChatServiceApi {
+class ChatServiceApi(
+    private val userId: String?,
+) {
 
     private val interceptor = object : ClientInterceptor {
 
@@ -45,10 +47,10 @@ class ChatServiceApi {
 
                 override fun start(responseListener: Listener<RespT>?, headers: Metadata?) {
                     lateinit var metadata: Metadata
-                    if (true) {
+                    if (userId != null) {
                         val USRID_KEY: Metadata.Key<String> =
                             Metadata.Key.of("userid", Metadata.ASCII_STRING_MARSHALLER)
-                        headers?.put(USRID_KEY, "driver23")
+                        headers?.put(USRID_KEY, userId)
                         headers?.let {
                             metadata = headers
                         }
