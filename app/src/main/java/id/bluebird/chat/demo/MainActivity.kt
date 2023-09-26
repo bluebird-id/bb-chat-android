@@ -136,8 +136,6 @@ fun MainScreen(
                             onSuccess = {
                                 isLogin.value = true
                                 isLoading.value = false
-
-                                Log.e("BBChat", "onSuccess: $it")
                             },
                             onError = {
                                 isLogin.value = false
@@ -175,6 +173,7 @@ fun MainScreen(
                                 }
                             },
                             onError = {
+                                Log.e("BBChat", "onError: $it")
                                 isLoading.value = false
 
                                 context.runOnUiThread {
