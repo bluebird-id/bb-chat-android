@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.model.Acs;
 import co.tinode.tinodesdk.model.Defacs;
-import id.bluebird.chat.sdk.TindroidApp;
+import id.bluebird.chat.sdk.app.TindroidApp;
 
 /**
  * SQLite backend. Persistent store for messages and chats.

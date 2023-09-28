@@ -1,6 +1,8 @@
 package id.bluebird.chat.sdk;
 
 public class Const {
+    public static final String FCM_TOKEN = "token";
+    public static final String FCM_REFRESH_TOKEN = "FCM_REFRESH_TOKEN";
     public static final String PREF_TYPING_NOTIF = "pref_typingNotif";
     public static final String PREF_READ_RCPT = "pref_readReceipts";
 

@@ -6,8 +6,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.firebase.messaging.FirebaseMessaging;
-
 import java.util.Locale;
 
 import co.tinode.tinodesdk.ComTopic;
@@ -19,6 +17,7 @@ import co.tinode.tinodesdk.model.MsgServerData;
 import co.tinode.tinodesdk.model.MsgServerInfo;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
+import id.bluebird.chat.sdk.app.TindroidApp;
 import id.bluebird.chat.sdk.db.BaseDb;
 import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.services.CallConnection;

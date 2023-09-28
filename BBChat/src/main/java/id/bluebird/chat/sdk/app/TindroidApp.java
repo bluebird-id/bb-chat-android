@@ -1,4 +1,8 @@
-package id.bluebird.chat.sdk;
+package id.bluebird.chat.sdk.app;
+
+import static id.bluebird.chat.sdk.Const.FCM_REFRESH_TOKEN;
+import static id.bluebird.chat.sdk.Const.INTENT_ACTION_CALL_CLOSE;
+import static id.bluebird.chat.sdk.account.Utils.PREFS_HOST_NAME;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -9,10 +13,8 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -43,7 +45,6 @@ import androidx.preference.PreferenceManager;
 import androidx.work.WorkManager;
 
 import com.android.installreferrer.api.InstallReferrerClient;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -58,6 +59,10 @@ import co.tinode.tinodesdk.ServerResponseException;
 import co.tinode.tinodesdk.Tinode;
 import id.bluebird.chat.BuildConfig;
 import id.bluebird.chat.R;
+import id.bluebird.chat.sdk.BrandingConfig;
+import id.bluebird.chat.sdk.Cache;
+import id.bluebird.chat.sdk.Const;
+import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.account.ContactsObserver;
 import id.bluebird.chat.sdk.account.Utils;
 import id.bluebird.chat.sdk.db.BaseDb;
@@ -67,93 +72,42 @@ import okhttp3.Request;
 /**
  * A class for providing global context for database access
  */
-public class TindroidApp extends Application implements DefaultLifecycleObserver {
+public class TindroidApp extends Application {
     private static final String TAG = "TindroidApp";
-
-    // 256 MB.
-    private static final int PICASSO_CACHE_SIZE = 1024 * 1024 * 256;
-
-    private static TindroidApp sContext;
-
-    private static ContentObserver sContactsObserver = null;
-
-    // The Tinode cache is linked from here so it's never garbage collected.
-    @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private static Cache sCache;
 
     private static String sAppVersion = null;
     private static int sAppBuild = 0;
+    private static TindroidApp sContext;
+    private static ContentObserver sContactsObserver = null;
 
     public TindroidApp() {
         sContext = this;
     }
 
-    public static Context getAppContext() {
-        return sContext;
-    }
-
-    public static String getAppVersion() {
-        return sAppVersion;
-    }
-
-    public static String getDefaultHostName() {
-        return sContext.getResources().getString(isEmulator() ?
-                R.string.emulator_host_name :
-                R.string.default_host_name);
-    }
-
-    public static boolean getDefaultTLS() {
-        return !isEmulator();
-    }
-
-    public static void retainCache(Cache cache) {
-        sCache = cache;
-    }
-
-    // Detect if the code is running in an emulator.
-    // Used mostly for convenience to use correct server address i.e. 10.0.2.2:6060 vs sandbox.tinode.co and
-    // to enable/disable Crashlytics. It's OK if it's imprecise.
-    public static boolean isEmulator() {
-        return Build.FINGERPRINT.startsWith("sdk_gphone_x86")
-                || Build.FINGERPRINT.startsWith("unknown")
-                || Build.MODEL.contains("google_sdk")
-                || Build.MODEL.contains("Emulator")
-                || Build.MODEL.contains("Android SDK built for x86")
-                || Build.MANUFACTURER.contains("Genymotion")
-                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
-                || "google_sdk".equals(Build.PRODUCT)
-                || Build.PRODUCT.startsWith("sdk")
-                || Build.PRODUCT.startsWith("vbox");
-    }
-
-    static synchronized void startWatchingContacts(Context context, Account acc) {
-        if (sContactsObserver == null) {
-            // Check if we have already obtained contacts permissions.
-            if (!UiUtils.isPermissionGranted(context, Manifest.permission.READ_CONTACTS)) {
-                // No permissions, can't set up contacts sync.
-                return;
-            }
-
-            // Create and start a new thread set up as a looper.
-            HandlerThread thread = new HandlerThread("ContactsObserverHandlerThread");
-            thread.start();
-
-            sContactsObserver = new ContactsObserver(acc, new Handler(thread.getLooper()));
-            // Observer which triggers sync when contacts change.
-            sContext.getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI,
-                    true, sContactsObserver);
-        }
-    }
-
-    public static synchronized void stopWatchingContacts() {
-        if (sContactsObserver != null) {
-            sContext.getContentResolver().unregisterContentObserver(sContactsObserver);
-        }
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
+
+        handeAppData();
+
+        setupCrashlytics();
+
+        createNotificationChannels();
+
+        handleBroadcastManager();
+
+        handleProcessLifecycleOwner();
+
+        setupSharedPreferences();
+
+        setupWorkManager();
+
+        setupPicaso();
+
+        listenConnectivity();
+    }
+
+    private void handeAppData() {
         try {
             PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
             sAppVersion = pi.versionName;
@@ -167,125 +121,11 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
         } catch (PackageManager.NameNotFoundException e) {
             Log.w(TAG, "Failed to retrieve app version", e);
         }
+    }
 
-//        // Disable Crashlytics for debug builds.
+    private void setupCrashlytics() {
+//        Disable Crashlytics for debug builds.
 //        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
-
-        BroadcastReceiver br = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String token = intent.getStringExtra("token");
-                if (token != null && !token.equals("")) {
-                    Cache.getTinode().setDeviceToken(token);
-                }
-            }
-        };
-        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        lbm.registerReceiver(br, new IntentFilter("FCM_REFRESH_TOKEN"));
-        lbm.registerReceiver(new HangUpBroadcastReceiver(), new IntentFilter(Const.INTENT_ACTION_CALL_CLOSE));
-
-        createNotificationChannels();
-
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-
-        // Check if preferences already exist. If not, create them.
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        if (TextUtils.isEmpty(pref.getString(Utils.PREFS_HOST_NAME, null))) {
-            // No preferences found. Save default values.
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putString(Utils.PREFS_HOST_NAME, getDefaultHostName());
-            editor.putBoolean(Utils.PREFS_USE_TLS, getDefaultTLS());
-            editor.apply();
-        }
-
-        // Clear completed/failed upload tasks.
-        WorkManager.getInstance(this).pruneWork();
-
-        // Setting up Picasso with auth headers.
-        OkHttpClient client = new OkHttpClient.Builder()
-                .cache(new okhttp3.Cache(createDefaultCacheDir(this), PICASSO_CACHE_SIZE))
-                .addInterceptor(chain -> {
-                    Tinode tinode = Cache.getTinode();
-                    Request picassoReq = chain.request();
-                    Map<String, String> headers;
-                    if (tinode.isTrustedURL(picassoReq.url().url())) {
-                        headers = tinode.getRequestHeaders();
-                        Request.Builder builder = picassoReq.newBuilder();
-                        for (Map.Entry<String, String> el : headers.entrySet()) {
-                            builder = builder.addHeader(el.getKey(), el.getValue());
-                        }
-                        return chain.proceed(builder.build());
-                    } else {
-                        return chain.proceed(picassoReq);
-                    }
-                })
-                .build();
-        Picasso.setSingletonInstance(new Picasso.Builder(this)
-                .requestTransformer(request -> {
-                    // Rewrite relative URIs to absolute.
-                    if (request.uri != null && Tinode.isUrlRelative(request.uri.toString())) {
-                        URL url = Cache.getTinode().toAbsoluteURL(request.uri.toString());
-                        if (url != null) {
-                            return request.buildUpon().setUri(Uri.parse(url.toString())).build();
-                        }
-                    }
-                    return request;
-                })
-                .downloader(new OkHttp3Downloader(client))
-                .build());
-
-        // Listen to connectivity changes.
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        if (cm == null) {
-            return;
-        }
-        NetworkRequest req = new NetworkRequest.
-                Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build();
-        cm.registerNetworkCallback(req, new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onAvailable(@NonNull Network network) {
-                super.onAvailable(network);
-                if (!TextUtils.isEmpty(BaseDb.getInstance().getUid())) {
-                    // Connect right away if UID is available.
-                    Cache.getTinode().reconnectNow(true, false, false);
-                }
-            }
-        });
-    }
-
-    static File createDefaultCacheDir(Context context) {
-        File cache = new File(context.getApplicationContext().getCacheDir(), "picasso-cache");
-        if (!cache.exists()) {
-            // noinspection ResultOfMethodCallIgnored
-            cache.mkdirs();
-        }
-        return cache;
-    }
-
-    @Override
-    public void onStart(@NonNull LifecycleOwner owner) {
-        // Check if the app was installed from an URL with attributed installation source.
-        // If yes, get the config from hosts.tinode.co.
-        if (UiUtils.isAppFirstRun(sContext)) {
-            Executors.newSingleThreadExecutor().execute(() ->
-                    BrandingConfig.getInstallReferrerFromClient(sContext,
-                            InstallReferrerClient.newBuilder(this).build()));
-        }
-
-        // Check if the app has an account already. If so, initialize the shared connection with the server.
-        // Initialization may fail if device is not connected to the network.
-        String uid = BaseDb.getInstance().getUid();
-        if (!TextUtils.isEmpty(uid)) {
-            new LoginWithSavedAccount().execute(uid);
-        }
-    }
-
-    @Override
-    public void onStop(@NonNull LifecycleOwner owner) {
-        // Disconnect now, so the connection does not wait for the timeout.
-        if (Cache.getTinode() != null) {
-            Cache.getTinode().maybeDisconnect(false);
-        }
     }
 
     private void createNotificationChannels() {
@@ -302,10 +142,10 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
                     NotificationManager.IMPORTANCE_HIGH);
             videoCall.setDescription(getString(R.string.video_call_channel_description));
             videoCall.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),
-                            new AudioAttributes.Builder()
-                                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                                    .build());
+                    new AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                            .build());
             videoCall.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             videoCall.enableVibration(true);
             videoCall.enableLights(true);
@@ -319,14 +159,54 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
         }
     }
 
+    private void handleBroadcastManager() {
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        lbm.registerReceiver(new BReceiverRefreshToken(), new IntentFilter(FCM_REFRESH_TOKEN));
+        lbm.registerReceiver(new BReceiverHangUp(), new IntentFilter(INTENT_ACTION_CALL_CLOSE));
+    }
+
+    private void handleProcessLifecycleOwner() {
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(new DefaultLifecycleObserver() {
+            @Override
+            public void onStart(@NonNull LifecycleOwner owner) {
+                // Check if the app was installed from an URL with attributed installation source.
+                // If yes, get the config from hosts.tinode.co.
+                if (UiUtils.isAppFirstRun(sContext)) {
+                    Executors.newSingleThreadExecutor().execute(() ->
+                            BrandingConfig.getInstallReferrerFromClient(sContext,
+                                    InstallReferrerClient.newBuilder(sContext).build()));
+                }
+
+                // Check if the app has an account already. If so, initialize the shared connection with the server.
+                // Initialization may fail if device is not connected to the network.
+                String uid = BaseDb.getInstance().getUid();
+                if (!TextUtils.isEmpty(uid)) {
+                    new LoginWithSavedAccount().execute(uid);
+                }
+            }
+
+            @Override
+            public void onStop(@NonNull LifecycleOwner owner) {
+                // Disconnect now, so the connection does not wait for the timeout.
+                Tinode tinode = Cache.getTinode();
+                if (tinode != null) {
+                    tinode.maybeDisconnect(false);
+                }
+            }
+        });
+    }
+
     // Read saved account credentials and try to connect to server using them.
     // Suppressed lint warning because TindroidApp won't leak: it must exist for the entire lifetime of the app.
     @SuppressLint("StaticFieldLeak")
     private class LoginWithSavedAccount extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... uidWrapper) {
+            Tinode tinode = Cache.getTinode();
+
             final AccountManager accountManager = AccountManager.get(TindroidApp.this);
             final Account account = Utils.getSavedAccount(accountManager, uidWrapper[0]);
+
             if (account != null) {
                 // Check if sync is enabled.
                 if (ContentResolver.getMasterSyncAutomatically()) {
@@ -353,8 +233,6 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
                     Log.e(TAG, "Failure to login with saved account", e);
                 }
 
-                // Must instantiate tinode cache even if token == null. Otherwise logout won't work.
-                final Tinode tinode = Cache.getTinode();
                 if (!TextUtils.isEmpty(token) && expires != null && expires.after(new Date())) {
                     // Connecting with synchronous calls because this is not the UI thread.
                     tinode.setAutoLoginToken(token);
@@ -362,7 +240,7 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
                     try {
                         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(TindroidApp.this);
                         // Sync call throws on error.
-                        tinode.connect(pref.getString(Utils.PREFS_HOST_NAME, getDefaultHostName()),
+                        tinode.connect(pref.getString(PREFS_HOST_NAME, getDefaultHostName()),
                                 pref.getBoolean(Utils.PREFS_USE_TLS, getDefaultTLS()),
                                 false).getResult();
                         if (!tinode.isAuthenticated()) {
@@ -421,5 +299,159 @@ public class TindroidApp extends Application implements DefaultLifecycleObserver
             }
             return null;
         }
+    }
+
+    public static synchronized void startWatchingContacts(Context context, Account acc) {
+        if (sContactsObserver == null) {
+            // Check if we have already obtained contacts permissions.
+            if (!UiUtils.isPermissionGranted(context, Manifest.permission.READ_CONTACTS)) {
+                // No permissions, can't set up contacts sync.
+                return;
+            }
+
+            // Create and start a new thread set up as a looper.
+            HandlerThread thread = new HandlerThread("ContactsObserverHandlerThread");
+            thread.start();
+
+            sContactsObserver = new ContactsObserver(acc, new Handler(thread.getLooper()));
+            // Observer which triggers sync when contacts change.
+            sContext.getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI,
+                    true, sContactsObserver);
+        }
+    }
+
+    public static synchronized void stopWatchingContacts() {
+        if (sContactsObserver != null) {
+            sContext.getContentResolver().unregisterContentObserver(sContactsObserver);
+        }
+    }
+
+    private void setupSharedPreferences() {
+        // Check if preferences already exist. If not, create them.
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        if (TextUtils.isEmpty(pref.getString(PREFS_HOST_NAME, null))) {
+            // No preferences found. Save default values.
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString(PREFS_HOST_NAME, getDefaultHostName());
+            editor.putBoolean(Utils.PREFS_USE_TLS, getDefaultTLS());
+            editor.apply();
+        }
+    }
+
+    public static String getDefaultHostName() {
+        return sContext.getResources().getString(isEmulator() ?
+                R.string.emulator_host_name :
+                R.string.default_host_name);
+    }
+
+    public static boolean getDefaultTLS() {
+        return !isEmulator();
+    }
+
+    // Detect if the code is running in an emulator.
+    // Used mostly for convenience to use correct server address i.e. 10.0.2.2:6060 vs sandbox.tinode.co and
+    // to enable/disable Crashlytics. It's OK if it's imprecise.
+    public static boolean isEmulator() {
+        return Build.FINGERPRINT.startsWith("sdk_gphone_x86")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk".equals(Build.PRODUCT)
+                || Build.PRODUCT.startsWith("sdk")
+                || Build.PRODUCT.startsWith("vbox");
+    }
+
+    private void setupWorkManager() {
+        // Clear completed/failed upload tasks.
+        WorkManager.getInstance(this).pruneWork();
+    }
+
+    private void setupPicaso() {
+        Tinode tinode = Cache.getTinode();
+        int PICASSO_CACHE_SIZE = 1024 * 1024 * 256;
+
+        // Setting up Picasso with auth headers.
+        OkHttpClient client = new OkHttpClient.Builder()
+                .cache(new okhttp3.Cache(createDefaultCacheDir(), PICASSO_CACHE_SIZE))
+                .addInterceptor(chain -> {
+                    Request picassoReq = chain.request();
+                    Map<String, String> headers;
+                    if (tinode.isTrustedURL(picassoReq.url().url())) {
+                        headers = tinode.getRequestHeaders();
+                        Request.Builder builder = picassoReq.newBuilder();
+                        for (Map.Entry<String, String> el : headers.entrySet()) {
+                            builder = builder.addHeader(el.getKey(), el.getValue());
+                        }
+                        return chain.proceed(builder.build());
+                    } else {
+                        return chain.proceed(picassoReq);
+                    }
+                })
+                .build();
+
+        Picasso.setSingletonInstance(new Picasso.Builder(this)
+                .requestTransformer(request -> {
+                    // Rewrite relative URIs to absolute.
+                    if (request.uri != null && Tinode.isUrlRelative(request.uri.toString())) {
+                        URL url = tinode.toAbsoluteURL(request.uri.toString());
+                        if (url != null) {
+                            return request.buildUpon().setUri(Uri.parse(url.toString())).build();
+                        }
+                    }
+                    return request;
+                })
+                .downloader(new OkHttp3Downloader(client))
+                .build());
+    }
+
+    private static File createDefaultCacheDir() {
+        File cache = new File(sContext.getCacheDir(), "picasso-cache");
+        if (!cache.exists()) {
+            // noinspection ResultOfMethodCallIgnored
+            cache.mkdirs();
+        }
+        return cache;
+    }
+
+    private void listenConnectivity() {
+        // Listen to connectivity changes.
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkRequest req = new NetworkRequest.
+                    Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build();
+
+            cm.registerNetworkCallback(req, new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(@NonNull Network network) {
+                    super.onAvailable(network);
+                    Tinode tinode = Cache.getTinode();
+                    BaseDb baseDb = BaseDb.getInstance();
+
+                    if (!TextUtils.isEmpty(baseDb.getUid())) {
+                        // Connect right away if UID is available.
+                        tinode.reconnectNow(true, false, false);
+                    }
+                }
+            });
+        }
+    }
+
+    // The Tinode cache is linked from here so it's never garbage collected.
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    private static Cache sCache;
+
+    public static void retainCache(Cache cache) {
+        sCache = cache;
+    }
+
+    public static Context getAppContext() {
+        return sContext;
+    }
+
+    public static String getAppVersion() {
+        return sAppVersion;
     }
 }

@@ -39,6 +39,8 @@ import co.tinode.tinodesdk.MeTopic;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
 import id.bluebird.chat.R;
+import id.bluebird.chat.sdk.app.BReceiverHangUp;
+import id.bluebird.chat.sdk.app.TindroidApp;
 import id.bluebird.chat.sdk.demos.call.CallActivity;
 import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.services.CallConnection;
@@ -137,7 +139,7 @@ public class CallManager {
         }
 
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
-        final Intent intent = new Intent(context, HangUpBroadcastReceiver.class);
+        final Intent intent = new Intent(context, BReceiverHangUp.class);
         intent.setAction(Const.INTENT_ACTION_CALL_CLOSE);
         intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
         intent.putExtra(Const.INTENT_EXTRA_SEQ, seq);
@@ -339,7 +341,7 @@ public class CallManager {
     }
 
     private static PendingIntent declineIntent(Context context, String topicName, int seq) {
-        final Intent intent = new Intent(context, HangUpBroadcastReceiver.class);
+        final Intent intent = new Intent(context, BReceiverHangUp.class);
         intent.setAction(Const.INTENT_ACTION_CALL_CLOSE);
         intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
         intent.putExtra(Const.INTENT_EXTRA_SEQ, seq);

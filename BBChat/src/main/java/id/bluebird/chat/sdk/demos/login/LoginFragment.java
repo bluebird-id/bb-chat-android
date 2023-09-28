@@ -33,7 +33,7 @@ import co.tinode.tinodesdk.model.ServerMessage;
 import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.BrandingConfig;
 import id.bluebird.chat.sdk.Cache;
-import id.bluebird.chat.sdk.TindroidApp;
+import id.bluebird.chat.sdk.app.TindroidApp;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.account.Utils;
 

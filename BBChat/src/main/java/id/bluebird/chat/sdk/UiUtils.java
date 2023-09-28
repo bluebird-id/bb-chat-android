@@ -84,6 +84,7 @@ import id.bluebird.chat.BuildConfig;
 import id.bluebird.chat.R;
 import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.account.Utils;
+import id.bluebird.chat.sdk.app.TindroidApp;
 import id.bluebird.chat.sdk.db.BaseDb;
 import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.widgets.LetterTileDrawable;
@@ -331,7 +332,7 @@ public class UiUtils {
         activity.finish();
     }
 
-    static void doLogout(Context context) {
+    public static void doLogout(Context context) {
         CallManager.unregisterCallingAccount();
         TindroidApp.stopWatchingContacts();
         Cache.invalidate();
@@ -341,7 +342,7 @@ public class UiUtils {
 //        context.startActivity(intent);
     }
 
-    static synchronized void requestImmediateContactsSync(Account acc) {
+    public static synchronized void requestImmediateContactsSync(Account acc) {
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);

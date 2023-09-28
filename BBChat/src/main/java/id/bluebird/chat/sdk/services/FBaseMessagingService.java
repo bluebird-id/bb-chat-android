@@ -1,5 +1,8 @@
 package id.bluebird.chat.sdk.services;
 
+import static id.bluebird.chat.sdk.Const.FCM_REFRESH_TOKEN;
+import static id.bluebird.chat.sdk.Const.FCM_TOKEN;
+
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,9 +38,9 @@ import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.CallInProgress;
 import id.bluebird.chat.sdk.Const;
-import id.bluebird.chat.sdk.HangUpBroadcastReceiver;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.account.Utils;
+import id.bluebird.chat.sdk.app.BReceiverHangUp;
 import id.bluebird.chat.sdk.format.FontFormatter;
 import id.bluebird.chat.sdk.media.VxCard;
 
@@ -60,8 +63,8 @@ public class FBaseMessagingService extends FirebaseMessagingService {
 
         // Send token to the server.
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-        Intent intent = new Intent("FCM_REFRESH_TOKEN");
-        intent.putExtra("token", refreshedToken);
+        Intent intent = new Intent(FCM_REFRESH_TOKEN);
+        intent.putExtra(FCM_TOKEN, refreshedToken);
         lbm.sendBroadcast(intent);
 
         // The token is currently retrieved in id.bluebird.chat.Cache.
@@ -343,7 +346,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                     if (origSeq > 0) {
                         // Dismiss the call UI.
                         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-                        final Intent intent = new Intent(this, HangUpBroadcastReceiver.class);
+                        final Intent intent = new Intent(this, BReceiverHangUp.class);
                         intent.setAction(Const.INTENT_ACTION_CALL_CLOSE);
                         intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
                         intent.putExtra(Const.INTENT_EXTRA_SEQ, origSeq);

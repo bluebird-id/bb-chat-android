@@ -20,7 +20,7 @@ import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.MyAttachmentHandler
 import id.bluebird.chat.sdk.MyTindroidApp
 import id.bluebird.chat.sdk.MyUiUtils
-import id.bluebird.chat.sdk.TindroidApp
+import id.bluebird.chat.sdk.app.TindroidApp
 import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.media.VxCard

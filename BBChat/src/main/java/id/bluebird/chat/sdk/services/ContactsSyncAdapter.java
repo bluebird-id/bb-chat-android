@@ -43,7 +43,7 @@ import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
 import id.bluebird.chat.sdk.Cache;
-import id.bluebird.chat.sdk.TindroidApp;
+import id.bluebird.chat.sdk.app.TindroidApp;
 import id.bluebird.chat.sdk.account.ContactsManager;
 import id.bluebird.chat.sdk.account.Utils;
 import id.bluebird.chat.sdk.media.VxCard;

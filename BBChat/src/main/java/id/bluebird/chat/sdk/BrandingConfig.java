@@ -241,7 +241,7 @@ public class BrandingConfig {
     }
     // Check if the app was installed from an URL with attributed installation source.
 
-    static void getInstallReferrerFromClient(Context context, InstallReferrerClient referrerClient) {
+    public static void getInstallReferrerFromClient(Context context, InstallReferrerClient referrerClient) {
         referrerClient.startConnection(new InstallReferrerStateListener() {
             @SuppressLint("ApplySharedPref")
             @Override
