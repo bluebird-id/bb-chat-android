@@ -318,13 +318,6 @@ public class UiUtils {
             activity.runOnUiThread(() -> button.setEnabled(true));
         }
 
-        Account acc = Utils.getSavedAccount(AccountManager.get(activity), uid);
-        if (acc != null) {
-            requestImmediateContactsSync(acc);
-            ContentResolver.setSyncAutomatically(acc, Utils.SYNC_AUTHORITY, true);
-            TindroidApp.startWatchingContacts(activity, acc);
-        }
-
         Intent intent = new Intent(activity, MessageActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, "usr7yG--GVH87o");
@@ -334,20 +327,11 @@ public class UiUtils {
 
     public static void doLogout(Context context) {
         CallManager.unregisterCallingAccount();
-        TindroidApp.stopWatchingContacts();
         Cache.invalidate();
 
 //        Intent intent = new Intent(context, LoginActivity.class);
 //        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //        context.startActivity(intent);
-    }
-
-    public static synchronized void requestImmediateContactsSync(Account acc) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        ContentResolver.requestSync(acc, Utils.SYNC_AUTHORITY, bundle);
-        ContentResolver.setSyncAutomatically(acc, Utils.SYNC_AUTHORITY, true);
     }
 
     public static boolean isPermissionGranted(Context context, String permission) {

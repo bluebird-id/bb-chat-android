@@ -65,6 +65,10 @@ fun MainScreen(
     val chatTopicName = remember { mutableStateOf("") }
     val callTopicName = remember { mutableStateOf("") }
 
+    /** Use this if getParticipants cant be access */
+//    val chatTopicName = remember { mutableStateOf("grp-EJpfuX9cEs") }
+//    val callTopicName = remember { mutableStateOf("usryLdHeXfi1pU") }
+
     val context = LocalContext.current as Activity
 
     LoadingSurface(isLoading.value) {

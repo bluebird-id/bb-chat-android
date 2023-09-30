@@ -28,7 +28,6 @@ import id.bluebird.chat.methods.message.MessageActivity.Companion.TAG
 import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.Const
 import id.bluebird.chat.sdk.UiUtils
-import id.bluebird.chat.sdk.account.ContactsManager
 import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.demos.InvalidTopicFragment
 import id.bluebird.chat.sdk.demos.message.MessagesFragment
@@ -309,14 +308,6 @@ class TListener internal constructor(val activity: MessageActivity) : ComTopic.C
 
     override fun onSubsUpdated() {
         val context = activity.applicationContext
-        if (UiUtils.isPermissionGranted(context, Manifest.permission.WRITE_CONTACTS)) {
-            val acc = Utils.getSavedAccount(AccountManager.get(context), Cache.getTinode().myId)
-            if (acc != null) {
-                ContactsManager.updateContacts(
-                    context, acc, Cache.getTinode(), activity.mTopic!!.subscriptions, null, false
-                )
-            }
-        }
         activity.runOnUiThread {
             val fragment = UiUtils.getVisibleFragment(activity.supportFragmentManager)
             if (fragment != null) {

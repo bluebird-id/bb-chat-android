@@ -6,7 +6,6 @@ import id.bluebird.chat.sdk.app.TindroidApp
 
 fun logout(): Boolean {
     CallManager.unregisterCallingAccount()
-    TindroidApp.stopWatchingContacts()
     Cache.invalidate()
 
     return false

@@ -4,7 +4,6 @@ import static id.bluebird.chat.sdk.Const.FCM_REFRESH_TOKEN;
 import static id.bluebird.chat.sdk.Const.INTENT_ACTION_CALL_CLOSE;
 import static id.bluebird.chat.sdk.account.Utils.PREFS_HOST_NAME;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
@@ -19,7 +18,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.database.ContentObserver;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
@@ -30,9 +28,6 @@ import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -63,7 +58,6 @@ import id.bluebird.chat.sdk.BrandingConfig;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
-import id.bluebird.chat.sdk.account.ContactsObserver;
 import id.bluebird.chat.sdk.account.Utils;
 import id.bluebird.chat.sdk.db.BaseDb;
 import okhttp3.OkHttpClient;
@@ -78,7 +72,6 @@ public class TindroidApp extends Application {
     private static String sAppVersion = null;
     private static int sAppBuild = 0;
     private static TindroidApp sContext;
-    private static ContentObserver sContactsObserver = null;
 
     public TindroidApp() {
         sContext = this;
@@ -208,13 +201,6 @@ public class TindroidApp extends Application {
             final Account account = Utils.getSavedAccount(accountManager, uidWrapper[0]);
 
             if (account != null) {
-                // Check if sync is enabled.
-                if (ContentResolver.getMasterSyncAutomatically()) {
-                    if (!ContentResolver.getSyncAutomatically(account, Utils.SYNC_AUTHORITY)) {
-                        ContentResolver.setSyncAutomatically(account, Utils.SYNC_AUTHORITY, true);
-                    }
-                }
-
                 // Account found, establish connection to the server and use save account credentials for login.
                 String token = null;
                 Date expires = null;
@@ -252,9 +238,6 @@ public class TindroidApp extends Application {
                         accountManager.setAuthToken(account, Utils.TOKEN_TYPE, tinode.getAuthToken());
                         accountManager.setUserData(account, Utils.TOKEN_EXPIRATION_TIME,
                                 String.valueOf(tinode.getAuthTokenExpiration().getTime()));
-                        startWatchingContacts(TindroidApp.this, account);
-                        // Trigger sync to be sure contacts are up to date.
-                        UiUtils.requestImmediateContactsSync(account);
                     } catch (IOException ex) {
                         Log.d(TAG, "Network failure during login", ex);
                         // Do not invalidate token on network failure.
@@ -298,31 +281,6 @@ public class TindroidApp extends Application {
                 UiUtils.doLogout(TindroidApp.this);
             }
             return null;
-        }
-    }
-
-    public static synchronized void startWatchingContacts(Context context, Account acc) {
-        if (sContactsObserver == null) {
-            // Check if we have already obtained contacts permissions.
-            if (!UiUtils.isPermissionGranted(context, Manifest.permission.READ_CONTACTS)) {
-                // No permissions, can't set up contacts sync.
-                return;
-            }
-
-            // Create and start a new thread set up as a looper.
-            HandlerThread thread = new HandlerThread("ContactsObserverHandlerThread");
-            thread.start();
-
-            sContactsObserver = new ContactsObserver(acc, new Handler(thread.getLooper()));
-            // Observer which triggers sync when contacts change.
-            sContext.getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_URI,
-                    true, sContactsObserver);
-        }
-    }
-
-    public static synchronized void stopWatchingContacts() {
-        if (sContactsObserver != null) {
-            sContext.getContentResolver().unregisterContentObserver(sContactsObserver);
         }
     }
 
