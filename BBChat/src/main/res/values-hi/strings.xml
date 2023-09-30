@@ -23,8 +23,6 @@
     <string name="error_login_failed">लॉगिन विफल:</string>
     <string name="login_required">लॉगिन आवश्यक</string>
     <string name="password_required">पासवर्ड आवश्यक</string>
-    <string name="profile_action">टिनोड प्रोफाइल</string>
-    <string name="tinode_message">टिनोड संदेश भेजें</string>
     <string name="no_connection">आप संपर्क में नहीं हैं</string>
     <string name="action_failed">क्रिया: विफल रही है</string>
     <string name="placeholder_contact_title">अनाम या अज्ञात</string>
@@ -55,7 +53,6 @@
     <string name="button_hint_start_new_chat">नई चैट शुरू करें</string>
     <string name="outgoing_call">फ़ोन से की जाने वाली कौल</string>
     <string name="incoming_call">एक फोन आ रहा है</string>
-    <string name="default_contact_name">टिनोड उपयोगकर्ता %1$s</string>
     <string name="permission_missing">आवश्यक अनुमति गुम है</string>
     <string name="invalid_content">अमान्य सामग्री</string>
     <string name="failed">असफल</string>
@@ -98,7 +95,6 @@
     <string name="video_call_channel_description">वीडियो और ऑडियो कॉल</string>
     <string name="answer_call">उत्तर</string>
     <string name="decline_call">पतन</string>
-    <string name="action_call">पुकारना</string>
     <string name="tinode_audio_call">टिनोड कॉल</string>
     <string name="unable_to_place_call">यह कॉल करने में असमर्थ</string>
     <string name="busy_call">व्यस्त</string>

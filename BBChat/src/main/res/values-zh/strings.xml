@@ -34,9 +34,6 @@
     <!-- Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
      alphabet using ListView fast scroll. -->
 
-    <string name="profile_action">Tinode介绍</string>
-    <string name="tinode_message">发送Tinode消息</string>
-
     <string name="no_connection">你已离线</string>
     <string name="action_failed">操作失败</string>
 
@@ -70,7 +67,6 @@
     <string name="action_enable">启用</string>
     <string name="button_hint_start_new_chat">开始新聊天</string>
     <string name="permission_missing">缺少所需的权限</string>
-    <string name="default_contact_name">Tinode用户 %1$s</string>
     <string name="invalid_content">无效内容</string>
     <string name="failed">失败</string>
     <string name="processing">处理中……</string>
@@ -120,7 +116,6 @@
     <string name="answer_call">接听</string>
     <string name="decline_call">拒绝</string>
 
-    <string name="action_call">调用</string>
     <string name="unable_to_place_call">无法拨打电话</string>
     <string name="busy_call">忙碌的</string>
 

@@ -43,8 +43,6 @@
     <string name="current_user">Вы</string>
     <string name="download_attachment">сохранить</string>
     <string name="download_title">Tinode скачать</string>
-    <string name="profile_action">Tinode профиль</string>
-    <string name="tinode_message">Отправить сообщение Tinode</string>
     <string name="user_not_found">Не найден</string>
     <string name="sender_unknown">Неизвестный</string>
     <string name="new_chat">Новый чат</string>
@@ -54,7 +52,6 @@
 
     <string name="button_hint_start_new_chat">Начать новый чат</string>
 
-    <string name="default_contact_name">Tinode Пользователь %1$s</string>
     <string name="permission_missing">Нет прав доступа</string>
 
     <string name="invalid_content">не читается</string>
@@ -105,7 +102,6 @@
     <string name="answer_call">Ответить</string>
     <string name="decline_call">Отклонить</string>
 
-    <string name="action_call">Позвонить</string>
     <string name="unable_to_place_call">Невозможно сделать этот звонок</string>
     <string name="busy_call">занято</string>
 

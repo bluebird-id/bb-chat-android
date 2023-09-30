@@ -62,12 +62,12 @@ fun MainScreen(
     val db = BaseDb.getInstance()
     val isLoading = remember { mutableStateOf(false) }
     val isLogin = remember { mutableStateOf(db.isReady) }
-    val chatTopicName = remember { mutableStateOf("") }
-    val callTopicName = remember { mutableStateOf("") }
+//    val chatTopicName = remember { mutableStateOf("") }
+//    val callTopicName = remember { mutableStateOf("") }
 
     /** Use this if getParticipants cant be access */
-//    val chatTopicName = remember { mutableStateOf("grp-EJpfuX9cEs") }
-//    val callTopicName = remember { mutableStateOf("usryLdHeXfi1pU") }
+    val chatTopicName = remember { mutableStateOf("grpm_6FL8t1wr4") }
+    val callTopicName = remember { mutableStateOf("usryGFySww-TSI") }
 
     val context = LocalContext.current as Activity
 

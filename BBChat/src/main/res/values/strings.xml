@@ -41,9 +41,6 @@
     <!-- Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
      alphabet using ListView fast scroll. -->
 
-    <string name="profile_action">Tinode profile</string>
-    <string name="tinode_message">Send Tinode message</string>
-
     <string name="no_connection">You are offline</string>
     <string name="action_failed">Action failed</string>
 
@@ -86,7 +83,6 @@
     <string name="outgoing_call">Outgoing call</string>
     <string name="incoming_call">Incoming call</string>
 
-    <string name="default_contact_name">Tinode User %1$s</string>
     <string name="permission_missing">Required permission is missing</string>
     <string name="image_caption_hint">Image caption</string>
     <string name="tinode_image" translatable="false">tinode_image</string>
@@ -140,7 +136,6 @@
     <string name="answer_call">Answer</string>
     <string name="decline_call">Decline</string>
     <string name="document_preview">Document preview</string>
-    <string name="action_call">Call</string>
     <string name="tinode_audio_call">Tinode Call</string>
     <string name="unable_to_place_call">Unable to make this call</string>
     <string name="phone_number_hint">Mobile phone number</string>

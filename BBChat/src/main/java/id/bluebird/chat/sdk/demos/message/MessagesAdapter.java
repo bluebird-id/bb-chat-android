@@ -565,29 +565,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             }
         }
 
-        if (holder.mAvatar != null || holder.mUserName != null) {
-            Subscription<VxCard, ?> sub = topic.getSubscription(m.from);
-            if (sub != null) {
-                if (holder.mAvatar != null) {
-                    UiUtils.setAvatar(holder.mAvatar, sub.pub, sub.user, false);
-                }
-
-                if (holder.mUserName != null && sub.pub != null) {
-                    holder.mUserName.setText(sub.pub.fn);
-                }
-            } else {
-                if (holder.mAvatar != null) {
-                    holder.mAvatar.setImageResource(R.drawable.ic_person_circle);
-                }
-                if (holder.mUserName != null) {
-                    Spannable span = new SpannableString(mActivity.getString(R.string.user_not_found));
-                    span.setSpan(new StyleSpan(Typeface.ITALIC), 0, span.length(),
-                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    holder.mUserName.setText(span);
-                }
-            }
-        }
-
         if (m.ts != null) {
             Context context = holder.itemView.getContext();
 
@@ -895,14 +872,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         final int mViewType;
-        final ImageView mAvatar;
         final View mMessageBubble;
         final AppCompatImageView mDeliveredIcon;
         final TextView mDateDivider;
         final TextView mText;
         final TextView mEdited;
         final TextView mMeta;
-        final TextView mUserName;
         final View mSelected;
         final View mRippleOverlay;
         final View mProgressContainer;
@@ -917,14 +892,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             super(itemView);
 
             mViewType = viewType;
-            mAvatar = itemView.findViewById(R.id.avatar);
             mMessageBubble = itemView.findViewById(R.id.messageBubble);
             mDeliveredIcon = itemView.findViewById(R.id.messageViewedIcon);
             mDateDivider = itemView.findViewById(R.id.dateDivider);
             mText = itemView.findViewById(R.id.messageText);
             mMeta = itemView.findViewById(R.id.messageMeta);
             mEdited = itemView.findViewById(R.id.messageEdited);
-            mUserName = itemView.findViewById(R.id.userName);
             mSelected = itemView.findViewById(R.id.selected);
             mRippleOverlay = itemView.findViewById(R.id.overlay);
             mProgressContainer = itemView.findViewById(R.id.progressContainer);

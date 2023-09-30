@@ -34,9 +34,6 @@
     <!-- Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
      alphabet using ListView fast scroll. -->
 
-    <string name="profile_action">Tinode 프로필</string>
-    <string name="tinode_message"> Tinode 메시지 보내기</string>
-
     <string name="no_connection">오프라인 상태입니다.</string>
     <string name="action_failed">작업 실패</string>
 
@@ -70,7 +67,6 @@
     <string name="action_enable">사용가능</string>
     <string name="button_hint_start_new_chat">새로운 대화 시작</string>
 
-    <string name="default_contact_name">Tinode 사용자 %1$s</string>
     <string name="permission_missing">필요한 권한이 없습니다.</string>
     <string name="invalid_content">잘못된 컨텐츠</string>
     <string name="failed">실패</string>
@@ -120,7 +116,6 @@
     <string name="answer_call">답변</string>
     <string name="decline_call">거절</string>
 
-    <string name="action_call">전화</string>
     <string name="unable_to_place_call">전화를 걸 수 없습니다</string>
     <string name="busy_call">바쁘다</string>
 

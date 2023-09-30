@@ -34,9 +34,6 @@
     <!-- Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
      alphabet using ListView fast scroll. -->
 
-    <string name="profile_action">Perfil Tinode</string>
-    <string name="tinode_message">Envie mensagem Tinode</string>
-
     <string name="no_connection">Você está offline</string>
     <string name="action_failed">Falha na operação</string>
 
@@ -71,7 +68,6 @@
     <string name="peers_messaging_disabled">As menságens pares estão desativadas</string>
     <string name="action_enable">Ativo</string>
     <string name="button_hint_start_new_chat">Iniciar novo bate-papo</string>
-    <string name="default_contact_name">Usuário Tinode %1$s</string>
     <string name="permission_missing">Sem permissão</string>
     <string name="invalid_content">Conteúdo inválido</string>
     <string name="failed">falhou</string>
@@ -121,7 +117,6 @@
     <string name="answer_call">Resposta</string>
     <string name="decline_call">Recusar</string>
 
-    <string name="action_call">Chamar</string>
     <string name="unable_to_place_call">Não é possível fazer esta chamada</string>
     <string name="busy_call">ocupada</string>
 
