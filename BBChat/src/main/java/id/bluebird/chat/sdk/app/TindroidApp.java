@@ -12,7 +12,6 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -66,20 +65,14 @@ import okhttp3.Request;
 /**
  * A class for providing global context for database access
  */
-public class TindroidApp extends Application {
+public class TindroidApp {
     private static final String TAG = "TindroidApp";
-
+    private static Application application;
     private static String sAppVersion = null;
     private static int sAppBuild = 0;
-    private static TindroidApp sContext;
 
-    public TindroidApp() {
-        sContext = this;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    public void onCreate(Application application) {
+        this.application = application;
 
         handeAppData();
 
@@ -102,7 +95,8 @@ public class TindroidApp extends Application {
 
     private void handeAppData() {
         try {
-            PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
+            PackageInfo pi = application.getPackageManager()
+                    .getPackageInfo(application.getPackageName(), 0);
             sAppVersion = pi.versionName;
             if (TextUtils.isEmpty(sAppVersion)) {
                 sAppVersion = BuildConfig.VERSION_NAME;
@@ -125,15 +119,15 @@ public class TindroidApp extends Application {
         // Create the NotificationChannel on API 26+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel newMessage = new NotificationChannel(Const.NEWMSG_NOTIFICATION_CHAN_ID,
-                    getString(R.string.new_message_channel_name), NotificationManager.IMPORTANCE_DEFAULT);
-            newMessage.setDescription(getString(R.string.new_message_channel_description));
+                    application.getString(R.string.new_message_channel_name), NotificationManager.IMPORTANCE_DEFAULT);
+            newMessage.setDescription(application.getString(R.string.new_message_channel_description));
             newMessage.enableLights(true);
             newMessage.setLightColor(Color.WHITE);
 
             NotificationChannel videoCall = new NotificationChannel(Const.CALL_NOTIFICATION_CHAN_ID,
-                    getString(R.string.video_call_channel_name),
+                    application.getString(R.string.video_call_channel_name),
                     NotificationManager.IMPORTANCE_HIGH);
-            videoCall.setDescription(getString(R.string.video_call_channel_description));
+            videoCall.setDescription(application.getString(R.string.video_call_channel_description));
             videoCall.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),
                     new AudioAttributes.Builder()
                             .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -144,7 +138,7 @@ public class TindroidApp extends Application {
             videoCall.enableLights(true);
             videoCall.setLightColor(Color.RED);
 
-            NotificationManager nm = getSystemService(NotificationManager.class);
+            NotificationManager nm = application.getSystemService(NotificationManager.class);
             if (nm != null) {
                 nm.createNotificationChannel(newMessage);
                 nm.createNotificationChannel(videoCall);
@@ -153,7 +147,7 @@ public class TindroidApp extends Application {
     }
 
     private void handleBroadcastManager() {
-        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(application);
         lbm.registerReceiver(new BReceiverRefreshToken(), new IntentFilter(FCM_REFRESH_TOKEN));
         lbm.registerReceiver(new BReceiverHangUp(), new IntentFilter(INTENT_ACTION_CALL_CLOSE));
     }
@@ -164,10 +158,10 @@ public class TindroidApp extends Application {
             public void onStart(@NonNull LifecycleOwner owner) {
                 // Check if the app was installed from an URL with attributed installation source.
                 // If yes, get the config from hosts.tinode.co.
-                if (UiUtils.isAppFirstRun(sContext)) {
+                if (UiUtils.isAppFirstRun(application)) {
                     Executors.newSingleThreadExecutor().execute(() ->
-                            BrandingConfig.getInstallReferrerFromClient(sContext,
-                                    InstallReferrerClient.newBuilder(sContext).build()));
+                            BrandingConfig.getInstallReferrerFromClient(application,
+                                    InstallReferrerClient.newBuilder(application).build()));
                 }
 
                 // Check if the app has an account already. If so, initialize the shared connection with the server.
@@ -197,7 +191,7 @@ public class TindroidApp extends Application {
         protected Void doInBackground(String... uidWrapper) {
             Tinode tinode = Cache.getTinode();
 
-            final AccountManager accountManager = AccountManager.get(TindroidApp.this);
+            final AccountManager accountManager = AccountManager.get(application);
             final Account account = Utils.getSavedAccount(accountManager, uidWrapper[0]);
 
             if (account != null) {
@@ -224,7 +218,7 @@ public class TindroidApp extends Application {
                     tinode.setAutoLoginToken(token);
                     // Connect and login.
                     try {
-                        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(TindroidApp.this);
+                        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(application);
                         // Sync call throws on error.
                         tinode.connect(pref.getString(PREFS_HOST_NAME, getDefaultHostName()),
                                 pref.getBoolean(Utils.PREFS_USE_TLS, getDefaultTLS()),
@@ -256,7 +250,7 @@ public class TindroidApp extends Application {
                                 Log.e(TAG, "Unable to access android account", ex2);
                             }
                             // Force new login.
-                            UiUtils.doLogout(TindroidApp.this);
+                            UiUtils.doLogout(application);
                         }
                         // 409 Already authenticated should not be possible here.
                     } catch (Exception ex) {
@@ -273,12 +267,12 @@ public class TindroidApp extends Application {
                         Log.e(TAG, "Unable to access android account", ex);
                     }
                     // Force new login.
-                    UiUtils.doLogout(TindroidApp.this);
+                    UiUtils.doLogout(application);
                 }
             } else {
                 Log.i(TAG, "Account not found or no permission to access accounts");
                 // Force new login in case account existed before but was deleted.
-                UiUtils.doLogout(TindroidApp.this);
+                UiUtils.doLogout(application);
             }
             return null;
         }
@@ -286,7 +280,7 @@ public class TindroidApp extends Application {
 
     private void setupSharedPreferences() {
         // Check if preferences already exist. If not, create them.
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(application);
         if (TextUtils.isEmpty(pref.getString(PREFS_HOST_NAME, null))) {
             // No preferences found. Save default values.
             SharedPreferences.Editor editor = pref.edit();
@@ -297,7 +291,7 @@ public class TindroidApp extends Application {
     }
 
     public static String getDefaultHostName() {
-        return sContext.getResources().getString(isEmulator() ?
+        return application.getResources().getString(isEmulator() ?
                 R.string.emulator_host_name :
                 R.string.default_host_name);
     }
@@ -324,7 +318,7 @@ public class TindroidApp extends Application {
 
     private void setupWorkManager() {
         // Clear completed/failed upload tasks.
-        WorkManager.getInstance(this).pruneWork();
+        WorkManager.getInstance(application).pruneWork();
     }
 
     private void setupPicaso() {
@@ -350,7 +344,7 @@ public class TindroidApp extends Application {
                 })
                 .build();
 
-        Picasso.setSingletonInstance(new Picasso.Builder(this)
+        Picasso.setSingletonInstance(new Picasso.Builder(application)
                 .requestTransformer(request -> {
                     // Rewrite relative URIs to absolute.
                     if (request.uri != null && Tinode.isUrlRelative(request.uri.toString())) {
@@ -366,7 +360,7 @@ public class TindroidApp extends Application {
     }
 
     private static File createDefaultCacheDir() {
-        File cache = new File(sContext.getCacheDir(), "picasso-cache");
+        File cache = new File(application.getCacheDir(), "picasso-cache");
         if (!cache.exists()) {
             // noinspection ResultOfMethodCallIgnored
             cache.mkdirs();
@@ -376,7 +370,8 @@ public class TindroidApp extends Application {
 
     private void listenConnectivity() {
         // Listen to connectivity changes.
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) application.getSystemService(
+                application.CONNECTIVITY_SERVICE);
         if (cm != null) {
             NetworkRequest req = new NetworkRequest.
                     Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build();
@@ -406,7 +401,7 @@ public class TindroidApp extends Application {
     }
 
     public static Context getAppContext() {
-        return sContext;
+        return application;
     }
 
     public static String getAppVersion() {
