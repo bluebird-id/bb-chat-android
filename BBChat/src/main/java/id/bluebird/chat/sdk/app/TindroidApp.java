@@ -86,8 +86,6 @@ public class TindroidApp {
 
         setupSharedPreferences();
 
-        setupWorkManager();
-
         setupPicaso();
 
         listenConnectivity();
@@ -316,7 +314,7 @@ public class TindroidApp {
                 || Build.PRODUCT.startsWith("vbox");
     }
 
-    private void setupWorkManager() {
+    public void setupWorkManager() {
         // Clear completed/failed upload tasks.
         WorkManager.getInstance(application).pruneWork();
     }

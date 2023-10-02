@@ -9,5 +9,6 @@ class app : Application() {
         super.onCreate()
 
         TindroidApp().onCreate(this)
+        TindroidApp().setupWorkManager()
     }
 }
