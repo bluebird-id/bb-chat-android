@@ -13,6 +13,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
@@ -128,6 +129,10 @@ public class UiUtils {
         }
 
         activity.runOnUiThread(() -> {
+            toolbar.setBackgroundColor(Color.WHITE);
+            toolbar.setTitleTextColor(Color.BLACK);
+            toolbar.setSubtitleTextColor(Color.BLACK);
+
             if (!TextUtils.isEmpty(topicName)) {
                 Boolean showOnline = online;
                 final String title = pub != null && pub.fn != null ?
