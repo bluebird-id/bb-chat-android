@@ -97,6 +97,6 @@ public class MediaPickerContract extends ActivityResultContract<Object, Uri> {
             path.mkdirs();
         }
 
-        return FileProvider.getUriForFile(context, "id.bluebird.chat.provider", file);
+        return FileProvider.getUriForFile(context, context.getPackageName() +".provider", file);
     }
 }

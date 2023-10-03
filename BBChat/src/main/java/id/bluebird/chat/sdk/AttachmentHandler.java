@@ -293,7 +293,7 @@ public class AttachmentHandler extends Worker {
                 try (FileOutputStream fos = new FileOutputStream(file)) {
                     // Save file to local storage.
                     fos.write(bits);
-                    result = FileProvider.getUriForFile(activity, "id.bluebird.chat.provider", file);
+                    result = FileProvider.getUriForFile(activity, activity.getPackageName() +".provider", file);
                 } catch (IOException ex) {
                     Log.w(TAG, "Failed to save attachment to storage", ex);
                     Toast.makeText(activity, R.string.failed_to_save_download, Toast.LENGTH_SHORT).show();
