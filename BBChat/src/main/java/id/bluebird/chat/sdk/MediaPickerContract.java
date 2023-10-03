@@ -97,6 +97,6 @@ public class MediaPickerContract extends ActivityResultContract<Object, Uri> {
             path.mkdirs();
         }
 
-        return FileProvider.getUriForFile(context, context.getPackageName() +".provider", file);
+        return FileProvider.getUriForFile(context, context.getPackageName() +".fileprovider", file);
     }
 }
