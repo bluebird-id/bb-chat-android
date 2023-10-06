@@ -29,15 +29,18 @@ val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 private var userName: String? = null
 private var passWord: String? = null
+private var fullName: String? = null
 
 fun loginOrRegister(
     username: String,
+    fullname: String,
     activity: Activity,
     onSuccess: (result: String?) -> Unit,
     onError: (result: String?) -> Unit
 ) {
     userName = username
     passWord = username
+    fullName = fullname
 
     coroutineScope.launch {
 
@@ -248,7 +251,7 @@ private fun loginOrRegisterChatService(
         val clientId = userName ?: ""
 
         val repository = ChatServiceRepositoryImpl(ChatServiceApi(null))
-        when (val response = repository.register(clientId, tinodeId)) {
+        when (val response = repository.register(clientId, tinodeId, fullName ?: "")) {
             is Result.Ok -> {
                 completion.invoke("register success ${response.data.message}", null)
             }

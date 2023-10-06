@@ -95,6 +95,7 @@ fun MainScreen(
 
             val usernameState = remember { mutableStateOf("driver30") }
             val passwordState = remember { mutableStateOf(usernameState.value) }
+            val fullnameState = remember { mutableStateOf("") }
 
             val orderIdState = remember { mutableStateOf("bebas30") }
 
@@ -109,6 +110,13 @@ fun MainScreen(
                     onValueChange = { usernameState.value = it },
                     label = { Text("Username") },
                     modifier = Modifier.testTag("username_field"),
+                    enabled = !isLogin.value,
+                )
+                OutlinedTextField(
+                    value = fullnameState.value,
+                    onValueChange = { fullnameState.value = it },
+                    label = { Text("Fullname") },
+                    modifier = Modifier.testTag("fullname_field"),
                     enabled = !isLogin.value,
                 )
                 if (isLogin.value && chatTopicName.value.isEmpty()) {
@@ -136,6 +144,7 @@ fun MainScreen(
 
                         BBChat.login(
                             username = usernameState.value,
+                            fullname = fullnameState.value,
                             activity = context,
                             onSuccess = {
                                 isLogin.value = true

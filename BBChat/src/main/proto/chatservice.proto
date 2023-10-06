@@ -2,11 +2,11 @@ syntax="proto3";
 
 package grpc;
 
-
 service ChatService{
     rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc GetParticipants(GetParticipantsRequest) returns (GetParticipantsResponse);
     rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse);
+    rpc SaveDeviceToken(SaveDeviceTokenRequest) returns (SaveDeviceTokenResponse);
 }
 
 message RegisterResponse{
@@ -16,6 +16,7 @@ message RegisterResponse{
 message RegisterRequest {
     string user_id = 1;
     string tinode_id = 2;
+    string full_name = 3;
 }
 
 message GetParticipantsRequest {
@@ -25,6 +26,7 @@ message GetParticipantsRequest {
 message GetParticipantsResponse{
     string call_room_id = 1;
     string chat_room_id = 2;
+    string full_name = 3;
 }
 
 message CreateRoomRequest{
@@ -34,5 +36,15 @@ message CreateRoomRequest{
 }
 
 message CreateRoomResponse{
+    string state_message = 1;
+}
+
+message SaveDeviceTokenRequest {
+    int64 apps_id = 1;
+    string device_token = 2;
+    string recipient_id = 3;
+}
+
+message SaveDeviceTokenResponse {
     string state_message = 1;
 }

@@ -69,18 +69,21 @@ class ChatServiceApi(
     /*** login or register ***/
     private fun createRegisterParam(
         clientId: String,
-        tinodeId: String
+        tinodeId: String,
+        fullName: String
     ): Chatservice.RegisterRequest = Chatservice.RegisterRequest.newBuilder()
         .setUserId(clientId)
         .setTinodeId(tinodeId)
+        .setFullName(fullName)
         .build()
 
     suspend fun <T : Any> registerFuture(
         clientId: String,
         tinodeId: String,
+        fullName: String,
         transform: Chatservice.RegisterResponse.() -> T
     ): Result<T> {
-        val request = createRegisterParam(clientId, tinodeId)
+        val request = createRegisterParam(clientId, tinodeId, fullName)
         return channel.futureStubResult(transform) {
             register(request)
         }
