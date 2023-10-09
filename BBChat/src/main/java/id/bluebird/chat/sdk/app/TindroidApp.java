@@ -3,11 +3,9 @@ package id.bluebird.chat.sdk.app;
 import static id.bluebird.chat.sdk.Const.FCM_REFRESH_TOKEN;
 import static id.bluebird.chat.sdk.Const.INTENT_ACTION_CALL_CLOSE;
 import static id.bluebird.chat.sdk.account.Utils.PREFS_HOST_NAME;
+import static id.bluebird.chat.sdk.account.Utils.TOKEN_EXPIRATION_TIME;
+import static id.bluebird.chat.sdk.account.Utils.TOKEN_TYPE;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.app.NotificationChannel;
@@ -189,24 +187,18 @@ public class TindroidApp {
         protected Void doInBackground(String... uidWrapper) {
             Tinode tinode = Cache.getTinode();
 
-            final AccountManager accountManager = AccountManager.get(application);
-            final Account account = Utils.getSavedAccount(accountManager, uidWrapper[0]);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getAppContext());
+            String token = prefs.getString(TOKEN_TYPE, "");
 
-            if (account != null) {
+            if (!TextUtils.isEmpty(token)) {
                 // Account found, establish connection to the server and use save account credentials for login.
-                String token = null;
                 Date expires = null;
                 try {
-                    token = accountManager.blockingGetAuthToken(account, Utils.TOKEN_TYPE, false);
-                    String strExp = accountManager.getUserData(account, Utils.TOKEN_EXPIRATION_TIME);
+                    String strExp = prefs.getString(TOKEN_EXPIRATION_TIME, "");
                     // FIXME: remove this check when all clients are updated; Apr 8, 2020.
                     if (!TextUtils.isEmpty(strExp)) {
                         expires = new Date(Long.parseLong(strExp));
                     }
-                } catch (OperationCanceledException e) {
-                    Log.i(TAG, "Request to get an existing account was canceled.", e);
-                } catch (AuthenticatorException e) {
-                    Log.e(TAG, "No access to saved account", e);
                 } catch (Exception e) {
                     Log.e(TAG, "Failure to login with saved account", e);
                 }
@@ -227,9 +219,8 @@ public class TindroidApp {
                         }
                         Cache.attachMeTopic(null);
                         // Logged in successfully. Save refreshed token for future use.
-                        accountManager.setAuthToken(account, Utils.TOKEN_TYPE, tinode.getAuthToken());
-                        accountManager.setUserData(account, Utils.TOKEN_EXPIRATION_TIME,
-                                String.valueOf(tinode.getAuthTokenExpiration().getTime()));
+                        prefs.edit().putString(TOKEN_TYPE, tinode.getAuthToken());
+                        prefs.edit().putString(TOKEN_EXPIRATION_TIME, String.valueOf(tinode.getAuthTokenExpiration().getTime()));
                     } catch (IOException ex) {
                         Log.d(TAG, "Network failure during login", ex);
                         // Do not invalidate token on network failure.
@@ -242,8 +233,7 @@ public class TindroidApp {
                             // Another try-catch because some users revoke needed permission after granting it.
                             try {
                                 // Login failed due to invalid (expired) token or missing/disabled account.
-                                accountManager.invalidateAuthToken(Utils.ACCOUNT_TYPE, null);
-                                accountManager.setUserData(account, Utils.TOKEN_EXPIRATION_TIME, null);
+                                prefs.edit().putString(TOKEN_EXPIRATION_TIME, "");
                             } catch (SecurityException ex2) {
                                 Log.e(TAG, "Unable to access android account", ex2);
                             }
@@ -257,10 +247,7 @@ public class TindroidApp {
                 } else {
                     Log.i(TAG, "No token or expired token. Forcing re-login");
                     try {
-                        if (!TextUtils.isEmpty(token)) {
-                            accountManager.invalidateAuthToken(Utils.ACCOUNT_TYPE, null);
-                        }
-                        accountManager.setUserData(account, Utils.TOKEN_EXPIRATION_TIME, null);
+                        prefs.edit().putString(TOKEN_EXPIRATION_TIME, "");
                     } catch (SecurityException ex) {
                         Log.e(TAG, "Unable to access android account", ex);
                     }

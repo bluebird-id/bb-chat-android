@@ -10,7 +10,6 @@ fun toMessageScreen(
     chatTopicName: String,
     callTopicName: String,
 ) {
-    val tinode = Cache.getTinode()
     val launch = Intent(context, MessageActivity::class.java)
     launch.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, chatTopicName)
     launch.putExtra(Const.INTENT_EXTRA_TOPIC_CALL, callTopicName)

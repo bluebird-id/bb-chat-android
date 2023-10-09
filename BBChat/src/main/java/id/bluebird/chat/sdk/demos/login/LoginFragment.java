@@ -28,14 +28,13 @@ import androidx.preference.PreferenceManager;
 
 import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.Tinode;
-import co.tinode.tinodesdk.model.AuthScheme;
 import co.tinode.tinodesdk.model.ServerMessage;
 import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.BrandingConfig;
 import id.bluebird.chat.sdk.Cache;
-import id.bluebird.chat.sdk.app.TindroidApp;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.account.Utils;
+import id.bluebird.chat.sdk.app.TindroidApp;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -158,9 +157,11 @@ public class LoginFragment extends Fragment implements MenuProvider, View.OnClic
                             public PromisedReply<ServerMessage> onSuccess(final ServerMessage msg) {
                                 sharedPref.edit().putString(LoginActivity.PREFS_LAST_LOGIN, login).apply();
 
-                                UiUtils.updateAndroidAccount(parent, tinode.getMyId(),
-                                        AuthScheme.basicInstance(login, password).toString(),
-                                        tinode.getAuthToken(), tinode.getAuthTokenExpiration());
+                                UiUtils.updateAndroidAccount(
+                                        parent,
+                                        tinode.getAuthToken(),
+                                        tinode.getAuthTokenExpiration()
+                                );
 
                                 // msg could be null if earlier login has succeeded.
                                 if (msg != null && msg.ctrl.code >= 300 &&

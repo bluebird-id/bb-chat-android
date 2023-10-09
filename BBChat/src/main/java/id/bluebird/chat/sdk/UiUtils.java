@@ -1,7 +1,7 @@
 package id.bluebird.chat.sdk;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
+import static id.bluebird.chat.sdk.account.Utils.TOKEN_TYPE;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
@@ -352,17 +352,19 @@ public class UiUtils {
     }
 
     // Creates or updates the Android account associated with the given UID.
-    public static void updateAndroidAccount(final Context context, final String uid, final String secret,
-                                            final String token, final Date tokenExpires) {
-        final AccountManager am = AccountManager.get(context);
-        final Account acc = Utils.createAccount(uid);
-        // It's OK to call even if the account already exists.
-        am.addAccountExplicitly(acc, secret, null);
-        am.notifyAccountAuthenticated(acc);
-        if (!TextUtils.isEmpty(token)) {
-            am.setAuthToken(acc, Utils.TOKEN_TYPE, token);
-            am.setUserData(acc, Utils.TOKEN_EXPIRATION_TIME, String.valueOf(tokenExpires.getTime()));
-        }
+    public static void updateAndroidAccount(
+            final Context context,
+            final String token,
+            final Date tokenExpires
+    ) {
+        // Check if preferences already exist. If not, create them.
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putString(Utils.TOKEN_TYPE, token);
+        editor.putString(Utils.TOKEN_EXPIRATION_TIME, String.valueOf(tokenExpires.getTime()));
+
+        editor.apply();
     }
 
     private static void setConnectedStatus(final Activity activity, final boolean online) {

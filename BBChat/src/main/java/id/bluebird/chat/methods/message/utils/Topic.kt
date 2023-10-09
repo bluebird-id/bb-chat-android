@@ -1,7 +1,5 @@
 package id.bluebird.chat.methods.message.utils
 
-import android.Manifest
-import android.accounts.AccountManager
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
@@ -121,8 +119,13 @@ fun MessageActivity.topicAttach() {
                     val fragment = maybeShowMessagesFragmentOnAttach()
                     if (fragment is MessagesFragment) {
                         UiUtils.setupToolbar(
-                            this@topicAttach, mTopic!!.pub,
-                            mTopicChatName, mTopic!!.online, mTopic!!.lastSeen, mTopic!!.isDeleted, null
+                            this@topicAttach,
+                            mTopic!!.pub,
+                            mTopicChatName,
+                            mTopic!!.online,
+                            mTopic!!.lastSeen,
+                            mTopic!!.isDeleted,
+                            null
                         )
                     }
                 }
@@ -232,14 +235,16 @@ fun MessageActivity.changeTopic(
         topicAttach()
     }
 
-    val fragmsg = supportFragmentManager.findFragmentByTag(MessageActivity.FRAGMENT_MESSAGES) as MessagesFragment?
+    val fragmsg =
+        supportFragmentManager.findFragmentByTag(MessageActivity.FRAGMENT_MESSAGES) as MessagesFragment?
     fragmsg?.topicChanged(topicName, forceReset || changed)
     return true
 }
 
-class TListener internal constructor(val activity: MessageActivity) : ComTopic.ComListener<VxCard?>() {
+class TListener internal constructor(val activity: MessageActivity) :
+    ComTopic.ComListener<VxCard?>() {
 
-    companion object{
+    companion object {
         // How long a typing indicator should play its animation, milliseconds.
         const val TYPING_INDICATOR_DURATION = 4000
     }
@@ -334,8 +339,13 @@ class TListener internal constructor(val activity: MessageActivity) : ComTopic.C
                     (fragment as DataSetChangeListener).notifyDataSetChanged()
                 } else if (fragment is MessagesFragment) {
                     UiUtils.setupToolbar(
-                        activity, activity.mTopic!!.pub, activity.mTopic!!.name,
-                        activity.mTopic!!.online, activity.mTopic!!.lastSeen, activity.mTopic!!.isDeleted, null
+                        activity,
+                        activity.mTopic!!.pub,
+                        activity.mTopic!!.name,
+                        activity.mTopic!!.online,
+                        activity.mTopic!!.lastSeen,
+                        activity.mTopic!!.isDeleted,
+                        null
                     )
                     fragment.notifyDataSetChanged(true)
                 }

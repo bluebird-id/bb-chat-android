@@ -6,7 +6,6 @@ import androidx.preference.PreferenceManager
 import co.tinode.tinodesdk.PromisedReply
 import co.tinode.tinodesdk.PromisedReply.FailureListener
 import co.tinode.tinodesdk.ServerResponseException
-import co.tinode.tinodesdk.model.AuthScheme
 import co.tinode.tinodesdk.model.Credential
 import co.tinode.tinodesdk.model.MetaSetDesc
 import co.tinode.tinodesdk.model.ServerMessage
@@ -115,8 +114,6 @@ private fun loginTinode(
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
                     UiUtils.updateAndroidAccount(
                         activity,
-                        tinode.myId,
-                        AuthScheme.basicInstance(userName, passWord).toString(),
                         tinode.authToken,
                         tinode.authTokenExpiration
                     )
@@ -200,9 +197,9 @@ private fun registerTinode(
 
             override fun onSuccess(result: ServerMessage<*, *, *, *>?): PromisedReply<ServerMessage<*, *, *, *>?>? {
                 UiUtils.updateAndroidAccount(
-                    activity, tinode.myId,
-                    AuthScheme.basicInstance(userName, passWord).toString(),
-                    tinode.authToken, tinode.authTokenExpiration
+                    activity,
+                    tinode.authToken,
+                    tinode.authTokenExpiration
                 )
 
                 // Flip back to login screen on success;

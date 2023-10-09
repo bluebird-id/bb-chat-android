@@ -29,20 +29,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
-
-        <service
-            android:name=".sdk.services.TinodeAccountService"
-            android:exported="false">
-
-            <!-- Required filter used by the system to launch the account service. -->
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-            <!-- This points to an XMLf ile which describes the account service. -->
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
         <activity
             android:name=".demo.MainActivity"
             android:exported="true"
