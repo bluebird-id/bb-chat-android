@@ -7,6 +7,7 @@ import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
 import id.bluebird.chat.methods.logout as BBChatLogout
 import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
 import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
+import id.bluebird.chat.methods.saveDeviceToken as BBChatSaveDeviceToken
 
 class BBChat {
 
@@ -36,6 +37,14 @@ class BBChat {
             context: Activity,
             topicName: String
         ) = BBChatToCallScreen(context, topicName)
+
+        fun saveDeviceToken(
+            appId: Long,
+            deviceToken: String,
+            participantId: String,
+            onSuccess: (result: String?) -> Unit,
+            onError: (result: String?) -> Unit
+        ) = BBChatSaveDeviceToken(appId, deviceToken, participantId, onSuccess, onError)
 
         fun logout(): Boolean = BBChatLogout()
     }

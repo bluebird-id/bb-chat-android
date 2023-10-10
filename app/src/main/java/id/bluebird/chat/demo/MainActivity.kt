@@ -224,6 +224,20 @@ fun MainScreen(
                 MainButton(
                     modifier = modifier,
                     onClick = {
+                        BBChat.saveDeviceToken(
+                            appId = 0,
+                            deviceToken = "123",
+                            participantId = "123456",
+                            onSuccess = {},
+                            onError = {}
+                        )
+                    },
+                    enabled = isLogin.value && callTopicName.value.isNotEmpty(),
+                    textButton = "Save Device Token"
+                )
+                MainButton(
+                    modifier = modifier,
+                    onClick = {
                         isLogin.value = BBChat.logout()
                         chatTopicName.value = ""
                         callTopicName.value = ""

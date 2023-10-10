@@ -106,6 +106,24 @@ class ChatServiceApi(
         }
     }
 
+    /*** save device token ***/
+
+    suspend fun <T : Any> saveDeviceTokenFuture(
+        appId: Long,
+        deviceToken: String,
+        recipientId: String,
+        transform: Chatservice.SaveDeviceTokenResponse.() -> T
+    ): Result<T> {
+        val request = Chatservice.SaveDeviceTokenRequest.newBuilder()
+            .setAppsId(appId)
+            .setDeviceToken(deviceToken)
+            .setRecipientId(recipientId)
+            .build()
+        return channel.futureStubResult(transform) {
+            saveDeviceToken(request)
+        }
+    }
+
     /*** call grpc ***/
     suspend fun <T : Any, R : Any> ManagedChannel.futureStubResult(
         transform: T.() -> R,
