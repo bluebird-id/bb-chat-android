@@ -8,6 +8,8 @@ public class Const {
 
     public static final String INTENT_ACTION_CALL_CLOSE = "bluebird.intent.action.call.CLOSE";
 
+    public static final String INTENT_EXTRA_OTHER_NAME_CHAT = "id.bluebird.chat.OTHER_NAME_CHAT";
+
     public static final String INTENT_EXTRA_TOPIC_CHAT = "id.bluebird.chat.TOPIC_CHAT";
     public static final String INTENT_EXTRA_TOPIC_CALL = "id.bluebird.chat.TOPIC_CALL";
     public static final String INTENT_EXTRA_SEQ = "id.bluebird.chat.SEQ";

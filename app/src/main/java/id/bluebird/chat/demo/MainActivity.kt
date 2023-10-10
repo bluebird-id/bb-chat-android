@@ -178,6 +178,7 @@ fun MainScreen(
 
                                 chatTopicName.value = it?.chatRoomId ?: ""
                                 callTopicName.value = it?.callRoomId ?: ""
+                                fullnameState.value = it?.fullName ?: ""
 
                                 context.runOnUiThread {
                                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT)
@@ -203,6 +204,7 @@ fun MainScreen(
                     onClick = {
                         BBChat.toMessageScreen(
                             context = context,
+                            otherName = fullnameState.value,
                             topicChatName = chatTopicName.value,
                             topicCallName = callTopicName.value,
                         )

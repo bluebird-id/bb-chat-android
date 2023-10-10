@@ -25,6 +25,7 @@ import id.bluebird.chat.methods.message.utils.changeTopic
 import id.bluebird.chat.methods.message.utils.isFragmentVisible
 import id.bluebird.chat.methods.message.utils.onDownloadComplete
 import id.bluebird.chat.methods.message.utils.onNotificationClick
+import id.bluebird.chat.methods.message.utils.readOtherNameFromIntent
 import id.bluebird.chat.methods.message.utils.readTopicNameCallFromIntent
 import id.bluebird.chat.methods.message.utils.readTopicNameChatFromIntent
 import id.bluebird.chat.sdk.AttachmentHandler
@@ -57,6 +58,8 @@ class MessageActivity : AppCompatActivity() {
 
     // Notification settings.
     private var mSendTypingNotifications = false
+
+    var mOtherName: String? = null
 
     var mTopicChatName: String? = null
 
@@ -145,6 +148,7 @@ class MessageActivity : AppCompatActivity() {
         if (TextUtils.isEmpty(mTopicChatName)) {
             topicName = readTopicNameChatFromIntent(intent)
             mTopicCallName = readTopicNameCallFromIntent(intent)
+            mOtherName = readOtherNameFromIntent(intent)
         }
         Log.e("BBChat", topicName.toString())
         if (!changeTopic(topicName, false)) {
@@ -297,8 +301,8 @@ class MessageActivity : AppCompatActivity() {
         }
 
         argsMutable = argsMutable ?: Bundle()
+        argsMutable.putString(Const.INTENT_EXTRA_OTHER_NAME_CHAT, mOtherName)
         argsMutable.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicChatName)
-        argsMutable.putString(Const.INTENT_EXTRA_TOPIC_CALL, mTopicCallName)
 
         if (tag == FRAGMENT_MESSAGES) {
             argsMutable.putString(MessagesFragment.MESSAGE_TO_SEND, mMessageText)

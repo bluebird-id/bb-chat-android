@@ -133,7 +133,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
     private String mTopicName = null;
 
-    private String mOtherTopicName = null;
+    private String mOtherName = null;
     private String mMessageToSend = null;
     private boolean mChatInvitationShown = false;
 
@@ -503,7 +503,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         Bundle args = getArguments();
         if (args != null) {
             mTopicName = args.getString(Const.INTENT_EXTRA_TOPIC_CHAT);
-            mOtherTopicName = args.getString(Const.INTENT_EXTRA_TOPIC_CALL);
+            mOtherName = args.getString(Const.INTENT_EXTRA_OTHER_NAME_CHAT);
         }
 
         if (mTopicName != null) {
@@ -765,7 +765,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
             activity.findViewById(R.id.notReadable).setVisibility(View.VISIBLE);
             activity.findViewById(R.id.notReadableNote).setVisibility(View.VISIBLE);
             setSendPanelVisible(activity, R.id.sendMessageDisabled);
-            UiUtils.setupToolbar(activity, null, mTopicName, false, null, false, mOtherTopicName);
+            UiUtils.setupToolbar(activity, null, mTopicName, false, null, false, mOtherName);
             return;
         }
 
@@ -776,7 +776,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                 mTopic.getOnline(),
                 mTopic.getLastSeen(),
                 mTopic.isDeleted(),
-                mOtherTopicName
+                mOtherName
         );
 
         Acs acs = mTopic.getAccessMode();

@@ -75,6 +75,13 @@ fun readTopicNameCallFromIntent(intent: Intent): String? {
     return name
 }
 
+fun readOtherNameFromIntent(intent: Intent): String? {
+
+    // Check if the activity was launched by internally-generated intent.
+    var name = intent.getStringExtra(Const.INTENT_EXTRA_OTHER_NAME_CHAT)
+    return name
+}
+
 /**
  * Process Subscribe Chat List
  */

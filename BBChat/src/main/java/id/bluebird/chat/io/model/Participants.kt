@@ -10,4 +10,6 @@ class Participants(
     val callRoomId: String = "",
     @SerializedName("chat_room_id")
     val chatRoomId: String = "",
+    @SerializedName("full_name")
+    val fullName: String = "",
 ) : Serializable

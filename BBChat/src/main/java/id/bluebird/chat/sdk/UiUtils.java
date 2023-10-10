@@ -135,9 +135,9 @@ public class UiUtils {
 
             if (!TextUtils.isEmpty(topicName)) {
                 Boolean showOnline = online;
-                final String title = pub != null && pub.fn != null ?
-                        pub.fn : otherTopicName != null ? otherTopicName : activity.getString(R.string.placeholder_contact_title);
-                toolbar.setTitle(title);
+//                final String title = pub != null && pub.fn != null ?
+//                        pub.fn : otherTopicName != null ? otherTopicName : activity.getString(R.string.placeholder_contact_title);
+                toolbar.setTitle(otherTopicName);
                 if (ComTopic.isChannel(topicName)) {
                     showOnline = null;
                     toolbar.setSubtitle(R.string.channel);

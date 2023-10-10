@@ -10,6 +10,7 @@ class ParticipantsResp {
         participants = Participants(
             chatRoomId = response.chatRoomId,
             callRoomId = response.callRoomId,
+            fullName = response.fullName,
         )
     }
 }
