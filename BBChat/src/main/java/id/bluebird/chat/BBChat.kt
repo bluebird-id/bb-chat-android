@@ -29,10 +29,10 @@ class BBChat {
 
         fun toMessageScreen(
             context: Activity,
-            otherName: String,
+            opponentsName: String,
             topicChatName: String,
             topicCallName: String,
-        ) = BBChatToMessageScreen(context, otherName, topicChatName, topicCallName)
+        ) = BBChatToMessageScreen(context, opponentsName, topicChatName, topicCallName)
 
         fun toCallScreen(
             context: Activity,

@@ -93,11 +93,11 @@ fun MainScreen(
                 )
             }
 
-            val usernameState = remember { mutableStateOf("ketepas1") }
+            val usernameState = remember { mutableStateOf("bromo1") }
             val passwordState = remember { mutableStateOf(usernameState.value) }
-            val fullnameState = remember { mutableStateOf("Ketepas") }
+            val fullnameState = remember { mutableStateOf("") }
 
-            val orderIdState = remember { mutableStateOf("room_ketepas") }
+            val orderIdState = remember { mutableStateOf("room_bromo_") }
 
             Column(
                 modifier = Modifier.weight(1f, false),
@@ -204,7 +204,7 @@ fun MainScreen(
                     onClick = {
                         BBChat.toMessageScreen(
                             context = context,
-                            otherName = fullnameState.value,
+                            opponentsName = fullnameState.value,
                             topicChatName = chatTopicName.value,
                             topicCallName = callTopicName.value,
                         )
