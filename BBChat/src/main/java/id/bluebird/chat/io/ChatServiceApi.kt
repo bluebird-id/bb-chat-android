@@ -109,14 +109,14 @@ class ChatServiceApi(
     /*** save device token ***/
 
     suspend fun <T : Any> saveDeviceTokenFuture(
-        appId: Long,
+        clientId: String,
         deviceToken: String,
         recipientId: String,
         transform: Chatservice.SaveDeviceTokenResponse.() -> T
     ): Result<T> {
         val request = Chatservice.SaveDeviceTokenRequest.newBuilder()
-            .setAppsId(appId)
-            .setDeviceToken(deviceToken)
+            .setClientId(clientId)
+            .setToken(deviceToken)
             .setRecipientId(recipientId)
             .build()
         return channel.futureStubResult(transform) {

@@ -40,9 +40,11 @@ message CreateRoomResponse{
 }
 
 message SaveDeviceTokenRequest {
-    int64 apps_id = 1;
-    string device_token = 2;
-    string recipient_id = 3;
+    string recipient_id = 1;
+    string client_id = 2;
+    string token = 3;
+    int32 platform = 4;
+    string notif_pipeline = 5;
 }
 
 message SaveDeviceTokenResponse {

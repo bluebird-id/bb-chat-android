@@ -227,9 +227,8 @@ fun MainScreen(
                     modifier = modifier,
                     onClick = {
                         BBChat.saveDeviceToken(
-                            appId = 0,
+                            clientId = "",
                             deviceToken = "123",
-                            participantId = "123456",
                             onSuccess = {},
                             onError = {}
                         )

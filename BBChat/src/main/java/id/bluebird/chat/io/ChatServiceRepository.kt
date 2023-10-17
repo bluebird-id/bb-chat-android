@@ -11,7 +11,7 @@ interface ChatServiceRepository {
 
     suspend fun getParticipants(orderId: String): Result<ParticipantsResp>
 
-    suspend fun saveDeviceToken(appId: Long, participantId: String, deviceToken: String): Result<DeviceTokenResp>
+    suspend fun saveDeviceToken(clientId: String, participantId: String, deviceToken: String): Result<DeviceTokenResp>
 }
 
 class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi): ChatServiceRepository {
@@ -32,8 +32,8 @@ class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi): Cha
         }
     }
 
-    override suspend fun saveDeviceToken(appId: Long, participantId: String, deviceToken: String): Result<DeviceTokenResp> {
-        return chatServiceApi.saveDeviceTokenFuture(appId, deviceToken, participantId) {
+    override suspend fun saveDeviceToken(clientId: String, participantId: String, deviceToken: String): Result<DeviceTokenResp> {
+        return chatServiceApi.saveDeviceTokenFuture(clientId, deviceToken, participantId) {
             val response = DeviceTokenResp()
             response.setItem(this)
             response

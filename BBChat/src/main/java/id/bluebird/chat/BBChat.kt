@@ -40,12 +40,11 @@ class BBChat {
         ) = BBChatToCallScreen(context, topicName)
 
         fun saveDeviceToken(
-            appId: Long,
+            clientId: String,
             deviceToken: String,
-            participantId: String,
             onSuccess: (result: String?) -> Unit,
             onError: (result: String?) -> Unit
-        ) = BBChatSaveDeviceToken(appId, deviceToken, participantId, onSuccess, onError)
+        ) = BBChatSaveDeviceToken(clientId, deviceToken, onSuccess, onError)
 
         fun logout(): Boolean = BBChatLogout()
     }
