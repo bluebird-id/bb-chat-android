@@ -46,7 +46,7 @@
              Using tools:ignore="ExportedService" to disable the warning
         -->
         <service
-            android:name=".sdk.services.FBaseMessagingService"
+            android:name=".demo.FBaseMessagingService"
             android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>
