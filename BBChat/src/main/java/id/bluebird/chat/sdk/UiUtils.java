@@ -79,6 +79,7 @@ import co.tinode.tinodesdk.PromisedReply;
 import co.tinode.tinodesdk.ServerResponseException;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
+import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import id.bluebird.chat.BuildConfig;
 import id.bluebird.chat.R;
@@ -1146,5 +1147,21 @@ public class UiUtils {
             });
             return null;
         }
+    }
+
+    public static <T extends Topic<VxCard, PrivateType, ?, ?>>
+    PromisedReply<ServerMessage> updateTopicDesc(T topic, String notifClientId) {
+        VxCard oldPub = topic.getPub();
+        VxCard pub = null;
+        if (oldPub == null) {
+            pub = new VxCard();
+        } else {
+            pub = oldPub;
+        }
+        pub.note = notifClientId.equals("") ? Tinode.NULL_VALUE : notifClientId;
+        if (pub != null) {
+            return topic.setDescription(pub, topic.getPriv(), null);
+        }
+        return new PromisedReply<>((ServerMessage) null);
     }
 }
