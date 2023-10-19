@@ -45,7 +45,7 @@ fun saveDeviceToken(
 }
 
 private fun setNotifClientIdTinode(notifClientId: String) {
-    val me = Cache.getTinode().getMeTopic<VxCard>()
+    val me = Cache.getTinode().getMeTopic<VxCard>() ?: return
 
     UiUtils.updateTopicDesc(me, notifClientId)
         .thenApply(object : PromisedReply.SuccessListener<ServerMessage<*, *, *, *>?>() {
