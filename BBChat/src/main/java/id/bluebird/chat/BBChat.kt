@@ -39,6 +39,7 @@ class BBChat {
             topicName: String
         ) = BBChatToCallScreen(context, topicName)
 
+        @JvmStatic
         fun saveDeviceToken(
             clientId: String,
             deviceToken: String,
@@ -47,5 +48,6 @@ class BBChat {
         ) = BBChatSaveDeviceToken(clientId, deviceToken, onSuccess, onError)
 
         fun logout(): Boolean = BBChatLogout()
+
     }
 }

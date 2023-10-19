@@ -1,8 +1,5 @@
 package id.bluebird.chat.sdk.services;
 
-import static id.bluebird.chat.sdk.Const.FCM_REFRESH_TOKEN;
-import static id.bluebird.chat.sdk.Const.FCM_TOKEN;
-
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,7 +20,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
@@ -41,38 +37,38 @@ import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.account.Utils;
 import id.bluebird.chat.sdk.app.BReceiverHangUp;
+import id.bluebird.chat.sdk.app.TindroidApp;
 import id.bluebird.chat.sdk.format.FontFormatter;
 import id.bluebird.chat.sdk.media.VxCard;
 
 /**
  * Receive and handle (e.g. show) a push notification message.
  */
-public class FBaseMessagingService extends FirebaseMessagingService {
+public class BBFirebaseMessagingUtil {
 
-    private static final String TAG = "FBaseMessagingService";
+    private static final String TAG = "BBFirebaseMessagingUtil";
 
     // Width and height of the large icon (avatar).
     private static final int AVATAR_SIZE = 128;
     // Max length of the message.
     private static final int MAX_MESSAGE_LENGTH = 80;
 
-    @Override
     public void onNewToken(@NonNull final String refreshedToken) {
-        super.onNewToken(refreshedToken);
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
         // Send token to the server.
+        /*
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         Intent intent = new Intent(FCM_REFRESH_TOKEN);
         intent.putExtra(FCM_TOKEN, refreshedToken);
         lbm.sendBroadcast(intent);
+        */
 
         // The token is currently retrieved in id.bluebird.chat.Cache.
     }
 
-    @Override
     @SuppressWarnings("unchecked")
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public static void onMessageReceived(RemoteMessage remoteMessage) {
         // There are two types of messages data messages and notification messages. Data messages are handled
         // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
         // traditionally used with GCM. Notification messages are only received here in onMessageReceived when the app
@@ -111,6 +107,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
         //   Always silent.
         //
 
+        Context context = TindroidApp.getAppContext();
         String topicName;
 
         final Tinode tinode = Cache.getTinode();
@@ -132,14 +129,14 @@ public class FBaseMessagingService extends FirebaseMessagingService {
             String senderId = data.get("xfrom");
 
             // Update data state, maybe fetch missing data.
-            String token = Utils.getLoginToken(getApplicationContext());
+            String token = Utils.getLoginToken(context);
             String selectedTopic = Cache.getSelectedTopicName();
             tinode.oobNotification(data, token, "started".equals(webrtc) ||
                     topicName.equals(selectedTopic));
 
             if (webrtc != null) {
                 // It's a video call.
-                handleCallNotification(webrtc, tinode.isMe(senderId), data);
+                handleCallNotification(context, webrtc, tinode.isMe(senderId), data);
                 return;
             }
 
@@ -169,16 +166,16 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                 // Assign sender's name and avatar.
                 if (sender != null && sender.pub != null) {
                     senderName = sender.pub.fn;
-                    senderIcon = UiUtils.avatarBitmap(this, sender.pub, Topic.TopicType.P2P,
+                    senderIcon = UiUtils.avatarBitmap(context, sender.pub, Topic.TopicType.P2P,
                             senderId, AVATAR_SIZE);
                 }
             }
 
             if (senderName == null) {
-                senderName = getResources().getString(R.string.sender_unknown);
+                senderName = context.getResources().getString(R.string.sender_unknown);
             }
             if (senderIcon == null) {
-                senderIcon = UiUtils.avatarBitmap(this, null, Topic.TopicType.P2P,
+                senderIcon = UiUtils.avatarBitmap(context, null, Topic.TopicType.P2P,
                         senderId, AVATAR_SIZE);
             }
 
@@ -196,11 +193,11 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                         if (draftyBody != null) {
                             @SuppressLint("ResourceType") @StyleableRes int[] attrs = {android.R.attr.textSize};
                             float fontSize = 14f;
-                            TypedArray ta = obtainStyledAttributes(R.style.TextAppearance_Compat_Notification, attrs);
+                            TypedArray ta = context.obtainStyledAttributes(R.style.TextAppearance_Compat_Notification, attrs);
                             fontSize = ta.getDimension(0, fontSize);
                             ta.recycle();
                             body = draftyBody.shorten(MAX_MESSAGE_LENGTH, true)
-                                    .format(new FontFormatter(this, fontSize));
+                                    .format(new FontFormatter(context, fontSize));
                         } else {
                             // The content is plain text.
                             body = richContent;
@@ -214,7 +211,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                 if (TextUtils.isEmpty(body)) {
                     body = data.get("content");
                     if (TextUtils.isEmpty(body)) {
-                        body = getResources().getString(R.string.new_message);
+                        body = context.getResources().getString(R.string.new_message);
                     }
                 }
 
@@ -234,7 +231,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                     if (topic.getPub() != null) {
                         title = topic.getPub().fn;
                         if (TextUtils.isEmpty(title)) {
-                            title = getResources().getString(R.string.placeholder_topic_title);
+                            title = context.getResources().getString(R.string.placeholder_topic_title);
                         }
                         body = senderName + ": " + body;
                     }
@@ -250,7 +247,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                 }
 
                 // Legitimate subscription to a new topic.
-                title = getResources().getString(R.string.new_chat);
+                title = context.getResources().getString(R.string.new_chat);
                 if (tp == Topic.TopicType.P2P) {
                     // P2P message
                     body = senderName;
@@ -266,32 +263,32 @@ public class FBaseMessagingService extends FirebaseMessagingService {
 
                     VxCard pub = topic.getPub();
                     if (pub == null) {
-                        body = getResources().getString(R.string.sender_unknown);
-                        avatar = UiUtils.avatarBitmap(this, null, tp, topicName, AVATAR_SIZE);
+                        body = context.getResources().getString(R.string.sender_unknown);
+                        avatar = UiUtils.avatarBitmap(context, null, tp, topicName, AVATAR_SIZE);
                     } else {
                         body = pub.fn;
-                        avatar = UiUtils.avatarBitmap(this, pub, tp, topicName, AVATAR_SIZE);
+                        avatar = UiUtils.avatarBitmap(context, pub, tp, topicName, AVATAR_SIZE);
                     }
                 }
             }
 
-            builder = composeNotification(title, body, avatar);
+            builder = composeNotification(context, title, body, avatar);
 
         } else if (remoteMessage.getNotification() != null) {
             RemoteMessage.Notification remote = remoteMessage.getNotification();
 
             topicName = remote.getTag();
-            builder = composeNotification(remote);
+            builder = composeNotification(context, remote);
         } else {
             // Everything is null.
             return;
         }
 
-        showNotification(builder, topicName);
+        showNotification(context, builder, topicName);
     }
 
-    private void showNotification(NotificationCompat.Builder builder, String topicName) {
-        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    private static void showNotification(Context context, NotificationCompat.Builder builder, String topicName) {
+        NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm == null) {
             Log.e(TAG, "NotificationManager is not available");
             return;
@@ -304,11 +301,11 @@ public class FBaseMessagingService extends FirebaseMessagingService {
         if (!TextUtils.isEmpty(topicName)) {
             requestCode = topicName.hashCode();
             // Communication on a known topic
-            intent = new Intent(this, MessageActivity.class);
+            intent = new Intent(context, MessageActivity.class);
             intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, requestCode, intent,
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent,
                     PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
             // MessageActivity will cancel all notifications by tag, which is just topic name.
@@ -317,7 +314,7 @@ public class FBaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void handleCallNotification(@NonNull String webrtc, boolean isMe, @NonNull Map<String, String> data) {
+    private static void handleCallNotification(Context context, @NonNull String webrtc, boolean isMe, @NonNull Map<String, String> data) {
         String seqStr = data.get("seq");
         String topicName = data.get("topic");
         boolean audioOnly = Boolean.parseBoolean(data.get("aonly"));
@@ -345,8 +342,8 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                 case "missed":
                     if (origSeq > 0) {
                         // Dismiss the call UI.
-                        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
-                        final Intent intent = new Intent(this, BReceiverHangUp.class);
+                        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(context);
+                        final Intent intent = new Intent(context, BReceiverHangUp.class);
                         intent.setAction(Const.INTENT_ACTION_CALL_CLOSE);
                         intent.putExtra(Const.INTENT_EXTRA_TOPIC_CHAT, topicName);
                         intent.putExtra(Const.INTENT_EXTRA_SEQ, origSeq);
@@ -369,11 +366,11 @@ public class FBaseMessagingService extends FirebaseMessagingService {
      * @param body   message body.
      * @param avatar sender's avatar.
      */
-    private NotificationCompat.Builder composeNotification(String title, CharSequence body, Bitmap avatar) {
+    private static NotificationCompat.Builder composeNotification(Context context, String title, CharSequence body, Bitmap avatar) {
         @SuppressWarnings("deprecation") NotificationCompat.Builder notificationBuilder =
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
-                        new NotificationCompat.Builder(this, Const.NEWMSG_NOTIFICATION_CHAN_ID) :
-                        new NotificationCompat.Builder(this);
+                        new NotificationCompat.Builder(context, Const.NEWMSG_NOTIFICATION_CHAN_ID) :
+                        new NotificationCompat.Builder(context);
 
         return notificationBuilder
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -381,27 +378,27 @@ public class FBaseMessagingService extends FirebaseMessagingService {
                 .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
                 .setSmallIcon(R.drawable.ic_icon_push)
                 .setLargeIcon(avatar)
-                .setColor(ContextCompat.getColor(this, R.color.colorNotificationBackground))
+                .setColor(ContextCompat.getColor(context, R.color.colorNotificationBackground))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
     }
 
-    private NotificationCompat.Builder composeNotification(@NonNull RemoteMessage.Notification remote) {
+    private static NotificationCompat.Builder composeNotification(Context context, @NonNull RemoteMessage.Notification remote) {
         @SuppressWarnings("deprecation") NotificationCompat.Builder notificationBuilder =
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ?
-                        new NotificationCompat.Builder(this, Const.NEWMSG_NOTIFICATION_CHAN_ID) :
-                        new NotificationCompat.Builder(this);
+                        new NotificationCompat.Builder(context, Const.NEWMSG_NOTIFICATION_CHAN_ID) :
+                        new NotificationCompat.Builder(context);
 
-        final Resources res = getResources();
-        final String packageName = getPackageName();
+        final Resources res = context.getResources();
+        final String packageName = context.getPackageName();
 
         return notificationBuilder
                 .setPriority(unwrapInteger(remote.getNotificationPriority(), NotificationCompat.PRIORITY_HIGH))
                 .setVisibility(unwrapInteger(remote.getVisibility(), NotificationCompat.VISIBILITY_PRIVATE))
                 .setSmallIcon(resourceId(res, remote.getIcon(), R.drawable.ic_icon_push, "drawable", packageName))
-                .setColor(unwrapColor(remote.getColor(), ContextCompat.getColor(this, R.color.colorNotificationBackground)))
+                .setColor(unwrapColor(remote.getColor(), ContextCompat.getColor(context, R.color.colorNotificationBackground)))
                 .setContentTitle(locText(res, remote.getTitleLocalizationKey(), remote.getTitleLocalizationArgs(),
                         remote.getTitle(), packageName))
                 .setContentText(locText(res, remote.getBodyLocalizationKey(), remote.getBodyLocalizationArgs(),
