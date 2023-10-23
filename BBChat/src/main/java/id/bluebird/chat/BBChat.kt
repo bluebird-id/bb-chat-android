@@ -43,8 +43,8 @@ class BBChat {
         fun saveDeviceToken(
             clientId: String,
             deviceToken: String,
-            onSuccess: (result: String?) -> Unit,
-            onError: (result: String?) -> Unit
+            onSuccess: ((result: String?) -> Unit)?,
+            onError: ((result: String?) -> Unit)?
         ) = BBChatSaveDeviceToken(clientId, deviceToken, onSuccess, onError)
 
         fun logout(): Boolean = BBChatLogout()

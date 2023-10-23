@@ -16,11 +16,12 @@ public class FBaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(@NonNull final String refreshedToken) {
         super.onNewToken(refreshedToken);
         Log.e("BBChat", "token "+refreshedToken);
-        BBChat.saveDeviceToken("6f436ccd-8041-4104-9688-8727882cf3da", refreshedToken, null, null);
+        BBChat.saveDeviceToken("6f436ccd-8041-4104-9688-8727882cf3da", refreshedToken, null,null);
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
         BBFirebaseMessagingUtil.onMessageReceived(remoteMessage);
     }
 }

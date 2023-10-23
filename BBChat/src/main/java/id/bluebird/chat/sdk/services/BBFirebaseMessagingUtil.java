@@ -22,6 +22,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import co.tinode.tinodesdk.ComTopic;
@@ -115,7 +120,24 @@ public class BBFirebaseMessagingUtil {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Map<String, String> data = remoteMessage.getData();
+            Map<String, String> dataMessage = remoteMessage.getData();
+            String jsonString = dataMessage.get("Message");
+            Map<String, String> data = null;
+            try {
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Map<String, String> map = new HashMap<>();
+
+                Iterator<String> keysItr = jsonObject.keys();
+                while(keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    String value = jsonObject.getString(key);
+                    map.put(key, value);
+                }
+                data = map;
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage().toString());
+                return;
+            }
 
             // Check notification type: message, subscription.
             String what = data.get("what");

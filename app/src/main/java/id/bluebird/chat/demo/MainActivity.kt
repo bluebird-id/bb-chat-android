@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.firebase.messaging.FirebaseMessaging
 import id.bluebird.chat.BBChat
 import id.bluebird.chat.R
 import id.bluebird.chat.demo.theme.BluebirdChatTheme
@@ -93,11 +94,11 @@ fun MainScreen(
                 )
             }
 
-            val usernameState = remember { mutableStateOf("bromo1") }
+            val usernameState = remember { mutableStateOf("malang2") }
             val passwordState = remember { mutableStateOf(usernameState.value) }
             val fullnameState = remember { mutableStateOf("") }
 
-            val orderIdState = remember { mutableStateOf("room_bromo_") }
+            val orderIdState = remember { mutableStateOf("room_kopyor") }
 
             Column(
                 modifier = Modifier.weight(1f, false),
@@ -226,12 +227,25 @@ fun MainScreen(
                 MainButton(
                     modifier = modifier,
                     onClick = {
-                        BBChat.saveDeviceToken(
-                            clientId = "c6e14414-6bd5-11ee-b962-0242ac120002",
-                            deviceToken = "dgNlqvvFTN20Yi0avFbSxv:APA91bHETZvhQI3_xa59FUqfbn1WYMBnGtYliSDDYB_HJAmp--f1ypqevRwmALvZrjWGs1xCmJm24jVjTPO_IalGSKlb9ess4owR7kBjPuvmHEIzwdOr0z7EQf2P3EmY6b1qgnMKAKrV",
-                            onSuccess = {},
-                            onError = {}
-                        )
+                        FirebaseMessaging.getInstance().token
+                            .addOnCompleteListener { task ->
+                                if (!task.isSuccessful()) {
+                                    Log.w(
+                                        "BBchat",
+                                        "Fetching FCM registration token failed",
+                                        task.getException()
+                                    )
+                                    return@addOnCompleteListener
+                                }
+
+                                val token: String = task.getResult()
+                                BBChat.saveDeviceToken(
+                                    clientId = "6f436ccd-8041-4104-9688-8727882cf3da",
+                                    deviceToken = token,
+                                    onSuccess = {}
+                                ) {}
+                            }
+
                     },
                     enabled = isLogin.value && callTopicName.value.isNotEmpty(),
                     textButton = "Save Device Token"

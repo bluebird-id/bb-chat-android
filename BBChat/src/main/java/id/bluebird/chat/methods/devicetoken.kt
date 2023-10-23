@@ -17,26 +17,30 @@ import kotlinx.coroutines.launch
 fun saveDeviceToken(
     clientId: String,
     deviceToken: String,
-    onSuccess: (result: String?) -> Unit,
-    onError: (result: String?) -> Unit
+    onSuccess: ((result: String?) -> Unit)?,
+    onError: ((result: String?) -> Unit)?
 ) {
     Log.e("BBChat", "SaveDeviceToken , token = $deviceToken")
 
     val tinode = Cache.getTinode()
+    if (tinode.myId == null) {
+        onError?.invoke("tinode id not found")
+        return
+    }
     GlobalScope.launch {
 
         val repository = ChatServiceRepositoryImpl(ChatServiceApi(null))
         when (val response = repository.saveDeviceToken(clientId, tinode.myId, deviceToken)) {
             is Result.Ok -> {
-                onSuccess.invoke("SaveDeviceToken success ${response.data.message}")
+                onSuccess?.invoke("SaveDeviceToken success ${response.data.message}")
             }
 
             is Result.Exception -> {
-                onError.invoke("SaveDeviceToken failed ${response.errorMessage}")
+                onError?.invoke("SaveDeviceToken failed ${response.errorMessage}")
             }
 
             else -> {
-                onError.invoke("SaveDeviceToken failed Network")
+                onError?.invoke("SaveDeviceToken failed Network")
             }
         }
     }
