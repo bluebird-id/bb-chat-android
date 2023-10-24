@@ -12,6 +12,7 @@ import id.bluebird.chat.methods.saveDeviceToken as BBChatSaveDeviceToken
 class BBChat {
 
     companion object {
+
         fun login(
             username: String,
             fullname: String,
@@ -43,9 +44,11 @@ class BBChat {
         fun saveDeviceToken(
             clientId: String,
             deviceToken: String,
+            platform: Platform,
+            notifPipeline: NotifPipeline,
             onSuccess: ((result: String?) -> Unit)?,
             onError: ((result: String?) -> Unit)?
-        ) = BBChatSaveDeviceToken(clientId, deviceToken, onSuccess, onError)
+        ) = BBChatSaveDeviceToken(clientId, deviceToken, platform, notifPipeline, onSuccess, onError)
 
         fun logout(): Boolean = BBChatLogout()
 

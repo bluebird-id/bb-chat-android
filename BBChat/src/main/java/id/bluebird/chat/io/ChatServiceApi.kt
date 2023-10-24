@@ -4,6 +4,8 @@ import com.google.common.util.concurrent.ListenableFuture
 import grpc.ChatServiceGrpc
 import grpc.ChatServiceGrpc.ChatServiceFutureStub
 import grpc.Chatservice
+import id.bluebird.chat.NotifPipeline
+import id.bluebird.chat.Platform
 import id.bluebird.chat.io.network.Result
 import id.bluebird.chat.io.network.awaitResult
 import io.grpc.CallOptions
@@ -112,12 +114,16 @@ class ChatServiceApi(
         clientId: String,
         deviceToken: String,
         recipientId: String,
+        platform: Platform,
+        notifPipeline: NotifPipeline,
         transform: Chatservice.SaveDeviceTokenResponse.() -> T
     ): Result<T> {
         val request = Chatservice.SaveDeviceTokenRequest.newBuilder()
             .setClientId(clientId)
             .setToken(deviceToken)
             .setRecipientId(recipientId)
+            .setPlatform(platform.value)
+            .setNotifPipeline(notifPipeline.value)
             .build()
         return channel.futureStubResult(transform) {
             saveDeviceToken(request)

@@ -33,8 +33,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.messaging.FirebaseMessaging
 import id.bluebird.chat.BBChat
+import id.bluebird.chat.NotifPipeline
 import id.bluebird.chat.R
 import id.bluebird.chat.demo.theme.BluebirdChatTheme
+import id.bluebird.chat.Platform
 import id.bluebird.chat.sdk.db.BaseDb
 
 class MainActivity : ComponentActivity() {
@@ -242,8 +244,11 @@ fun MainScreen(
                                 BBChat.saveDeviceToken(
                                     clientId = "6f436ccd-8041-4104-9688-8727882cf3da",
                                     deviceToken = token,
-                                    onSuccess = {}
-                                ) {}
+                                    platform = Platform.iOS,
+                                    notifPipeline = NotifPipeline.APNS,
+                                    onSuccess = {},
+                                    onError = {}
+                                )
                             }
 
                     },

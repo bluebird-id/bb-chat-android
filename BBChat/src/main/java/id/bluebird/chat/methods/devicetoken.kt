@@ -4,6 +4,8 @@ import android.util.Log
 import co.tinode.tinodesdk.PromisedReply
 import co.tinode.tinodesdk.ServerResponseException
 import co.tinode.tinodesdk.model.ServerMessage
+import id.bluebird.chat.NotifPipeline
+import id.bluebird.chat.Platform
 import id.bluebird.chat.io.ChatServiceApi
 import id.bluebird.chat.io.ChatServiceRepositoryImpl
 import id.bluebird.chat.io.network.Result
@@ -17,10 +19,12 @@ import kotlinx.coroutines.launch
 fun saveDeviceToken(
     clientId: String,
     deviceToken: String,
+    platform: Platform,
+    notifPipline: NotifPipeline,
     onSuccess: ((result: String?) -> Unit)?,
     onError: ((result: String?) -> Unit)?
 ) {
-    Log.e("BBChat", "SaveDeviceToken , token = $deviceToken")
+    Log.e("BBChat", "SaveDeviceToken , token = $deviceToken ${platform.value} ${notifPipline.value}" )
 
     val tinode = Cache.getTinode()
     if (tinode.myId == null) {
@@ -30,7 +34,7 @@ fun saveDeviceToken(
     GlobalScope.launch {
 
         val repository = ChatServiceRepositoryImpl(ChatServiceApi(null))
-        when (val response = repository.saveDeviceToken(clientId, tinode.myId, deviceToken)) {
+        when (val response = repository.saveDeviceToken(clientId, tinode.myId, deviceToken, platform, notifPipline)) {
             is Result.Ok -> {
                 onSuccess?.invoke("SaveDeviceToken success ${response.data.message}")
             }

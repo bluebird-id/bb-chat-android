@@ -1,5 +1,7 @@
 package id.bluebird.chat.io
 
+import id.bluebird.chat.NotifPipeline
+import id.bluebird.chat.Platform
 import id.bluebird.chat.io.model.DeviceTokenResp
 import id.bluebird.chat.io.model.ParticipantsResp
 import id.bluebird.chat.io.model.RegisterResp
@@ -11,12 +13,23 @@ interface ChatServiceRepository {
 
     suspend fun getParticipants(orderId: String): Result<ParticipantsResp>
 
-    suspend fun saveDeviceToken(clientId: String, participantId: String, deviceToken: String): Result<DeviceTokenResp>
+    suspend fun saveDeviceToken(
+        clientId: String,
+        participantId: String,
+        deviceToken: String,
+        platform: Platform,
+        notifPipeline: NotifPipeline
+    ): Result<DeviceTokenResp>
 }
 
-class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi): ChatServiceRepository {
+class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi) :
+    ChatServiceRepository {
 
-    override suspend fun register(clientId: String, tinodeId: String, fullName: String): Result<RegisterResp> {
+    override suspend fun register(
+        clientId: String,
+        tinodeId: String,
+        fullName: String
+    ): Result<RegisterResp> {
         return chatServiceApi.registerFuture(clientId, tinodeId, fullName) {
             val response = RegisterResp()
             response.setItem(this)
@@ -32,8 +45,14 @@ class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi): Cha
         }
     }
 
-    override suspend fun saveDeviceToken(clientId: String, participantId: String, deviceToken: String): Result<DeviceTokenResp> {
-        return chatServiceApi.saveDeviceTokenFuture(clientId, deviceToken, participantId) {
+    override suspend fun saveDeviceToken(
+        clientId: String,
+        participantId: String,
+        deviceToken: String,
+        platform: Platform,
+        notifPipeline: NotifPipeline
+    ): Result<DeviceTokenResp> {
+        return chatServiceApi.saveDeviceTokenFuture(clientId, deviceToken, participantId, platform, notifPipeline) {
             val response = DeviceTokenResp()
             response.setItem(this)
             response
