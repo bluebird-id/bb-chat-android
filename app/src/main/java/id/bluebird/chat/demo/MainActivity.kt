@@ -244,8 +244,8 @@ fun MainScreen(
                                 BBChat.saveDeviceToken(
                                     clientId = "6f436ccd-8041-4104-9688-8727882cf3da",
                                     deviceToken = token,
-                                    platform = Platform.iOS,
-                                    notifPipeline = NotifPipeline.APNS,
+                                    platform = Platform.Android,
+                                    notifPipeline = NotifPipeline.FCM,
                                     onSuccess = {},
                                     onError = {}
                                 )
