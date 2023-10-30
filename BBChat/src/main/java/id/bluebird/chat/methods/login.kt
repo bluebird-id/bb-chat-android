@@ -1,6 +1,6 @@
 package id.bluebird.chat.methods
 
-import android.app.Activity
+import android.content.Context
 import android.util.Log
 import androidx.preference.PreferenceManager
 import co.tinode.tinodesdk.PromisedReply
@@ -23,7 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
 val coroutineScope = CoroutineScope(Dispatchers.IO)
 
 private var userName: String? = null
@@ -31,9 +30,9 @@ private var passWord: String? = null
 private var fullName: String? = null
 
 fun loginOrRegister(
+    context: Context,
     username: String,
     fullname: String,
-    activity: Activity,
     onSuccess: (result: String?) -> Unit,
     onError: (result: String?) -> Unit
 ) {
@@ -44,7 +43,7 @@ fun loginOrRegister(
     coroutineScope.launch {
 
         // LOGIN TINODE
-        loginTinode(activity, completion = { result, error ->
+        loginTinode(context = context, completion = { result, error ->
 
             if (result?.isNotEmpty() == true) {
 
@@ -59,7 +58,7 @@ fun loginOrRegister(
                 if (error?.contains("401") == true) {
 
                     // LOGIN TINODE ACCOUNT NOT FOUND
-                    registerTinode(activity, completion = { result, error ->
+                    registerTinode(context = context, completion = { result, error ->
 
                         if (result?.isNotEmpty() == true) {
 
@@ -87,12 +86,9 @@ fun loginOrRegister(
 
 }
 
-private fun loginTinode(
-    activity: Activity,
-    completion: (String?, String?) -> Unit
-) {
+private fun loginTinode(context: Context, completion: (String?, String?) -> Unit) {
     Log.e("BBChat", "loginTinode: $userName $passWord")
-    val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
+    val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
     val tinode = Cache.getTinode()
 
     val hostName: String =
@@ -113,7 +109,7 @@ private fun loginTinode(
                 override fun onSuccess(msg: ServerMessage<*, *, *, *>?):
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
                     UiUtils.updateAndroidAccount(
-                        activity,
+                        context,
                         tinode.authToken,
                         tinode.authTokenExpiration
                     )
@@ -123,7 +119,7 @@ private fun loginTinode(
                         msg.ctrl.text.contains("validate credentials")
                     ) {
 
-                        val message: String = activity.getString(R.string.error_login_failed)
+                        val message: String = context.getString(R.string.error_login_failed)
                         completion.invoke(null, message + " ${msg.ctrl.code}")
 
                     } else {
@@ -145,7 +141,7 @@ private fun loginTinode(
                 override fun <E : Exception?> onFailure(err: E):
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
 
-                    val message: String = activity.getString(R.string.error_login_failed)
+                    val message: String = context.getString(R.string.error_login_failed)
                     completion.invoke(null, message + " " + err?.message)
 
                     return null
@@ -153,15 +149,12 @@ private fun loginTinode(
             })
 }
 
-private fun registerTinode(
-    activity: Activity,
-    completion: (String?, String?) -> Unit
-) {
+private fun registerTinode(context: Context, completion: (String?, String?) -> Unit) {
     // This is called on the websocket thread.
 
     Log.e("BBChat", "register tinode: $userName $passWord")
     val tinode = Cache.getTinode()
-    val sharedPref = PreferenceManager.getDefaultSharedPreferences(activity)
+    val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
     val hostName = sharedPref.getString(Utils.PREFS_HOST_NAME, TindroidApp.getDefaultHostName())
     val tls = sharedPref.getBoolean(Utils.PREFS_USE_TLS, TindroidApp.getDefaultTLS())
 
@@ -197,7 +190,7 @@ private fun registerTinode(
 
             override fun onSuccess(result: ServerMessage<*, *, *, *>?): PromisedReply<ServerMessage<*, *, *, *>?>? {
                 UiUtils.updateAndroidAccount(
-                    activity,
+                    context,
                     tinode.authToken,
                     tinode.authTokenExpiration
                 )

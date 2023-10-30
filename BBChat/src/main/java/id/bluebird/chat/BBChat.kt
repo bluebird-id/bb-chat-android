@@ -1,25 +1,26 @@
 package id.bluebird.chat
 
 import android.app.Activity
+import android.content.Context
 import id.bluebird.chat.io.model.Participants
 import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom
 import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
 import id.bluebird.chat.methods.logout as BBChatLogout
 import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
-import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
 import id.bluebird.chat.methods.saveDeviceToken as BBChatSaveDeviceToken
+import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
 
 class BBChat {
 
     companion object {
 
         fun login(
+            context: Context,
             username: String,
             fullname: String,
-            activity: Activity,
             onSuccess: (result: String?) -> Unit,
-            onError: (result: String?) -> Unit
-        ) = BBChatLogin(username, fullname, activity, onSuccess, onError)
+            onError: (result: String?) -> Unit,
+        ) = BBChatLogin(context, username, fullname, onSuccess, onError)
 
         fun getRoom(
             userId: String,
@@ -29,14 +30,14 @@ class BBChat {
         ) = BBChatGetRoom(userId, orderId, onSuccess, onError)
 
         fun toMessageScreen(
-            context: Activity,
+            context: Context,
             opponentsName: String,
             topicChatName: String,
             topicCallName: String,
         ) = BBChatToMessageScreen(context, opponentsName, topicChatName, topicCallName)
 
         fun toCallScreen(
-            context: Activity,
+            context: Context,
             topicName: String
         ) = BBChatToCallScreen(context, topicName)
 
@@ -48,7 +49,14 @@ class BBChat {
             notifPipeline: NotifPipeline,
             onSuccess: ((result: String?) -> Unit)?,
             onError: ((result: String?) -> Unit)?
-        ) = BBChatSaveDeviceToken(clientId, deviceToken, platform, notifPipeline, onSuccess, onError)
+        ) = BBChatSaveDeviceToken(
+            clientId,
+            deviceToken,
+            platform,
+            notifPipeline,
+            onSuccess,
+            onError
+        )
 
         fun logout(): Boolean = BBChatLogout()
 

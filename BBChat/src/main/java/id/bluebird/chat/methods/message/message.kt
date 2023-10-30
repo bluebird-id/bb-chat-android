@@ -1,11 +1,12 @@
 package id.bluebird.chat.methods.message
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import id.bluebird.chat.sdk.Const
 
 fun toMessageScreen(
-    context: Activity,
+    context: Context,
     otherName: String,
     chatTopicName: String,
     callTopicName: String,

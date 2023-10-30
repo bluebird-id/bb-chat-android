@@ -34,9 +34,9 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.messaging.FirebaseMessaging
 import id.bluebird.chat.BBChat
 import id.bluebird.chat.NotifPipeline
+import id.bluebird.chat.Platform
 import id.bluebird.chat.R
 import id.bluebird.chat.demo.theme.BluebirdChatTheme
-import id.bluebird.chat.Platform
 import id.bluebird.chat.sdk.db.BaseDb
 
 class MainActivity : ComponentActivity() {
@@ -72,7 +72,8 @@ fun MainScreen(
 //    val chatTopicName = remember { mutableStateOf("grpm_6FL8t1wr4") }
 //    val callTopicName = remember { mutableStateOf("usryGFySww-TSI") }
 
-    val context = LocalContext.current as Activity
+    val context = LocalContext.current
+    val activity = LocalContext.current as Activity
 
     LoadingSurface(isLoading.value) {
         Column(
@@ -96,11 +97,11 @@ fun MainScreen(
                 )
             }
 
-            val usernameState = remember { mutableStateOf("malang2") }
+            val usernameState = remember { mutableStateOf("") }
             val passwordState = remember { mutableStateOf(usernameState.value) }
             val fullnameState = remember { mutableStateOf("") }
 
-            val orderIdState = remember { mutableStateOf("room_kopyor") }
+            val orderIdState = remember { mutableStateOf("") }
 
             Column(
                 modifier = Modifier.weight(1f, false),
@@ -145,9 +146,9 @@ fun MainScreen(
                         isLoading.value = true
 
                         BBChat.login(
+                            context = context,
                             username = usernameState.value,
                             fullname = fullnameState.value,
-                            activity = context,
                             onSuccess = {
                                 isLogin.value = true
                                 isLoading.value = false
@@ -158,7 +159,7 @@ fun MainScreen(
 
                                 Log.e("BBChat", "onError: $it")
 
-                                context.runOnUiThread {
+                                activity.runOnUiThread {
                                     Toast.makeText(context, "onError: $it", Toast.LENGTH_SHORT)
                                         .show()
                                 }
@@ -183,7 +184,7 @@ fun MainScreen(
                                 callTopicName.value = it?.callRoomId ?: ""
                                 fullnameState.value = it?.fullName ?: ""
 
-                                context.runOnUiThread {
+                                activity.runOnUiThread {
                                     Toast.makeText(context, "Success", Toast.LENGTH_SHORT)
                                         .show()
                                 }
@@ -192,7 +193,7 @@ fun MainScreen(
                                 Log.e("BBChat", "onError: $it")
                                 isLoading.value = false
 
-                                context.runOnUiThread {
+                                activity.runOnUiThread {
                                     Toast.makeText(context, "Failed", Toast.LENGTH_SHORT)
                                         .show()
                                 }

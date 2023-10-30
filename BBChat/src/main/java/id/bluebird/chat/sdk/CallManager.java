@@ -108,11 +108,11 @@ public class CallManager {
         telecomManager.unregisterPhoneAccount(shared.mPhoneAccountHandle);
     }
 
-    public static void placeOutgoingCall(Activity activity, String callee) {
+    public static void placeOutgoingCall(Context context, String callee) {
         TelecomManager telecomManager = (TelecomManager) TindroidApp.getAppContext().getSystemService(TELECOM_SERVICE);
-        if (shouldBypassTelecom(activity, telecomManager, true)) {
+        if (shouldBypassTelecom(context, telecomManager, true)) {
             // Self-managed phone accounts are not supported, bypassing Telecom.
-            showOutgoingCallUi(activity, callee, null);
+            showOutgoingCallUi(context, callee, null);
             return;
         }
 
