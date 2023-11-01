@@ -111,5 +111,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <!-- Receives broadcast to hang up incoming call -->
+        <receiver android:name=".sdk.app.BReceiverHangUp" />
     </application>
 </manifest>
