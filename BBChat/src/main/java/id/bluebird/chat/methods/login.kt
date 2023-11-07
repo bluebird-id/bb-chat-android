@@ -30,7 +30,6 @@ private var passWord: String? = null
 private var fullName: String? = null
 
 fun loginOrRegister(
-    context: Context,
     username: String,
     fullname: String,
     onSuccess: (result: String?) -> Unit,
@@ -43,7 +42,7 @@ fun loginOrRegister(
     coroutineScope.launch {
 
         // LOGIN TINODE
-        loginTinode(context = context, completion = { result, error ->
+        loginTinode(completion = { result, error ->
 
             if (result?.isNotEmpty() == true) {
 
@@ -58,7 +57,7 @@ fun loginOrRegister(
                 if (error?.contains("401") == true) {
 
                     // LOGIN TINODE ACCOUNT NOT FOUND
-                    registerTinode(context = context, completion = { result, error ->
+                    registerTinode(completion = { result, error ->
 
                         if (result?.isNotEmpty() == true) {
 
@@ -86,9 +85,9 @@ fun loginOrRegister(
 
 }
 
-private fun loginTinode(context: Context, completion: (String?, String?) -> Unit) {
+private fun loginTinode(completion: (String?, String?) -> Unit) {
     Log.e("BBChat", "loginTinode: $userName $passWord")
-    val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+    val sharedPref = PreferenceManager.getDefaultSharedPreferences(TindroidApp.getAppContext())
     val tinode = Cache.getTinode()
 
     val hostName: String =
@@ -109,7 +108,7 @@ private fun loginTinode(context: Context, completion: (String?, String?) -> Unit
                 override fun onSuccess(msg: ServerMessage<*, *, *, *>?):
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
                     UiUtils.updateAndroidAccount(
-                        context,
+                        TindroidApp.getAppContext(),
                         tinode.authToken,
                         tinode.authTokenExpiration
                     )
@@ -119,7 +118,7 @@ private fun loginTinode(context: Context, completion: (String?, String?) -> Unit
                         msg.ctrl.text.contains("validate credentials")
                     ) {
 
-                        val message: String = context.getString(R.string.error_login_failed)
+                        val message: String = TindroidApp.getAppContext().getString(R.string.error_login_failed)
                         completion.invoke(null, message + " ${msg.ctrl.code}")
 
                     } else {
@@ -141,7 +140,7 @@ private fun loginTinode(context: Context, completion: (String?, String?) -> Unit
                 override fun <E : Exception?> onFailure(err: E):
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
 
-                    val message: String = context.getString(R.string.error_login_failed)
+                    val message: String = TindroidApp.getAppContext().getString(R.string.error_login_failed)
                     completion.invoke(null, message + " " + err?.message)
 
                     return null
@@ -149,12 +148,12 @@ private fun loginTinode(context: Context, completion: (String?, String?) -> Unit
             })
 }
 
-private fun registerTinode(context: Context, completion: (String?, String?) -> Unit) {
+private fun registerTinode(completion: (String?, String?) -> Unit) {
     // This is called on the websocket thread.
 
     Log.e("BBChat", "register tinode: $userName $passWord")
     val tinode = Cache.getTinode()
-    val sharedPref = PreferenceManager.getDefaultSharedPreferences(context)
+    val sharedPref = PreferenceManager.getDefaultSharedPreferences(TindroidApp.getAppContext())
     val hostName = sharedPref.getString(Utils.PREFS_HOST_NAME, TindroidApp.getDefaultHostName())
     val tls = sharedPref.getBoolean(Utils.PREFS_USE_TLS, TindroidApp.getDefaultTLS())
 
@@ -190,7 +189,7 @@ private fun registerTinode(context: Context, completion: (String?, String?) -> U
 
             override fun onSuccess(result: ServerMessage<*, *, *, *>?): PromisedReply<ServerMessage<*, *, *, *>?>? {
                 UiUtils.updateAndroidAccount(
-                    context,
+                    TindroidApp.getAppContext(),
                     tinode.authToken,
                     tinode.authTokenExpiration
                 )

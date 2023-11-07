@@ -146,7 +146,6 @@ fun MainScreen(
                         isLoading.value = true
 
                         BBChat.login(
-                            context = context,
                             username = usernameState.value,
                             fullname = fullnameState.value,
                             onSuccess = {
