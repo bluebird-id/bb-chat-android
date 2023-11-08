@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -282,6 +283,35 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
+        EditText editor = view.findViewById(R.id.editMessage);
+
+        LinearLayout btnPredifinedMessage = activity.findViewById(R.id.btn_predifined_message);
+        LinearLayout contentPredifinedMessage = activity.findViewById(R.id.content_predifined_message);
+        TextView itemPredifinedMessageFirst = activity.findViewById(R.id.tv_message_1);
+        TextView itemPredifinedMessageSecond = activity.findViewById(R.id.tv_message_2);
+        TextView itemPredifinedMessageThird = activity.findViewById(R.id.tv_message_3);
+
+        itemPredifinedMessageFirst.setOnClickListener(v -> editor.setText(
+                editor.getText().toString() + itemPredifinedMessageFirst.getText()));
+        itemPredifinedMessageSecond.setOnClickListener(v -> editor.setText(
+                editor.getText().toString() + itemPredifinedMessageSecond.getText()));
+        itemPredifinedMessageThird.setOnClickListener(v -> editor.setText(
+                editor.getText().toString() + itemPredifinedMessageThird.getText()));
+
+        btnPredifinedMessage.setOnClickListener(
+                v -> {
+                    int visibility;
+
+                    if (contentPredifinedMessage.getVisibility() == View.VISIBLE) {
+                        visibility = View.GONE;
+                    } else {
+                        visibility = View.VISIBLE;
+                    }
+
+                    contentPredifinedMessage.setVisibility(visibility);
+                }
+        );
+
         mGoToLatest = activity.findViewById(R.id.goToLatest);
         mGoToLatest.setOnClickListener(v -> scrollToBottom(true));
 
@@ -376,7 +406,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         // Cancel reply preview button.
         view.findViewById(R.id.cancelPreview).setOnClickListener(v -> cancelPreview(activity));
 
-        EditText editor = view.findViewById(R.id.editMessage);
         ViewCompat.setOnReceiveContentListener(editor, SUPPORTED_MIME_TYPES, new StickerReceiver());
 
         // Send notification on key presses
@@ -398,6 +427,8 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                     audio.setVisibility(View.VISIBLE);
                     send.setVisibility(View.INVISIBLE);
                 }
+
+                contentPredifinedMessage.setVisibility(View.GONE);
             }
 
             @Override

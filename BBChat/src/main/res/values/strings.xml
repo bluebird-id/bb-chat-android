@@ -82,6 +82,10 @@
     <string name="button_hint_start_new_chat">Start new chat</string>
     <string name="outgoing_call">Outgoing call</string>
     <string name="incoming_call">Incoming call</string>
+    <string name="pesan_cepat">Pesan Cepat</string>
+    <string name="apakah_sesuai_map">Apakah sesuai map?</string>
+    <string name="saya_sedang_menuju">Saya sedang menuju ke sana</string>
+    <string name="terima_kasih">Terima kasih</string>
 
     <string name="permission_missing">Required permission is missing</string>
     <string name="image_caption_hint">Image caption</string>

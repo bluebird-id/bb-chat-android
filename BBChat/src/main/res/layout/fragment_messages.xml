@@ -1,5 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,7 +11,7 @@
         android:id="@+id/swipe_refresher"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/sendMessageFragment"
+        app:layout_constraintBottom_toTopOf="@id/predifined_message"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,8 +22,137 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             android:scrollbars="vertical" />
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <LinearLayout
+        android:id="@+id/predifined_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_round"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/sendMessageFragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/swipe_refresher">
+
+        <LinearLayout
+            android:id="@+id/btn_predifined_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_predefined_message" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/pesan_cepat"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/ic_chevron_up" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/content_predifined_message"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/letter_tile_text_color_dark" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_speech_bubble" />
+
+                <TextView
+                    android:id="@+id/tv_message_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/apakah_sesuai_map"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_speech_bubble" />
+
+                <TextView
+                    android:id="@+id/tv_message_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/saya_sedang_menuju"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/item_predifined_message_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_speech_bubble" />
+
+                <TextView
+                    android:id="@+id/tv_message_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/terima_kasih"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/notReadable"
@@ -86,15 +214,15 @@
         android:clickable="true"
         android:contentDescription="@string/button_hint_start_new_chat"
         android:focusable="true"
-        android:visibility="gone"
         android:tint="?android:colorPrimaryDark"
+        android:visibility="gone"
         app:backgroundTint="?android:colorBackgroundFloating"
         app:borderWidth="0dp"
         app:elevation="1dp"
         app:fabSize="mini"
-        app:maxImageSize="@dimen/fab_mini_icon"
         app:layout_constraintBottom_toTopOf="@id/sendMessageFragment"
         app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="@dimen/fab_mini_icon"
         app:srcCompat="@drawable/ic_arrow_down" />
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -103,11 +231,11 @@
         android:layout_height="96dp"
         android:layout_marginEnd="6dp"
         android:layout_marginBottom="-22dp"
-        android:src="@drawable/swipe_to_lock"
         android:contentDescription="@string/lock_recording_for_long_messages"
-        android:visibility="gone"
-        android:scaleType="fitCenter"
         android:elevation="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/swipe_to_lock"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/audioRecorder"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -117,11 +245,11 @@
         android:layout_height="44dp"
         android:layout_marginEnd="-22dp"
         android:layout_marginBottom="8dp"
-        android:src="@drawable/swipe_to_delete"
         android:contentDescription="@string/delete_recording_hint"
-        android:visibility="gone"
-        android:scaleType="fitCenter"
         android:elevation="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/swipe_to_delete"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/audioRecorder" />
 
@@ -144,5 +272,4 @@
         app:maxImageSize="@dimen/fab_large_icon"
         app:srcCompat="@drawable/ic_mic"
         app:tint="?android:textColorPrimaryInverse" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
