@@ -9,12 +9,19 @@
 # Java class files
 *.class
 
+# Keystore files
+*.jks
+*.keystore
+
 # generated files
 bin/
 build/
 gen/
 target/
 captures/
+.externalNativeBuild/
+.cxx/
+output.json
 
 # Local configuration files (sdk path, etc)
 local.properties
@@ -24,6 +31,9 @@ oc_framework-test-project/local.properties
 tests/local.properties
 lint.xml
 keystore.properties
+
+# Log/OS Files
+*.log
 
 # Mac .DS_Store files
 .DS_Store
@@ -37,10 +47,21 @@ tests/proguard-project.txt
 
 # Android Studio and Gradle specific entries
 .gradle
+.gradle/
 .idea
+.idea/
 *.iml
 app/*.iml
 tinodesdk/*.iml
 
+# IntelliJ
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
 # Config file for Google services with secret keys
 app/google-services.json
+google-services.json
+
+# Android Profiling
+*.hprof
