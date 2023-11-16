@@ -8,6 +8,7 @@ import id.bluebird.chat.NotifPipeline
 import id.bluebird.chat.Platform
 import id.bluebird.chat.io.network.Result
 import id.bluebird.chat.io.network.awaitResult
+import id.bluebird.chat.sdk.app.TindroidApp
 import io.grpc.CallOptions
 import io.grpc.Channel
 import io.grpc.ClientCall
@@ -63,7 +64,10 @@ class ChatServiceApi(
         }
     }
 
-    val channel: ManagedChannel = ManagedChannelBuilder.forAddress("34.124.216.166", 6969)
+    val channel: ManagedChannel = ManagedChannelBuilder.forAddress(
+        TindroidApp.getChatServicesApi().first,
+        TindroidApp.getChatServicesApi().second
+    )
         .usePlaintext()
         .intercept(interceptor)
         .build()

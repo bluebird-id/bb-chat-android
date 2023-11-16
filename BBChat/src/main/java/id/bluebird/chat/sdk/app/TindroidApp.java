@@ -29,6 +29,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Pair;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -69,8 +70,17 @@ public class TindroidApp {
     private static String sAppVersion = null;
     private static int sAppBuild = 0;
 
-    public void onCreate(Application application) {
-        this.application = application;
+    private static String hostname = "";
+    private static Pair<String, Integer> chatServicesApi = new Pair<>("", 0);
+
+    public void onCreate(
+            Application application,
+            String hostname,
+            Pair<String, Integer> chatServicesApi
+    ) {
+        TindroidApp.application = application;
+        TindroidApp.hostname = hostname;
+        TindroidApp.chatServicesApi = chatServicesApi;
 
         handeAppData();
 
@@ -276,9 +286,11 @@ public class TindroidApp {
     }
 
     public static String getDefaultHostName() {
-        return application.getResources().getString(isEmulator() ?
-                R.string.emulator_host_name :
-                R.string.default_host_name);
+        return hostname;
+    }
+
+    public static Pair<String, Integer> getChatServicesApi() {
+        return chatServicesApi;
     }
 
     public static boolean getDefaultTLS() {
