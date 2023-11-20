@@ -39,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -133,7 +134,6 @@ public class MessagesFragment extends Fragment implements MenuProvider {
     private FloatingActionButton mGoToLatest;
 
     private String mTopicName = null;
-
     private String mOtherName = null;
     private String mMessageToSend = null;
     private boolean mChatInvitationShown = false;
@@ -283,34 +283,10 @@ public class MessagesFragment extends Fragment implements MenuProvider {
         ((MenuHost) activity).addMenuProvider(this, getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
 
+        LinearLayout contentPredefinedMessage = activity.findViewById(R.id.content_predefined_message);
         EditText editor = view.findViewById(R.id.editMessage);
 
-        LinearLayout btnPredifinedMessage = activity.findViewById(R.id.btn_predifined_message);
-        LinearLayout contentPredifinedMessage = activity.findViewById(R.id.content_predifined_message);
-        TextView itemPredifinedMessageFirst = activity.findViewById(R.id.tv_message_1);
-        TextView itemPredifinedMessageSecond = activity.findViewById(R.id.tv_message_2);
-        TextView itemPredifinedMessageThird = activity.findViewById(R.id.tv_message_3);
-
-        itemPredifinedMessageFirst.setOnClickListener(v -> editor.setText(
-                editor.getText().toString() + itemPredifinedMessageFirst.getText()));
-        itemPredifinedMessageSecond.setOnClickListener(v -> editor.setText(
-                editor.getText().toString() + itemPredifinedMessageSecond.getText()));
-        itemPredifinedMessageThird.setOnClickListener(v -> editor.setText(
-                editor.getText().toString() + itemPredifinedMessageThird.getText()));
-
-        btnPredifinedMessage.setOnClickListener(
-                v -> {
-                    int visibility;
-
-                    if (contentPredifinedMessage.getVisibility() == View.VISIBLE) {
-                        visibility = View.GONE;
-                    } else {
-                        visibility = View.VISIBLE;
-                    }
-
-                    contentPredifinedMessage.setVisibility(visibility);
-                }
-        );
+        predefinedMessage(activity, editor, contentPredefinedMessage);
 
         mGoToLatest = activity.findViewById(R.id.goToLatest);
         mGoToLatest.setOnClickListener(v -> scrollToBottom(true));
@@ -428,7 +404,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                     send.setVisibility(View.INVISIBLE);
                 }
 
-                contentPredifinedMessage.setVisibility(View.GONE);
+                contentPredefinedMessage.setVisibility(View.GONE);
             }
 
             @Override
@@ -522,6 +498,48 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                         }
                     }
                 });
+    }
+
+    private void predefinedMessage(Activity activity, EditText editor, LinearLayout contentPredefinedMessage) {
+        UserType userType = (UserType) getArguments().get(Const.INTENT_EXTRA_USER_TYPE);
+
+        LinearLayout btnPredifinedMessage = activity.findViewById(R.id.btn_predefined_message);
+        ListView listPredefinedMessage = activity.findViewById(R.id.list_predefined_message);
+        ImageView icPredefinedMessage = activity.findViewById(R.id.ic_predefined_message);
+
+        String[] contents;
+        if (userType == UserType.CUSTOMER) {
+            contents = getResources().getStringArray(R.array.customer_predefined_message);
+        } else {
+            contents = getResources().getStringArray(R.array.driver_predefined_message);
+        }
+
+        MessagesPredefinedAdapter adapter = new MessagesPredefinedAdapter(
+                activity,
+                contents
+        );
+        listPredefinedMessage.setAdapter(adapter);
+
+        btnPredifinedMessage.setOnClickListener(
+                v -> {
+                    int visibility;
+
+                    if (contentPredefinedMessage.getVisibility() == View.VISIBLE) {
+                        visibility = View.GONE;
+                        icPredefinedMessage.setImageResource(R.drawable.ic_chevron_down);
+                    } else {
+                        visibility = View.VISIBLE;
+                        icPredefinedMessage.setImageResource(R.drawable.ic_chevron_up);
+                    }
+
+                    contentPredefinedMessage.setVisibility(visibility);
+                }
+        );
+
+        listPredefinedMessage.setOnItemClickListener((adapterView, view, pos, l) -> {
+            String value = adapter.getItem(pos);
+            editor.setText(editor.getText() + value);
+        });
     }
 
     @Override

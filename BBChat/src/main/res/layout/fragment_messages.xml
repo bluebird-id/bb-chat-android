@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/message_view_bkg"
-    tools:context=".methods.message.MessagesFragment">
+    tools:context=".sdk.demos.message.MessagesFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresher"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/predifined_message"
+        app:layout_constraintBottom_toTopOf="@id/predefined_message"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -32,7 +32,7 @@
         app:layout_constraintGuide_percent="0.25" />
 
     <LinearLayout
-        android:id="@+id/predifined_message"
+        android:id="@+id/predefined_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toBottomOf="@id/swipe_refresher">
 
         <LinearLayout
-            android:id="@+id/btn_predifined_message"
+            android:id="@+id/btn_predefined_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -66,6 +66,7 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/ic_predefined_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -74,8 +75,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/content_predifined_message"
-            android:visibility="visible"
+            android:id="@+id/content_predefined_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -83,74 +83,14 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/letter_tile_text_color_dark" />
+                android:background="@color/gray_line" />
 
-            <LinearLayout
+            <ListView
+                android:id="@+id/list_predefined_message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_speech_bubble" />
-
-                <TextView
-                    android:id="@+id/tv_message_1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/apakah_sesuai_map"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_speech_bubble" />
-
-                <TextView
-                    android:id="@+id/tv_message_2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/saya_sedang_menuju"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/item_predifined_message_3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/ic_speech_bubble" />
-
-                <TextView
-                    android:id="@+id/tv_message_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/terima_kasih"
-                    android:textSize="11sp" />
-            </LinearLayout>
+                android:divider="@drawable/list_divider_predefined"
+                android:dividerHeight="1dp" />
         </LinearLayout>
     </LinearLayout>
 

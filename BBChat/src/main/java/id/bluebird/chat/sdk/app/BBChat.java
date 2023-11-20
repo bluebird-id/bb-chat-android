@@ -64,7 +64,7 @@ import okhttp3.Request;
 /**
  * A class for providing global context for database access
  */
-public class TindroidApp {
+public class BBChat {
     private static final String TAG = "TindroidApp";
     private static Application application;
     private static String sAppVersion = null;
@@ -73,14 +73,14 @@ public class TindroidApp {
     private static String hostname = "";
     private static Pair<String, Integer> chatServicesApi = new Pair<>("", 0);
 
-    public void onCreate(
+    public void init(
             Application application,
             String hostname,
             Pair<String, Integer> chatServicesApi
     ) {
-        TindroidApp.application = application;
-        TindroidApp.hostname = hostname;
-        TindroidApp.chatServicesApi = chatServicesApi;
+        BBChat.application = application;
+        BBChat.hostname = hostname;
+        BBChat.chatServicesApi = chatServicesApi;
 
         handeAppData();
 

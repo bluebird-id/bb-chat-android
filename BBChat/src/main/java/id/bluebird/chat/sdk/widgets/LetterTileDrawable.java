@@ -60,7 +60,7 @@ public class LetterTileDrawable extends Drawable {
             sDefaultColorLight = res.getColor(R.color.letter_tile_bg_color_light);
             sDefaultColorDark = res.getColor(R.color.letter_tile_bg_color_dark);
             sTileFontColorLight = res.getColor(R.color.letter_tile_text_color_light);
-            sTileFontColorDark = res.getColor(R.color.letter_tile_text_color_dark);
+            sTileFontColorDark = res.getColor(R.color.gray_line);
             sLetterToTileRatio = 0.75f;
             DEFAULT_PERSON_AVATAR = getBitmapFromVectorDrawable(context, R.drawable.ic_person_white);
             DEFAULT_GROUP_AVATAR = getBitmapFromVectorDrawable(context, R.drawable.ic_group_white);

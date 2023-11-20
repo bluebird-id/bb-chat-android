@@ -28,6 +28,7 @@ import id.bluebird.chat.methods.message.utils.onNotificationClick
 import id.bluebird.chat.methods.message.utils.readOtherNameFromIntent
 import id.bluebird.chat.methods.message.utils.readTopicNameCallFromIntent
 import id.bluebird.chat.methods.message.utils.readTopicNameChatFromIntent
+import id.bluebird.chat.methods.message.utils.readUserTypeFromIntent
 import id.bluebird.chat.sdk.AttachmentHandler
 import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.CallManager
@@ -40,6 +41,7 @@ import id.bluebird.chat.sdk.db.BaseDb
 import id.bluebird.chat.sdk.db.SqlStore
 import id.bluebird.chat.sdk.demos.InvalidTopicFragment
 import id.bluebird.chat.sdk.demos.message.MessagesFragment
+import id.bluebird.chat.sdk.demos.message.UserType
 import id.bluebird.chat.sdk.demos.previewmedia.ImageViewFragment
 import id.bluebird.chat.sdk.media.VxCard
 import java.util.Timer
@@ -64,6 +66,8 @@ class MessageActivity : AppCompatActivity() {
     var mTopicChatName: String? = null
 
     var mTopicCallName: String? = null
+
+    var mUserType: UserType? = null
 
     var mMessageText: String? = null
 
@@ -149,6 +153,7 @@ class MessageActivity : AppCompatActivity() {
             topicName = readTopicNameChatFromIntent(intent)
             mTopicCallName = readTopicNameCallFromIntent(intent)
             mOtherName = readOtherNameFromIntent(intent)
+            mUserType = readUserTypeFromIntent(intent)
         }
         Log.e("BBChat", topicName.toString())
         if (!changeTopic(topicName, false)) {
@@ -303,6 +308,7 @@ class MessageActivity : AppCompatActivity() {
         argsMutable = argsMutable ?: Bundle()
         argsMutable.putString(Const.INTENT_EXTRA_OTHER_NAME_CHAT, mOtherName)
         argsMutable.putString(Const.INTENT_EXTRA_TOPIC_CHAT, mTopicChatName)
+        argsMutable.putSerializable(Const.INTENT_EXTRA_USER_TYPE, mUserType)
 
         if (tag == FRAGMENT_MESSAGES) {
             argsMutable.putString(MessagesFragment.MESSAGE_TO_SEND, mMessageText)
@@ -435,7 +441,6 @@ class MessageActivity : AppCompatActivity() {
         const val FRAGMENT_VIEW_VIDEO = "view_video"
         const val FRAGMENT_FILE_PREVIEW = "file_preview"
         const val TOPIC_CHAT_NAME = "topicChatName"
-        const val TOPIC_CALL_NAME = "topicCallName"
         const val MESSAGES_TO_LOAD = 24
         const val READ_DELAY = 1000
     }

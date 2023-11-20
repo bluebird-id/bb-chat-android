@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.model.Acs;
 import co.tinode.tinodesdk.model.Defacs;
-import id.bluebird.chat.sdk.app.TindroidApp;
+import id.bluebird.chat.sdk.app.BBChat;
 
 /**
  * SQLite backend. Persistent store for messages and chats.
@@ -51,7 +51,7 @@ public class BaseDb extends SQLiteOpenHelper {
      */
     public static BaseDb getInstance() {
         if (sInstance == null) {
-            sInstance = new BaseDb(TindroidApp.getAppContext());
+            sInstance = new BaseDb(BBChat.getAppContext());
             sInstance.mAcc = AccountDb.getActiveAccount(sInstance.getReadableDatabase());
             sInstance.mStore = new SqlStore(sInstance);
         }

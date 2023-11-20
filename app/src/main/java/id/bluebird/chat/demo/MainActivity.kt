@@ -38,6 +38,7 @@ import id.bluebird.chat.Platform
 import id.bluebird.chat.R
 import id.bluebird.chat.demo.theme.BluebirdChatTheme
 import id.bluebird.chat.sdk.db.BaseDb
+import id.bluebird.chat.sdk.demos.message.UserType
 
 class MainActivity : ComponentActivity() {
 
@@ -210,6 +211,7 @@ fun MainScreen(
                             opponentsName = fullnameState.value,
                             topicChatName = chatTopicName.value,
                             topicCallName = callTopicName.value,
+                            userType = UserType.DRIVER
                         )
                     },
                     enabled = isLogin.value && chatTopicName.value.isNotEmpty(),

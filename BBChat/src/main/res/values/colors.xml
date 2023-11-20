@@ -107,7 +107,7 @@
         <item>#EF6C00</item>
         <item>#D84315</item>
     </array>
-    <color name="letter_tile_text_color_dark">#dedede</color>
+    <color name="gray_line">#dedede</color>
     <color name="letter_tile_bg_color_dark">#777</color>
 
     <string name="image_download_success">Image saved to gallery</string>

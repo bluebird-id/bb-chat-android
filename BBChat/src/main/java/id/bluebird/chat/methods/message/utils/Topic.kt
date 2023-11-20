@@ -3,6 +3,7 @@ package id.bluebird.chat.methods.message.utils
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.text.TextUtils
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -29,6 +30,7 @@ import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.Utils
 import id.bluebird.chat.sdk.demos.InvalidTopicFragment
 import id.bluebird.chat.sdk.demos.message.MessagesFragment
+import id.bluebird.chat.sdk.demos.message.UserType
 import id.bluebird.chat.sdk.media.VxCard
 
 // Get topic name from Intent the Activity was launched with (push notification, other app, other activity).
@@ -80,6 +82,17 @@ fun readOtherNameFromIntent(intent: Intent): String? {
     // Check if the activity was launched by internally-generated intent.
     var name = intent.getStringExtra(Const.INTENT_EXTRA_OTHER_NAME_CHAT)
     return name
+}
+
+fun readUserTypeFromIntent(intent: Intent): UserType? {
+
+    // Check if the activity was launched by internally-generated intent.
+    var userType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        intent.getSerializableExtra(Const.INTENT_EXTRA_USER_TYPE, UserType::class.java)
+    } else {
+        intent.getSerializableExtra(Const.INTENT_EXTRA_USER_TYPE) as UserType
+    }
+    return userType
 }
 
 /**

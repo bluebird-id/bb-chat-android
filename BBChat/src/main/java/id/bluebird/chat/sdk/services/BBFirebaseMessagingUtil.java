@@ -42,7 +42,7 @@ import id.bluebird.chat.sdk.Const;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.account.Utils;
 import id.bluebird.chat.sdk.app.BReceiverHangUp;
-import id.bluebird.chat.sdk.app.TindroidApp;
+import id.bluebird.chat.sdk.app.BBChat;
 import id.bluebird.chat.sdk.format.FontFormatter;
 import id.bluebird.chat.sdk.media.VxCard;
 
@@ -112,7 +112,7 @@ public class BBFirebaseMessagingUtil {
         //   Always silent.
         //
 
-        Context context = TindroidApp.getAppContext();
+        Context context = BBChat.getAppContext();
         String topicName;
 
         final Tinode tinode = Cache.getTinode();

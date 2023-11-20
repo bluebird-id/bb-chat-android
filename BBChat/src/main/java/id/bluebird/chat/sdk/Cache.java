@@ -17,7 +17,7 @@ import co.tinode.tinodesdk.model.MsgServerData;
 import co.tinode.tinodesdk.model.MsgServerInfo;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
-import id.bluebird.chat.sdk.app.TindroidApp;
+import id.bluebird.chat.sdk.app.BBChat;
 import id.bluebird.chat.sdk.db.BaseDb;
 import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.services.CallConnection;
@@ -42,7 +42,7 @@ public class Cache {
 
     public static synchronized Tinode getTinode() {
         if (sInstance.mTinode == null) {
-            sInstance.mTinode = new Tinode("Bluebird Chat/" + TindroidApp.getAppVersion(), API_KEY,
+            sInstance.mTinode = new Tinode("Bluebird Chat/" + BBChat.getAppVersion(), API_KEY,
                     BaseDb.getInstance().getStore(), null);
             sInstance.mTinode.setOsString(Build.VERSION.RELEASE);
 
@@ -85,7 +85,7 @@ public class Cache {
 
                     switch (callState) {
                         case STARTED:
-                            CallManager.acceptIncomingCall(TindroidApp.getAppContext(),
+                            CallManager.acceptIncomingCall(BBChat.getAppContext(),
                                     data.topic, data.seq, data.getBooleanHeader("aonly"));
                             break;
                         case ACCEPTED:
@@ -95,7 +95,7 @@ public class Cache {
                             CallInProgress call = Cache.getCallInProgress();
                             if (call != null && !call.isOutgoingCall()) {
                                 Log.i(TAG, "Dismissing incoming call: topic = " + data.topic + ", seq = " + data.seq);
-                                CallManager.dismissIncomingCall(TindroidApp.getAppContext(), data.topic, data.seq);
+                                CallManager.dismissIncomingCall(BBChat.getAppContext(), data.topic, data.seq);
                             }
                             break;
                         default:
@@ -120,13 +120,13 @@ public class Cache {
                     if (MsgServerInfo.parseEvent(info.event) == MsgServerInfo.Event.HANG_UP ||
                             (Cache.getTinode().isMe(info.from) &&
                                     MsgServerInfo.parseEvent(info.event) == MsgServerInfo.Event.ACCEPT)) {
-                        CallManager.dismissIncomingCall(TindroidApp.getAppContext(), info.src, info.seq);
+                        CallManager.dismissIncomingCall(BBChat.getAppContext(), info.src, info.seq);
                     }
                 }
             });
 
             // Keep in app to prevent garbage collection.
-            TindroidApp.retainCache(sInstance);
+            BBChat.retainCache(sInstance);
         }
 
         /* TODO: Send FCM from Client */

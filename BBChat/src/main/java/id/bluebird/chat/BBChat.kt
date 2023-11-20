@@ -1,8 +1,8 @@
 package id.bluebird.chat
 
-import android.app.Activity
 import android.content.Context
 import id.bluebird.chat.io.model.Participants
+import id.bluebird.chat.sdk.demos.message.UserType
 import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom
 import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
 import id.bluebird.chat.methods.logout as BBChatLogout
@@ -33,7 +33,8 @@ class BBChat {
             opponentsName: String,
             topicChatName: String,
             topicCallName: String,
-        ) = BBChatToMessageScreen(context, opponentsName, topicChatName, topicCallName)
+            userType: UserType,
+        ) = BBChatToMessageScreen(context, opponentsName, topicChatName, topicCallName, userType)
 
         fun toCallScreen(
             context: Context,

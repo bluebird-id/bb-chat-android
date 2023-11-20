@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="customer_predefined_message">
+        <item>Hallo, titik penjemputan sudah sesuai</item>
+        <item>Baik, ditunggu,</item>
+        <item>Terima kasih, saya telah tiba di titik tujuan.</item>
+    </string-array>
+
+    <string-array name="driver_predefined_message">
+        <item>Hallo, apakah titik penjemputan sudah sesuai?</item>
+        <item>Mohon menunggu, saya akan segera tiba.</item>
+        <item>Hallo, saya sudah tiba di lokasi penjemputan.</item>
+    </string-array>
+</resources>

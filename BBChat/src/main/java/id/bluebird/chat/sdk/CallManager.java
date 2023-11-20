@@ -3,7 +3,6 @@ package id.bluebird.chat.sdk;
 import static android.content.Context.TELECOM_SERVICE;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -40,7 +39,7 @@ import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
 import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.app.BReceiverHangUp;
-import id.bluebird.chat.sdk.app.TindroidApp;
+import id.bluebird.chat.sdk.app.BBChat;
 import id.bluebird.chat.sdk.demos.call.CallActivity;
 import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.services.CallConnection;
@@ -97,19 +96,19 @@ public class CallManager {
         if (sSharedInstance != null) {
             return sSharedInstance;
         }
-        sSharedInstance = new CallManager(TindroidApp.getAppContext());
+        sSharedInstance = new CallManager(BBChat.getAppContext());
         return sSharedInstance;
     }
 
     // FIXME: this has to be called on logout.
     public static void unregisterCallingAccount() {
         CallManager shared = CallManager.getShared();
-        TelecomManager telecomManager = (TelecomManager) TindroidApp.getAppContext().getSystemService(TELECOM_SERVICE);
+        TelecomManager telecomManager = (TelecomManager) BBChat.getAppContext().getSystemService(TELECOM_SERVICE);
         telecomManager.unregisterPhoneAccount(shared.mPhoneAccountHandle);
     }
 
     public static void placeOutgoingCall(Context context, String callee) {
-        TelecomManager telecomManager = (TelecomManager) TindroidApp.getAppContext().getSystemService(TELECOM_SERVICE);
+        TelecomManager telecomManager = (TelecomManager) BBChat.getAppContext().getSystemService(TELECOM_SERVICE);
         if (shouldBypassTelecom(context, telecomManager, true)) {
             // Self-managed phone accounts are not supported, bypassing Telecom.
             showOutgoingCallUi(context, callee, null);
@@ -126,7 +125,7 @@ public class CallManager {
         try {
             telecomManager.placeCall(Uri.fromParts("tinode", callee, null), callParams);
         } catch (SecurityException ex) {
-            Toast.makeText(TindroidApp.getAppContext(), R.string.unable_to_place_call, Toast.LENGTH_SHORT).show();
+            Toast.makeText(BBChat.getAppContext(), R.string.unable_to_place_call, Toast.LENGTH_SHORT).show();
             Log.w(TAG, "Unable to place call", ex);
         }
     }
