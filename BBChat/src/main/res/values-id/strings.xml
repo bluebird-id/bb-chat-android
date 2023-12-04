@@ -3,7 +3,7 @@
 
     <string-array name="customer_predefined_message">
         <item>Hallo, titik penjemputan sudah sesuai</item>
-        <item>Baik, ditunggu,</item>
+        <item>Baik, ditunggu</item>
         <item>Terima kasih, saya telah tiba di titik tujuan.</item>
     </string-array>
 

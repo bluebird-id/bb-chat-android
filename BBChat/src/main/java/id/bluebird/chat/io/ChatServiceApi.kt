@@ -8,7 +8,6 @@ import id.bluebird.chat.NotifPipeline
 import id.bluebird.chat.Platform
 import id.bluebird.chat.io.network.Result
 import id.bluebird.chat.io.network.awaitResult
-import id.bluebird.chat.sdk.app.BBChat
 import io.grpc.CallOptions
 import io.grpc.Channel
 import io.grpc.ClientCall
@@ -65,8 +64,8 @@ class ChatServiceApi(
     }
 
     val channel: ManagedChannel = ManagedChannelBuilder.forAddress(
-        BBChat.getChatServicesApi().first,
-        BBChat.getChatServicesApi().second
+        "34.124.216.166",
+        6969
     )
         .usePlaintext()
         .intercept(interceptor)

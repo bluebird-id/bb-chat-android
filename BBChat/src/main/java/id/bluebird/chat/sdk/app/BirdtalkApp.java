@@ -29,7 +29,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -64,23 +63,15 @@ import okhttp3.Request;
 /**
  * A class for providing global context for database access
  */
-public class BBChat {
+public class BirdtalkApp {
     private static final String TAG = "TindroidApp";
     private static Application application;
     private static String sAppVersion = null;
     private static int sAppBuild = 0;
 
-    private static String hostname = "";
-    private static Pair<String, Integer> chatServicesApi = new Pair<>("", 0);
 
-    public void init(
-            Application application,
-            String hostname,
-            Pair<String, Integer> chatServicesApi
-    ) {
-        BBChat.application = application;
-        BBChat.hostname = hostname;
-        BBChat.chatServicesApi = chatServicesApi;
+    public void init(Application application) {
+        BirdtalkApp.application = application;
 
         handeAppData();
 
@@ -286,11 +277,9 @@ public class BBChat {
     }
 
     public static String getDefaultHostName() {
-        return hostname;
-    }
-
-    public static Pair<String, Integer> getChatServicesApi() {
-        return chatServicesApi;
+        return application.getResources().getString(isEmulator() ?
+                R.string.emulator_host_name :
+                R.string.default_host_name);
     }
 
     public static boolean getDefaultTLS() {

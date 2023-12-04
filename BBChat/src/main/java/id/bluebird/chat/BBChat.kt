@@ -1,6 +1,8 @@
 package id.bluebird.chat
 
 import android.content.Context
+import id.bluebird.chat.NotifPipeline
+import id.bluebird.chat.Platform
 import id.bluebird.chat.io.model.Participants
 import id.bluebird.chat.sdk.demos.message.UserType
 import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom

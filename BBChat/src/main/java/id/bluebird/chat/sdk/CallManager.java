@@ -39,7 +39,7 @@ import co.tinode.tinodesdk.Tinode;
 import co.tinode.tinodesdk.Topic;
 import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.app.BReceiverHangUp;
-import id.bluebird.chat.sdk.app.BBChat;
+import id.bluebird.chat.sdk.app.BirdtalkApp;
 import id.bluebird.chat.sdk.demos.call.CallActivity;
 import id.bluebird.chat.sdk.media.VxCard;
 import id.bluebird.chat.sdk.services.CallConnection;
@@ -96,19 +96,19 @@ public class CallManager {
         if (sSharedInstance != null) {
             return sSharedInstance;
         }
-        sSharedInstance = new CallManager(BBChat.getAppContext());
+        sSharedInstance = new CallManager(BirdtalkApp.getAppContext());
         return sSharedInstance;
     }
 
     // FIXME: this has to be called on logout.
     public static void unregisterCallingAccount() {
         CallManager shared = CallManager.getShared();
-        TelecomManager telecomManager = (TelecomManager) BBChat.getAppContext().getSystemService(TELECOM_SERVICE);
+        TelecomManager telecomManager = (TelecomManager) BirdtalkApp.getAppContext().getSystemService(TELECOM_SERVICE);
         telecomManager.unregisterPhoneAccount(shared.mPhoneAccountHandle);
     }
 
     public static void placeOutgoingCall(Context context, String callee) {
-        TelecomManager telecomManager = (TelecomManager) BBChat.getAppContext().getSystemService(TELECOM_SERVICE);
+        TelecomManager telecomManager = (TelecomManager) BirdtalkApp.getAppContext().getSystemService(TELECOM_SERVICE);
         if (shouldBypassTelecom(context, telecomManager, true)) {
             // Self-managed phone accounts are not supported, bypassing Telecom.
             showOutgoingCallUi(context, callee, null);
@@ -125,7 +125,7 @@ public class CallManager {
         try {
             telecomManager.placeCall(Uri.fromParts("tinode", callee, null), callParams);
         } catch (SecurityException ex) {
-            Toast.makeText(BBChat.getAppContext(), R.string.unable_to_place_call, Toast.LENGTH_SHORT).show();
+            Toast.makeText(BirdtalkApp.getAppContext(), R.string.unable_to_place_call, Toast.LENGTH_SHORT).show();
             Log.w(TAG, "Unable to place call", ex);
         }
     }

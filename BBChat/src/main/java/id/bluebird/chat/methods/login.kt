@@ -16,7 +16,7 @@ import id.bluebird.chat.sdk.Cache
 import id.bluebird.chat.sdk.MyAttachmentHandler
 import id.bluebird.chat.sdk.UiUtils
 import id.bluebird.chat.sdk.account.Utils
-import id.bluebird.chat.sdk.app.BBChat
+import id.bluebird.chat.sdk.app.BirdtalkApp
 import id.bluebird.chat.sdk.media.VxCard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -86,12 +86,12 @@ fun loginOrRegister(
 
 private fun loginTinode(completion: (String?, String?) -> Unit) {
     Log.e("BBChat", "loginTinode: $userName $passWord")
-    val sharedPref = PreferenceManager.getDefaultSharedPreferences(BBChat.getAppContext())
+    val sharedPref = PreferenceManager.getDefaultSharedPreferences(BirdtalkApp.getAppContext())
     val tinode = Cache.getTinode()
 
     val hostName: String =
-        sharedPref.getString(Utils.PREFS_HOST_NAME, BBChat.getDefaultHostName())!!
-    val tls: Boolean = sharedPref.getBoolean(Utils.PREFS_USE_TLS, BBChat.getDefaultTLS())
+        sharedPref.getString(Utils.PREFS_HOST_NAME, "dev-tinode.bluebird.id")!!
+    val tls: Boolean = sharedPref.getBoolean(Utils.PREFS_USE_TLS, BirdtalkApp.getDefaultTLS())
 
     Log.e("BBChat", "loginTinode: host:$hostName $userName $passWord")
     // This is called on the websocket thread.
@@ -107,7 +107,7 @@ private fun loginTinode(completion: (String?, String?) -> Unit) {
                 override fun onSuccess(msg: ServerMessage<*, *, *, *>?):
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
                     UiUtils.updateAndroidAccount(
-                        BBChat.getAppContext(),
+                        BirdtalkApp.getAppContext(),
                         tinode.authToken,
                         tinode.authTokenExpiration
                     )
@@ -117,7 +117,7 @@ private fun loginTinode(completion: (String?, String?) -> Unit) {
                         msg.ctrl.text.contains("validate credentials")
                     ) {
 
-                        val message: String = BBChat.getAppContext().getString(R.string.error_login_failed)
+                        val message: String = BirdtalkApp.getAppContext().getString(R.string.error_login_failed)
                         completion.invoke(null, message + " ${msg.ctrl.code}")
 
                     } else {
@@ -139,7 +139,7 @@ private fun loginTinode(completion: (String?, String?) -> Unit) {
                 override fun <E : Exception?> onFailure(err: E):
                         PromisedReply<ServerMessage<*, *, *, *>?>? {
 
-                    val message: String = BBChat.getAppContext().getString(R.string.error_login_failed)
+                    val message: String = BirdtalkApp.getAppContext().getString(R.string.error_login_failed)
                     completion.invoke(null, message + " " + err?.message)
 
                     return null
@@ -152,9 +152,9 @@ private fun registerTinode(completion: (String?, String?) -> Unit) {
 
     Log.e("BBChat", "register tinode: $userName $passWord")
     val tinode = Cache.getTinode()
-    val sharedPref = PreferenceManager.getDefaultSharedPreferences(BBChat.getAppContext())
-    val hostName = sharedPref.getString(Utils.PREFS_HOST_NAME, BBChat.getDefaultHostName())
-    val tls = sharedPref.getBoolean(Utils.PREFS_USE_TLS, BBChat.getDefaultTLS())
+    val sharedPref = PreferenceManager.getDefaultSharedPreferences(BirdtalkApp.getAppContext())
+    val hostName = sharedPref.getString(Utils.PREFS_HOST_NAME, "dev-tinode.bluebird.id")
+    val tls = sharedPref.getBoolean(Utils.PREFS_USE_TLS, BirdtalkApp.getDefaultTLS())
 
     val theCard = VxCard(userName, "")
 
@@ -188,7 +188,7 @@ private fun registerTinode(completion: (String?, String?) -> Unit) {
 
             override fun onSuccess(result: ServerMessage<*, *, *, *>?): PromisedReply<ServerMessage<*, *, *, *>?>? {
                 UiUtils.updateAndroidAccount(
-                    BBChat.getAppContext(),
+                    BirdtalkApp.getAppContext(),
                     tinode.authToken,
                     tinode.authTokenExpiration
                 )

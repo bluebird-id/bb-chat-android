@@ -34,7 +34,7 @@ import id.bluebird.chat.sdk.BrandingConfig;
 import id.bluebird.chat.sdk.Cache;
 import id.bluebird.chat.sdk.UiUtils;
 import id.bluebird.chat.sdk.account.Utils;
-import id.bluebird.chat.sdk.app.BBChat;
+import id.bluebird.chat.sdk.app.BirdtalkApp;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -137,8 +137,8 @@ public class LoginFragment extends Fragment implements MenuProvider, View.OnClic
         signIn.setEnabled(false);
 
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(parent);
-        final String hostName = sharedPref.getString(Utils.PREFS_HOST_NAME, BBChat.getDefaultHostName());
-        boolean tls = sharedPref.getBoolean(Utils.PREFS_USE_TLS, BBChat.getDefaultTLS());
+        final String hostName = sharedPref.getString(Utils.PREFS_HOST_NAME, "dev-tinode.bluebird.id");
+        boolean tls = sharedPref.getBoolean(Utils.PREFS_USE_TLS, BirdtalkApp.getDefaultTLS());
         final Tinode tinode = Cache.getTinode();
         // This is called on the websocket thread.
         tinode.connect(hostName, tls, false)

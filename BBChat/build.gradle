@@ -38,8 +38,10 @@ android {
 
     buildTypes {
         debug {
+            resValue "string", "default_host_name", '"dev-tinode.bluebird.id"'
         }
         release {
+            resValue "string", "default_host_name", '"dev-tinode.bluebird.id"'
             minifyEnabled false
 //            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -171,10 +173,10 @@ protobuf {
     }
 }
 
-afterEvaluate{
+afterEvaluate {
     publishing {
-        publications{
-            release(MavenPublication){
+        publications {
+            release(MavenPublication) {
                 from components.release
                 groupId = 'com.github.alan-tayirazraq'
                 artifactId = 'BBChat'
