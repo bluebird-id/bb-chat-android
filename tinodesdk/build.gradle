@@ -40,15 +40,3 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
-afterEvaluate{
-    publishing {
-        publications{
-            release(MavenPublication){
-                from components.release
-                groupId = 'com.github.alan-tayirazraq'
-                artifactId = 'tinodesdk'
-                version = '0.0.9'
-            }
-        }
-    }
-}
