@@ -1,5 +1,6 @@
 package id.bluebird.chat.sdk.app;
 
+import static id.bluebird.chat.methods.TokenKt.generateNewToken;
 import static id.bluebird.chat.sdk.Const.FCM_REFRESH_TOKEN;
 import static id.bluebird.chat.sdk.Const.INTENT_ACTION_CALL_CLOSE;
 import static id.bluebird.chat.sdk.account.Utils.PREFS_HOST_NAME;
@@ -49,6 +50,7 @@ import java.util.concurrent.Executors;
 
 import co.tinode.tinodesdk.ServerResponseException;
 import co.tinode.tinodesdk.Tinode;
+import id.bluebird.chat.BBChat;
 import id.bluebird.chat.BuildConfig;
 import id.bluebird.chat.R;
 import id.bluebird.chat.sdk.BrandingConfig;
@@ -70,7 +72,7 @@ public class BirdtalkApp {
     private static int sAppBuild = 0;
 
 
-    public void init(Application application) {
+    public void init(Application application, String clientId, String clientSecret) {
         BirdtalkApp.application = application;
 
         handeAppData();
@@ -88,6 +90,9 @@ public class BirdtalkApp {
         setupPicaso();
 
         listenConnectivity();
+
+        // generate new token, for authentication chat service //
+        generateNewToken(clientId, clientSecret);
     }
 
     private void handeAppData() {

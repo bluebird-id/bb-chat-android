@@ -17,6 +17,7 @@ import co.tinode.tinodesdk.model.MsgServerData;
 import co.tinode.tinodesdk.model.MsgServerInfo;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
+import id.bluebird.chat.io.model.Token;
 import id.bluebird.chat.sdk.app.BirdtalkApp;
 import id.bluebird.chat.sdk.db.BaseDb;
 import id.bluebird.chat.sdk.media.VxCard;
@@ -32,6 +33,7 @@ public class Cache {
 
     private static final Cache sInstance = new Cache();
 
+    private Token mToken = null;
     private Tinode mTinode = null;
 
     // Currently active topic.
@@ -39,6 +41,17 @@ public class Cache {
 
     // Current video call.
     private CallInProgress mCallInProgress = null;
+
+    public static synchronized Token getToken() {
+        if (sInstance.mToken == null) {
+            sInstance.mToken = new Token();
+        }
+        return sInstance.mToken;
+    }
+
+    public static void setToken(Token token) {
+        sInstance.mToken = token;
+    }
 
     public static synchronized Tinode getTinode() {
         if (sInstance.mTinode == null) {
@@ -149,6 +162,9 @@ public class Cache {
         if (sInstance.mTinode != null) {
             sInstance.mTinode.logout();
             sInstance.mTinode = null;
+        }
+        if (sInstance.mToken != null) {
+            sInstance.mToken = null;
         }
 //        FirebaseMessaging.getInstance().deleteToken();
     }

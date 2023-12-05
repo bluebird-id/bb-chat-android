@@ -236,10 +236,10 @@ private fun loginOrRegisterChatService(
 ) {
     Log.e("BBChat", "login or register chat service: $userName $passWord")
     coroutineScope.launch {
-        val clientId = userName ?: ""
+        val clientUserId = userName ?: ""
 
         val repository = ChatServiceRepositoryImpl(ChatServiceApi(null))
-        when (val response = repository.register(clientId, tinodeId, fullName ?: "")) {
+        when (val response = repository.register(clientUserId, tinodeId, fullName ?: "")) {
             is Result.Ok -> {
                 completion.invoke("register success ${response.data.message}", null)
             }

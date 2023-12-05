@@ -11,10 +11,16 @@ import id.bluebird.chat.methods.logout as BBChatLogout
 import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
 import id.bluebird.chat.methods.saveDeviceToken as BBChatSaveDeviceToken
 import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
+import id.bluebird.chat.methods.generateNewToken as BBChatNewToken
 
 class BBChat {
 
     companion object {
+
+        fun generateNewToken(
+            clientId: String,
+            clientSecret: String,
+        ) = BBChatNewToken(clientId, clientSecret)
 
         fun login(
             username: String,

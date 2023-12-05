@@ -3,11 +3,14 @@ package id.bluebird.chat.io
 import id.bluebird.chat.NotifPipeline
 import id.bluebird.chat.Platform
 import id.bluebird.chat.io.model.DeviceTokenResp
+import id.bluebird.chat.io.model.GenerateTokenResp
 import id.bluebird.chat.io.model.ParticipantsResp
 import id.bluebird.chat.io.model.RegisterResp
 import id.bluebird.chat.io.network.Result
 
 interface ChatServiceRepository {
+
+    suspend fun generateNewToken(clientId: String, clientSecret: String): Result<GenerateTokenResp>
 
     suspend fun register(clientId: String, tinodeId: String, fullName: String): Result<RegisterResp>
 
@@ -25,12 +28,23 @@ interface ChatServiceRepository {
 class ChatServiceRepositoryImpl(private val chatServiceApi: ChatServiceApi) :
     ChatServiceRepository {
 
-    override suspend fun register(
+    override suspend fun generateNewToken(
         clientId: String,
+        clientSecret: String
+    ): Result<GenerateTokenResp> {
+        return chatServiceApi.generateNewToken(clientId, clientSecret) {
+            val response = GenerateTokenResp()
+            response.setItem(this)
+            response
+        }
+    }
+
+    override suspend fun register(
+        clienUserId: String,
         tinodeId: String,
         fullName: String
     ): Result<RegisterResp> {
-        return chatServiceApi.registerFuture(clientId, tinodeId, fullName) {
+        return chatServiceApi.registerFuture(clienUserId, tinodeId, fullName) {
             val response = RegisterResp()
             response.setItem(this)
             response

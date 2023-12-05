@@ -8,7 +8,7 @@ class app : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        BirdtalkApp().init(/* application = */ this)
+        BirdtalkApp().init(this,"driver-app","oSkIdsw8iUbQwTD33irfdHtAJ5IqFOPl")
         BirdtalkApp().setupWorkManager()
     }
 }

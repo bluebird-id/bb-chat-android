@@ -1,5 +1,6 @@
 package id.bluebird.chat.io
 
+import android.util.Log
 import com.google.common.util.concurrent.ListenableFuture
 import grpc.ChatServiceGrpc
 import grpc.ChatServiceGrpc.ChatServiceFutureStub
@@ -8,6 +9,7 @@ import id.bluebird.chat.NotifPipeline
 import id.bluebird.chat.Platform
 import id.bluebird.chat.io.network.Result
 import id.bluebird.chat.io.network.awaitResult
+import id.bluebird.chat.sdk.Cache
 import io.grpc.CallOptions
 import io.grpc.Channel
 import io.grpc.ClientCall
@@ -53,9 +55,14 @@ class ChatServiceApi(
                         val USRID_KEY: Metadata.Key<String> =
                             Metadata.Key.of("userid", Metadata.ASCII_STRING_MARSHALLER)
                         headers?.put(USRID_KEY, userId)
-                        headers?.let {
-                            metadata = headers
-                        }
+                    }
+                    if (Cache.getToken().token?.isNotEmpty() == true) {
+                        val TOKEN_KEY: Metadata.Key<String> =
+                            Metadata.Key.of("Authorization", Metadata.ASCII_STRING_MARSHALLER)
+                        headers?.put(TOKEN_KEY, "Bearer ${Cache.getToken().token}")
+                    }
+                    headers?.let {
+                        metadata = headers
                     }
                     super.start(responseListener, headers)
                 }
@@ -70,6 +77,27 @@ class ChatServiceApi(
         .usePlaintext()
         .intercept(interceptor)
         .build()
+
+    /*** generate new token ***/
+
+    private fun createGenerateTokenParam(
+        clientId: String,
+        clientSecret: String
+    ): Chatservice.GenerateTokenRequest = Chatservice.GenerateTokenRequest.newBuilder()
+        .setClientId(clientId)
+        .setClientSecret(clientSecret)
+        .build()
+
+    suspend fun <T : Any> generateNewToken(
+        clientId: String,
+        clientSecret: String,
+        transform: Chatservice.GenerateTokenResponse.() -> T
+    ): Result<T> {
+        val request = createGenerateTokenParam(clientId, clientSecret)
+        return channel.futureStubResult(transform) {
+            generateToken(request)
+        }
+    }
 
     /*** login or register ***/
     private fun createRegisterParam(

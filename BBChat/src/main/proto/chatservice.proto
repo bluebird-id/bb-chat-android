@@ -1,12 +1,13 @@
 syntax="proto3";
 
 package grpc;
-
 service ChatService{
     rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc GetParticipants(GetParticipantsRequest) returns (GetParticipantsResponse);
     rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse);
     rpc SaveDeviceToken(SaveDeviceTokenRequest) returns (SaveDeviceTokenResponse);
+    rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+    rpc GenerateToken(GenerateTokenRequest) returns (GenerateTokenResponse);
 }
 
 message RegisterResponse{
@@ -49,4 +50,22 @@ message SaveDeviceTokenRequest {
 
 message SaveDeviceTokenResponse {
     string state_message = 1;
+}
+
+message SendMessageRequest{
+    string reference_id = 1;
+    string content = 2;
+}
+
+message SendMessageResponse{
+    string state_message = 1;
+}
+message GenerateTokenRequest{
+    string client_id = 1;
+    string client_secret = 2;
+}
+
+message GenerateTokenResponse{
+    string access_token = 1;
+    int64 expires_in = 2;
 }

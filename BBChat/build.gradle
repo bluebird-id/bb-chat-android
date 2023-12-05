@@ -179,7 +179,7 @@ afterEvaluate {
             maven(MavenPublication) {
                 groupId 'id.bluebird.chat'
                 artifactId 'birdtalk'
-                version '0.0.2'
+                version '0.0.4'
 
                 from components.release
             }
