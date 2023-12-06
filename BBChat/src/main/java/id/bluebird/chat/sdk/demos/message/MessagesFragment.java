@@ -85,6 +85,7 @@ import co.tinode.tinodesdk.model.MsgSetMeta;
 import co.tinode.tinodesdk.model.PrivateType;
 import co.tinode.tinodesdk.model.ServerMessage;
 import co.tinode.tinodesdk.model.Subscription;
+import id.bluebird.chat.BBChat;
 import id.bluebird.chat.R;
 import id.bluebird.chat.methods.message.MessageActivity;
 import id.bluebird.chat.sdk.AttachmentHandler;
@@ -288,6 +289,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
 
         LinearLayout contentPredefinedMessage = activity.findViewById(R.id.content_predefined_message);
         editor = view.findViewById(R.id.editMessage);
+        editor.setEnabled(BBChat.Companion.getCHAT_ENABLED());
 
         predefinedMessage(activity, editor, contentPredefinedMessage);
 

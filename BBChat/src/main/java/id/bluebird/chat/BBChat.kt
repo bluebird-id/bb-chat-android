@@ -4,17 +4,19 @@ import android.content.Context
 import id.bluebird.chat.io.model.Participants
 import id.bluebird.chat.methods.message.MessageActivity
 import id.bluebird.chat.sdk.demos.message.UserType
+import id.bluebird.chat.methods.generateNewToken as BBChatNewToken
 import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom
 import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
 import id.bluebird.chat.methods.logout as BBChatLogout
 import id.bluebird.chat.methods.message.toMessageScreen as BBChatToMessageScreen
 import id.bluebird.chat.methods.saveDeviceToken as BBChatSaveDeviceToken
 import id.bluebird.chat.methods.toCallScreen as BBChatToCallScreen
-import id.bluebird.chat.methods.generateNewToken as BBChatNewToken
 
 class BBChat {
 
     companion object {
+        var CHAT_ENABLED = false
+
         fun generateNewToken(
             clientId: String,
             clientSecret: String,
@@ -66,6 +68,10 @@ class BBChat {
 
         fun logout(): Boolean = BBChatLogout()
 
-        fun enableChat(value: Boolean): Unit = MessageActivity.setChatEnabled(value)
+
+        fun enableChat(value: Boolean): Unit {
+            CHAT_ENABLED = value
+            MessageActivity.setChatEnabled(value)
+        }
     }
 }

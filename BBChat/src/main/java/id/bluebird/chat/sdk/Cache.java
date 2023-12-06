@@ -163,9 +163,6 @@ public class Cache {
             sInstance.mTinode.logout();
             sInstance.mTinode = null;
         }
-        if (sInstance.mToken != null) {
-            sInstance.mToken = null;
-        }
 //        FirebaseMessaging.getInstance().deleteToken();
     }
 
