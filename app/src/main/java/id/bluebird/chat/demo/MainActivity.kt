@@ -69,6 +69,8 @@ fun MainScreen(
     val chatTopicName = remember { mutableStateOf("") }
     val callTopicName = remember { mutableStateOf("") }
 
+    BBChat.enableChat(false)
+
     /** Use this if getParticipants cant be access */
 //    val chatTopicName = remember { mutableStateOf("grpm_6FL8t1wr4") }
 //    val callTopicName = remember { mutableStateOf("usryGFySww-TSI") }

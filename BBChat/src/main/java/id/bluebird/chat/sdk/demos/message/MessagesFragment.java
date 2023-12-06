@@ -104,6 +104,7 @@ import id.bluebird.chat.sdk.widgets.WaveDrawable;
  * Fragment handling message display and message sending.
  */
 public class MessagesFragment extends Fragment implements MenuProvider {
+
     private static final String TAG = "MessageFragment";
     private static final int MESSAGES_TO_LOAD = 24;
 
@@ -163,6 +164,8 @@ public class MessagesFragment extends Fragment implements MenuProvider {
     private int mVisibleSendPanel = R.id.sendMessagePanel;
 
     private PromisedReply.FailureListener<ServerMessage> mFailureListener;
+
+    private EditText editor;
 
     private final ActivityResultLauncher<String> mFileOpenerRequestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -284,7 +287,7 @@ public class MessagesFragment extends Fragment implements MenuProvider {
                 Lifecycle.State.RESUMED);
 
         LinearLayout contentPredefinedMessage = activity.findViewById(R.id.content_predefined_message);
-        EditText editor = view.findViewById(R.id.editMessage);
+        editor = view.findViewById(R.id.editMessage);
 
         predefinedMessage(activity, editor, contentPredefinedMessage);
 
@@ -1422,5 +1425,9 @@ public class MessagesFragment extends Fragment implements MenuProvider {
             mBucketIndex = 0;
             mSamplesPerBucket = 0;
         }
+    }
+
+    public void enabledChat(boolean value) {
+        editor.setEnabled(value);
     }
 }

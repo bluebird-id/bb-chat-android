@@ -9,7 +9,9 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import co.tinode.tinodesdk.ComTopic
 import co.tinode.tinodesdk.PromisedReply
@@ -83,6 +85,10 @@ class MessageActivity : AppCompatActivity() {
 
     // True when new subscriptions were added to the topic.
     var mNewSubsAvailable = false
+
+    var chatEnabled: MutableLiveData<Boolean> = MutableLiveData(true)
+
+    var fragment: Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,6 +174,12 @@ class MessageActivity : AppCompatActivity() {
         handleAttachmentFile()
 
         setupPreferencesData()
+
+        chatEnabled.observe(this) {
+            if (fragment is MessagesFragment) {
+                (fragment as MessagesFragment).enabledChat(it)
+            }
+        }
     }
 
     // Extra Text from or for Image Caption or Forward Message and Fill to Edittext
@@ -292,6 +304,8 @@ class MessageActivity : AppCompatActivity() {
 
         val fm = supportFragmentManager
         var fragment = fm.findFragmentByTag(tag)
+        this.fragment = fragment
+
         if (fragment == null) {
             fragment = when (tag) {
                 FRAGMENT_MESSAGES -> MessagesFragment()
@@ -433,6 +447,14 @@ class MessageActivity : AppCompatActivity() {
         syncMessages(-1, runLoader)
     }
 
+    private fun enableChat(value: Boolean){
+        if(chatEnabled.isInitialized.not()) {
+            chatEnabled.postValue(value)
+        } else {
+            chatEnabled = MutableLiveData(value)
+        }
+    }
+
     companion object {
         const val TAG = "MessageActivity"
         const val FRAGMENT_MESSAGES = "msg"
@@ -443,5 +465,9 @@ class MessageActivity : AppCompatActivity() {
         const val TOPIC_CHAT_NAME = "topicChatName"
         const val MESSAGES_TO_LOAD = 24
         const val READ_DELAY = 1000
+
+        fun setChatEnabled(value: Boolean){
+            MessageActivity().enableChat(value)
+        }
     }
 }

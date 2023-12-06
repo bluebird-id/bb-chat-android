@@ -1,9 +1,8 @@
 package id.bluebird.chat
 
 import android.content.Context
-import id.bluebird.chat.NotifPipeline
-import id.bluebird.chat.Platform
 import id.bluebird.chat.io.model.Participants
+import id.bluebird.chat.methods.message.MessageActivity
 import id.bluebird.chat.sdk.demos.message.UserType
 import id.bluebird.chat.methods.getRoomByOrderId as BBChatGetRoom
 import id.bluebird.chat.methods.loginOrRegister as BBChatLogin
@@ -16,7 +15,6 @@ import id.bluebird.chat.methods.generateNewToken as BBChatNewToken
 class BBChat {
 
     companion object {
-
         fun generateNewToken(
             clientId: String,
             clientSecret: String,
@@ -68,5 +66,6 @@ class BBChat {
 
         fun logout(): Boolean = BBChatLogout()
 
+        fun enableChat(value: Boolean): Unit = MessageActivity.setChatEnabled(value)
     }
 }
