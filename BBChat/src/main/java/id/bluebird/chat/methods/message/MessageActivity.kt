@@ -19,6 +19,7 @@ import co.tinode.tinodesdk.PromisedReply.FinalListener
 import co.tinode.tinodesdk.Tinode
 import co.tinode.tinodesdk.model.Drafty
 import co.tinode.tinodesdk.model.ServerMessage
+import id.bluebird.chat.BBChat
 import id.bluebird.chat.R
 import id.bluebird.chat.methods.message.utils.MessageEventListener
 import id.bluebird.chat.methods.message.utils.NoteHandler
@@ -86,7 +87,7 @@ class MessageActivity : AppCompatActivity() {
     // True when new subscriptions were added to the topic.
     var mNewSubsAvailable = false
 
-    var chatEnabled: MutableLiveData<Boolean> = MutableLiveData(true)
+    var chatEnabled: MutableLiveData<Boolean> = MutableLiveData(BBChat.CHAT_ENABLED)
 
     var fragment: Fragment? = null
 

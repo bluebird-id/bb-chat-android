@@ -40,3 +40,28 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
 
+afterEvaluate{
+    publishing {
+        publications{
+            release(MavenPublication){
+                from components.release
+
+                groupId = 'com.github.bluebird-id'
+                artifactId = 'bb-chat-android'
+                version = '0.0.9'
+            }
+        }
+        repositories {
+            maven {
+                url "https://git.bluebird.id/api/v4/projects/1977/packages/maven"
+                credentials(HttpHeaderCredentials) {
+                    name = "Private-Token"
+                    value = gitLabPrivateToken
+                }
+                authentication {
+                    header(HttpHeaderAuthentication)
+                }
+            }
+        }
+    }
+}
